@@ -20,7 +20,7 @@ type alias VeggieDict a =
     }
 
 type Objective
-    = Set (List Veggie) Points
+    = Combo (List Veggie) Points
     | Items (VeggieDict Points)
     | Most Veggie Points
     | Fewest Veggie Points
