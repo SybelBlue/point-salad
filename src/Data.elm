@@ -25,6 +25,7 @@ type Objective
     | Most Veggie Points
     | Fewest Veggie Points
     | FewestTotal Points
+    | MostTotal Points
     | PerTypeWith Int Points
     | PerMissing Points
     | EvenOdd Veggie Points Points
