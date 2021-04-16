@@ -1,6 +1,6 @@
-module VeggieDict exposing (..)
+module Veggie exposing (..)
 
-import Data exposing (VeggieDict, Veggie(..))
+import Card exposing (VeggieDict, Veggie(..))
 
 {-| Returns a new, empty VeggieDict -}
 empty : VeggieDict a
@@ -11,6 +11,7 @@ empty =
     , lettuce = Nothing
     , cabbage = Nothing
     , onion = Nothing
+    , size = 0
     }
 
 {-| Inserts a value into a VeggieDict using a Veggie key, 
@@ -19,12 +20,12 @@ empty =
 insert : VeggieDict a -> Veggie -> a -> VeggieDict a
 insert vd k v = 
     case k of
-        Tomato -> { vd | tomato = Just v }
-        Carrot -> { vd | carrot = Just v }
-        Pepper -> { vd | pepper = Just v }
-        Lettuce -> { vd | lettuce = Just v }
-        Cabbage -> { vd | cabbage = Just v }
-        Onion -> { vd | onion = Just v }
+        Tomato -> { vd | tomato = Just v, size = if vd.tomato == Nothing then vd.size + 1 else vd.size }
+        Carrot -> { vd | carrot = Just v, size = if vd.carrot == Nothing then vd.size + 1 else vd.size }
+        Pepper -> { vd | pepper = Just v, size = if vd.pepper == Nothing then vd.size + 1 else vd.size }
+        Lettuce -> { vd | lettuce = Just v, size = if vd.lettuce == Nothing then vd.size + 1 else vd.size }
+        Cabbage -> { vd | cabbage = Just v, size = if vd.cabbage == Nothing then vd.size + 1 else vd.size }
+        Onion -> { vd | onion = Just v, size = if vd.onion == Nothing then vd.size + 1 else vd.size }
 
 {-| Gets a value from a VeggieDict using a Veggie key if present,
     Nothing otherwise

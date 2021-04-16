@@ -1,4 +1,4 @@
-module Data exposing (..)
+module Card exposing (..)
 
 type alias Points = Int
 
@@ -17,6 +17,7 @@ type alias VeggieDict a =
     , lettuce : Maybe a
     , cabbage : Maybe a
     , onion : Maybe a
+    , size : Int
     }
 
 type Objective
