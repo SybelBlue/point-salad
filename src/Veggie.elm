@@ -1,5 +1,6 @@
 module Veggie exposing (Veggie(..), VeggieDict, empty, get, insert, size)
 
+{-| The basic vegetable types -}
 type Veggie
     = Tomato
     | Carrot
@@ -8,6 +9,7 @@ type Veggie
     | Cabbage
     | Onion
 
+{-| A type to represent a mapping from Veggie to Value a -}
 type VeggieDict a = VDict
     { tomato : Maybe a
     , carrot : Maybe a
@@ -56,5 +58,6 @@ get (VDict vd) k =
         Cabbage -> vd.cabbage
         Onion -> vd.onion
 
+{-| Returns the number of entries in this VeggieDict -}
 size : VeggieDict a -> Int
 size (VDict v) = v.size
