@@ -23,7 +23,7 @@ type Objective
     = Set (List Veggie) Points
     | Items (VeggieDict Points)
     | Most Veggie Points
-    | Least Veggie Points
+    | Fewest Veggie Points
     | FewestTotal Points
     | PerTypeWith Int Points
     | PerMissing Points
