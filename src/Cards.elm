@@ -32,9 +32,9 @@ cards = List.indexedMap (\i f -> f i)
     , card Tomato <| Fewest Onion 7
     , card Tomato <| Combo [Carrot, Onion, Pepper] 8
     , card Tomato <| three Onion 2 Pepper 2 Cabbage -4
-    , card Tomato <| Combo [Onion, Onion] 5
+    , card Tomato <| Stacked Onion 2 5
     , card Tomato <| three Onion 2 Cabbage 1 Tomato -2
-    , card Tomato <| Combo [Onion, Onion, Onion] 8
+    , card Tomato <| Stacked Onion 3 8
     , card Tomato <| two Onion 3 Pepper -2
     , card Tomato <| one Onion 2
     , card Tomato <| Combo [Tomato, Carrot, Pepper, Lettuce, Cabbage, Onion] 12
@@ -45,7 +45,7 @@ cards = List.indexedMap (\i f -> f i)
     , card Carrot <| PerTypeWith 3 5
     , card Carrot <| Most Cabbage 10
     , card Carrot <| two Cabbage 1 Lettuce 1
-    , card Carrot <| Combo [Cabbage, Cabbage] 5
+    , card Carrot <| Stacked Cabbage 2 5
     , card Carrot <| Combo [Onion, Pepper] 5
     , card Carrot <| three Cabbage 2 Tomato 2 Lettuce -4
     , card Carrot <| Fewest Cabbage 7
@@ -54,7 +54,7 @@ cards = List.indexedMap (\i f -> f i)
     , card Carrot <| two Cabbage 1 Pepper 1
     , card Carrot <| EvenOdd Cabbage 7 3
     , card Carrot <| two Cabbage 3 Tomato -2
-    , card Carrot <| Combo [Cabbage, Cabbage, Cabbage] 8
+    , card Carrot <| Stacked Cabbage 3 8
     , card Carrot <| three Cabbage 4 Pepper -2 Onion -2
     , card Carrot <| Combo [Carrot, Cabbage, Onion] 8
     , card Carrot <| Combo [Tomato, Cabbage, Pepper] 8
@@ -65,14 +65,14 @@ cards = List.indexedMap (\i f -> f i)
     , card Pepper <| Combo [Cabbage, Tomato] 5
     , card Pepper <| two Lettuce 1 Onion 1
     , card Pepper <| two Lettuce 1 Tomato 1
-    , card Pepper <| Combo [Lettuce, Lettuce, Lettuce] 8
+    , card Pepper <| Stacked Lettuce 3 8
     , card Pepper <| Combo [Tomato, Lettuce, Carrot] 8
     , card Pepper <| MostTotal 10
     , card Pepper <| Combo [Carrot, Onion] 5
     , card Pepper <| three Lettuce 4 Tomato -2 Cabbage -2
     , card Pepper <| EvenOdd Lettuce 7 3
     , card Pepper <| three Lettuce 2 Onion 1 Pepper -2
-    , card Pepper <| Combo [Lettuce, Lettuce] 5
+    , card Pepper <| Stacked Lettuce 2 5
     , card Pepper <| three Lettuce 2 Carrot 2 Onion -4
     , card Pepper <| one Lettuce 2
     , card Pepper <| Combo [Pepper, Lettuce, Cabbage] 8
@@ -85,10 +85,10 @@ cards = List.indexedMap (\i f -> f i)
     , card Lettuce <| Combo [Carrot, Tomato] 5
     , card Lettuce <| two Pepper 1 Onion 1
     , card Lettuce <| two Pepper 3 Cabbage -2
-    , card Lettuce <| Combo [Pepper, Pepper, Pepper] 8
+    , card Lettuce <| Stacked Pepper 3 8
     , card Lettuce <| two Pepper 1 Tomato 1
     , card Lettuce <| one Pepper 2
-    , card Lettuce <| Combo [Pepper, Pepper] 5
+    , card Lettuce <| Stacked Pepper 2 5
     , card Lettuce <| three Pepper 4 Onion -2 Carrot -2
     , card Lettuce <| Combo [Cabbage, Onion] 5
     , card Lettuce <| three Pepper 2 Tomato 1 Lettuce -2
@@ -97,7 +97,7 @@ cards = List.indexedMap (\i f -> f i)
     , card Lettuce <| three Pepper 3 Tomato -1 Lettuce -1
     , card Lettuce <| three Pepper 2 Cabbage 2 Tomato -4
     , card Cabbage <| Combo [Tomato, Pepper] 5
-    , card Cabbage <| Combo [Carrot, Carrot, Carrot] 8
+    , card Cabbage <| Stacked Carrot 3 8
     , card Cabbage <| Fewest Carrot 7
     , card Cabbage <| one Carrot 2
     , card Cabbage <| three Carrot 3 Onion 2 Pepper -4
@@ -107,7 +107,7 @@ cards = List.indexedMap (\i f -> f i)
     , card Cabbage <| PerMissing 5
     , card Cabbage <| Most Carrot 10
     , card Cabbage <| three Carrot 2 Pepper 1 Cabbage -2
-    , card Cabbage <| Combo [Carrot, Carrot] 5
+    , card Cabbage <| Stacked Carrot 2 5
     , card Cabbage <| two Carrot 3 Onion -2
     , card Cabbage <| Combo [Onion, Lettuce] 5
     , card Cabbage <| three Carrot 3 Pepper -1 Cabbage -1
@@ -118,7 +118,7 @@ cards = List.indexedMap (\i f -> f i)
     , card Onion <| two Tomato 3 Lettuce -2
     , card Onion <| Combo [Cabbage, Tomato, Lettuce] 8
     , card Onion <| one Tomato 2
-    , card Onion <| Combo [Tomato, Tomato, Tomato] 8
+    , card Onion <| Stacked Tomato 3 8
     , card Onion <| Fewest Tomato 7
     , card Onion <| two Tomato 1 Carrot 1
     , card Onion <| PerTypeWith 2 3
@@ -129,7 +129,7 @@ cards = List.indexedMap (\i f -> f i)
     , card Onion <| Combo [Onion, Tomato, Pepper] 8
     , card Onion <| three Tomato 3 Carrot -1 Onion -1
     , card Onion <| three Tomato 4 Cabbage -2 Pepper -2
-    , card Onion <| Combo [Tomato, Tomato] 5
+    , card Onion <| Stacked Tomato 2 5
     , card Onion <| EvenOdd Tomato 7 3
     , card Onion <| three Tomato 2 Carrot 1 Onion -2
     ]
