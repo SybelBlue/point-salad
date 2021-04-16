@@ -2,7 +2,6 @@ module Cards exposing (cards)
 
 import Card exposing (Objective(..), Card(..), Points)
 import Veggie exposing (Veggie(..), VeggieDict)
-import Veggie
 
 cycle3 : (a -> b -> c -> d) -> (b -> c -> a -> d)
 cycle3 fabcd b c a = fabcd a b c
