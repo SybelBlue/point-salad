@@ -3,11 +3,6 @@ module Main exposing (..)
 import Browser
 import Html exposing (Html, button, div, text)
 import Html.Events exposing (onClick)
-import Random exposing (Seed)
-import Random exposing (rand)
-import Random exposing (run)
-import List exposing (repeat)
-import List exposing (intersperse)
 
 
 
@@ -21,22 +16,10 @@ main =
 
 -- MODEL
 
-type alias Model = 
-    { nums: List Int
-    , seed: Seed
-    }
+type alias Model = ()
 
 init : Model
-init =
-  { nums = repeat 10 0, seed = 12345 }
-
-
-incrNth : List Int -> Int -> List Int
-incrNth ls n = 
-    case (ls, n) of
-        ([], _) -> []
-        (h::t, 0) -> h + 1 :: t
-        (h::t, _) -> h :: incrNth t (n - 1)
+init = Debug.todo "write meeee"
 
 
 -- UPDATE
@@ -44,17 +27,14 @@ incrNth ls n =
 type alias Msg = ()
 
 update : Msg -> Model -> Model
-update () model = 
-    let randTen = Random.map (modBy 10) rand
-        (a, s) = run randTen model.seed
-    in { model | seed = s, nums = incrNth model.nums a }
+update msg model = Debug.todo "write meeee"
 
 
 -- VIEW
 
 view : Model -> Html Msg
-view model =
-  div []
-    [ button [ onClick () ] [ text "+" ]
-    , div [ ] [ text <| String.join ", " <| List.map String.fromInt model.nums ]
-    ]
+view model = Debug.todo "write meeee"
+  -- div []
+  --   [ button [ onClick () ] [ text "+" ]
+  --   , div [ ] [ text <| String.join ", " <| List.map String.fromInt model.nums ]
+  --   ]
