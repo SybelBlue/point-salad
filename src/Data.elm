@@ -1,5 +1,4 @@
 module Data exposing (..)
-import Html exposing (a)
 
 type alias Points = Int
 
@@ -11,14 +10,13 @@ type Veggie
     | Cabbage
     | Onion
 
-type VeggieDict a = VDict
+type alias VeggieDict a = 
     { tomato : Maybe a
     , carrot : Maybe a
     , pepper : Maybe a
     , lettuce : Maybe a
     , cabbage : Maybe a
     , onion : Maybe a
-    , size : Int
     }
 
 type Objective
