@@ -1,8 +1,7 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import Html exposing (Html)
 
 
 
@@ -27,13 +26,13 @@ init = Debug.todo "write meeee"
 type alias Msg = ()
 
 update : Msg -> Model -> Model
-update msg model = Debug.todo "write meeee"
+update _ _ = Debug.todo "write meeee"
 
 
 -- VIEW
 
 view : Model -> Html Msg
-view model = Debug.todo "write meeee"
+view _ = Debug.todo "write meeee"
   -- div []
   --   [ button [ onClick () ] [ text "+" ]
   --   , div [ ] [ text <| String.join ", " <| List.map String.fromInt model.nums ]
