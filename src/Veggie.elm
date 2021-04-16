@@ -1,10 +1,26 @@
-module Veggie exposing (..)
+module Veggie exposing (Veggie(..), VeggieDict, empty, get, insert, size)
 
-import Card exposing (VeggieDict, Veggie(..))
+type Veggie
+    = Tomato
+    | Carrot
+    | Pepper
+    | Lettuce
+    | Cabbage
+    | Onion
+
+type VeggieDict a = VDict
+    { tomato : Maybe a
+    , carrot : Maybe a
+    , pepper : Maybe a
+    , lettuce : Maybe a
+    , cabbage : Maybe a
+    , onion : Maybe a
+    , size : Int
+    }
 
 {-| Returns a new, empty VeggieDict -}
 empty : VeggieDict a
-empty = 
+empty = VDict
     { tomato = Nothing
     , carrot = Nothing
     , pepper = Nothing
@@ -18,7 +34,7 @@ empty =
     replacing what was there before 
  -}
 insert : VeggieDict a -> Veggie -> a -> VeggieDict a
-insert vd k v = 
+insert (VDict vd) k v = VDict <|
     case k of
         Tomato -> { vd | tomato = Just v, size = if vd.tomato == Nothing then vd.size + 1 else vd.size }
         Carrot -> { vd | carrot = Just v, size = if vd.carrot == Nothing then vd.size + 1 else vd.size }
@@ -31,7 +47,7 @@ insert vd k v =
     Nothing otherwise
  -}
 get : VeggieDict a -> Veggie -> Maybe a
-get vd k = 
+get (VDict vd) k = 
     case k of
         Tomato -> vd.tomato
         Carrot -> vd.carrot
@@ -39,3 +55,6 @@ get vd k =
         Lettuce -> vd.lettuce
         Cabbage -> vd.cabbage
         Onion -> vd.onion
+
+size : VeggieDict a -> Int
+size (VDict v) = v.size

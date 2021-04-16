@@ -1,24 +1,8 @@
 module Card exposing (..)
 
+import Veggie exposing (..)
+
 type alias Points = Int
-
-type Veggie
-    = Tomato
-    | Carrot
-    | Pepper
-    | Lettuce
-    | Cabbage
-    | Onion
-
-type alias VeggieDict a = 
-    { tomato : Maybe a
-    , carrot : Maybe a
-    , pepper : Maybe a
-    , lettuce : Maybe a
-    , cabbage : Maybe a
-    , onion : Maybe a
-    , size : Int
-    }
 
 type Objective
     = Combo (List Veggie) Points   -- always len 2, 3, or 6
