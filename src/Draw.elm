@@ -6,20 +6,23 @@ import Utils exposing (unconsOrDie)
 import Game exposing (..)
 import Veggie exposing (Veggie)
 import SideEffect exposing (..)
-import Random exposing (Seed)
 import Tuple exposing (mapFirst, pair)
 
+type alias Seed = Int
+
+{-| A generator of random positive integers -}
+rand : SE Seed Int
+rand = SE (\s ->
+    let ns = modBy 0x7FFFFFFF (s * 16807) 
+    in (ns, ns) )
 
 type alias Draw a = SE (List Card, Seed) a
-
-
--- Actually useful in the app
 
 card : Draw Card
 card = SE (\(cards, seed) -> 
     let
         valid = modBy (List.length cards) << abs
-        (n, ns) = mapFirst valid <| SideEffect.run Random.rand seed
+        (n, ns) = mapFirst valid <| run rand seed
         hd = List.take n cards
         (c, tl) = unconsOrDie "bad card gen" <| List.drop n cards
     in (c, (hd ++ tl, ns)))
