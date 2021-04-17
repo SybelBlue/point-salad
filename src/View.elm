@@ -3,14 +3,13 @@ module View exposing (..)
 import Model exposing (Model)
 import Html exposing (Html)
 import Message exposing (Msg)
+import Html exposing (div)
+import Html exposing (text)
 
-
-
--- VIEW
 
 view : Model -> Html Msg
-view _ = Debug.todo "write meeee"
-  -- div []
-  --   [ button [ onClick () ] [ text "+" ]
-  --   , div [ ] [ text <| String.join ", " <| List.map String.fromInt model.nums ]
-  --   ]
+view model =
+  div []
+    [ div [ ] [ text "Board:" ]
+    , div [ ] [ text <| Debug.toString model.body.board ]
+    ]
