@@ -3,8 +3,6 @@ module Main exposing (..)
 import Browser
 import Html exposing (Html)
 import Model exposing (..)
-import Html exposing (sub)
-import Draw exposing (Seed)
 
 
 
