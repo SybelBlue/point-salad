@@ -8,9 +8,7 @@ import Basics.Extra exposing (uncurry)
 import Utils exposing (withNone)
 import Cards exposing (cards)
 import Message exposing (Msg)
-
-{-| (# of Players, this player's id, start seed) -}
-type alias Flags = (Int, PlayerId, Seed)
+import Flags exposing (Flags)
 
 type alias Model =
     { body : GameBody

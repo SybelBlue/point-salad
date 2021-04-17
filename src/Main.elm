@@ -5,6 +5,7 @@ import Model exposing (..)
 import View exposing (view)
 import Update exposing (update)
 import Message exposing (Msg)
+import Flags exposing (Flags)
 
 
 
