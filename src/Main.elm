@@ -3,6 +3,7 @@ module Main exposing (..)
 import Browser
 import Model exposing (..)
 import View exposing (view)
+import Update exposing (Msg, update)
 
 
 
@@ -16,16 +17,6 @@ main = Browser.element
   , view = view
   , subscriptions = subscriptions
   }
-
-
-
-
--- UPDATE
-
-type alias Msg = ()
-
-update : Msg -> Model -> (Model, Cmd Msg)
-update _ _ = Debug.todo "write meeee"
 
 
 
