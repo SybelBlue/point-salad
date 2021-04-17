@@ -7,6 +7,7 @@ import Card exposing (Card)
 import Basics.Extra exposing (uncurry)
 import Utils exposing (withNone)
 import Cards exposing (cards)
+import Message exposing (Msg)
 
 {-| (# of Players, this player's id, start seed) -}
 type alias Flags = (Int, PlayerId, Seed)
@@ -34,7 +35,7 @@ updateAction fam ga = uncurry fam << run ga
 draw : GameAction Card
 draw = intoAction Draw.card
 
-init : Flags -> (Model, Cmd msg)
+init : Flags -> (Model, Cmd Msg)
 init (playerCount, pid, seed) = 
     let
         (body, seData) = run (gameBody playerCount) (cards, seed)
