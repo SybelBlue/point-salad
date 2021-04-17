@@ -1,9 +1,12 @@
 module Model exposing (..)
-import Game exposing (GameBody, PlayerId)
-import Draw exposing (Draw, Seed)
-import Card exposing (Card)
+
 import SideEffect exposing (..)
+import Game exposing (GameBody, PlayerId)
+import Draw exposing (Draw, Seed, gameBody)
+import Card exposing (Card)
 import Basics.Extra exposing (uncurry)
+import Utils exposing (withNone)
+import Cards exposing (cards)
 
 {-| (# of Players, this player's id, start seed) -}
 type alias Flags = (Int, PlayerId, Seed)
@@ -31,8 +34,8 @@ draw : GameAction Card
 draw = intoAction Draw.card
 
 init : Flags -> (Model, Cmd msg)
-init _ = 
+init (playerCount, pid, seed) = 
     let
-        test = 3
+        (body, seData) = run (gameBody playerCount) (cards, seed)
     in
-        (Debug.todo "write meeee", Cmd.none)
+        withNone { body = body, seData = seData }
