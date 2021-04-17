@@ -5145,7 +5145,7 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $elm$json$Json$Decode$index = _Json_decodeIndex;
+var $elm$json$Json$Decode$field = _Json_decodeField;
 var $author$project$Veggie$Cabbage = {$: 'Cabbage'};
 var $author$project$Veggie$Carrot = {$: 'Carrot'};
 var $author$project$Card$Combo = F2(
@@ -6195,18 +6195,15 @@ var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Utils$withNone = function (x) {
 	return _Utils_Tuple2(x, $elm$core$Platform$Cmd$none);
 };
-var $author$project$Model$init = function (_v0) {
-	var playerCount = _v0.a;
-	var pid = _v0.b;
-	var seed = _v0.c;
-	var _v1 = A2(
+var $author$project$Model$init = function (flags) {
+	var _v0 = A2(
 		$author$project$SideEffect$run,
-		$author$project$Draw$gameBody(playerCount),
-		_Utils_Tuple2($author$project$Cards$cards, seed));
-	var body = _v1.a;
-	var seData = _v1.b;
+		$author$project$Draw$gameBody(flags.playerCount),
+		_Utils_Tuple2($author$project$Cards$cards, flags.seed));
+	var body = _v0.a;
+	var seData = _v0.b;
 	return $author$project$Utils$withNone(
-		{body: body, pid: pid, seData: seData});
+		{body: body, pid: flags.playerId, seData: seData});
 };
 var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -6249,18 +6246,18 @@ var $author$project$Main$main = $elm$browser$Browser$element(
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	A2(
 		$elm$json$Json$Decode$andThen,
-		function (_v0) {
+		function (seed) {
 			return A2(
 				$elm$json$Json$Decode$andThen,
-				function (_v1) {
+				function (playerId) {
 					return A2(
 						$elm$json$Json$Decode$andThen,
-						function (_v2) {
+						function (playerCount) {
 							return $elm$json$Json$Decode$succeed(
-								_Utils_Tuple3(_v0, _v1, _v2));
+								{playerCount: playerCount, playerId: playerId, seed: seed});
 						},
-						A2($elm$json$Json$Decode$index, 2, $elm$json$Json$Decode$int));
+						A2($elm$json$Json$Decode$field, 'playerCount', $elm$json$Json$Decode$int));
 				},
-				A2($elm$json$Json$Decode$index, 1, $elm$json$Json$Decode$int));
+				A2($elm$json$Json$Decode$field, 'playerId', $elm$json$Json$Decode$int));
 		},
-		A2($elm$json$Json$Decode$index, 0, $elm$json$Json$Decode$int)))(0)}});}(this));
+		A2($elm$json$Json$Decode$field, 'seed', $elm$json$Json$Decode$int)))(0)}});}(this));
