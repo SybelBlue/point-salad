@@ -34,8 +34,8 @@ draw : GameAction Card
 draw = intoAction Draw.card
 
 init : Flags -> (Model, Cmd Msg)
-init (playerCount, pid, seed) = 
+init flags = 
     let
-        (body, seData) = run (gameBody playerCount) (cards, seed)
+        (body, seData) = run (gameBody flags.playerCount) (cards, flags.seed)
     in
-        withNone { body = body, seData = seData, pid = pid }
+        withNone { body = body, seData = seData, pid = flags.playerId }
