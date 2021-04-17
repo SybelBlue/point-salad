@@ -5,7 +5,9 @@ import Random exposing (Gen(..), Seed, run)
 import Basics.Extra exposing (uncurry, flip)
 import Tuple exposing (mapFirst, first, pair)
 import Random
-import Html exposing (a)
+import Vector3 exposing (from3)
+import Utils exposing (unconsOrDie)
+import Game exposing (..)
 
 
 type Draw a = Draw (List Card -> Gen (a, List Card))
@@ -43,3 +45,26 @@ liftA2 fabc = ap << fmap fabc
 
 liftA3 : (a -> b -> c -> d) -> Draw a -> Draw b -> Draw c -> Draw d
 liftA3 fabcd da = ap << liftA2 fabcd da
+
+
+-- Actually useful in the app
+
+card : Draw Card
+card = Draw (\cards -> 
+    let
+        valid = modBy (List.length cards) << abs
+        getNth n = 
+            let
+                hd = List.take n cards
+                (c, tl) = unconsOrDie "bad card gen" <| List.drop n cards
+            in (c, hd ++ tl)
+    in Random.fmap (getNth << valid) Random.rand)
+    
+cardPair : Draw (Card, Card)
+cardPair = liftA2 pair card card
+
+aisle : Draw Aisle
+aisle = liftA3 from3 card card card
+
+board : Draw Board
+board = liftA3 from3 aisle aisle aisle
