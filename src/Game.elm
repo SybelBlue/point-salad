@@ -37,6 +37,9 @@ type alias GameBody =
     , board : Board
     }
 
+makePlayers : Int -> Vector6 (Maybe Player)
+makePlayers n = Vector6.initializeFromInt (\i -> if i + 1 < n then Just (newPlayer i) else Nothing)
+
 advancePlayer : GameBody -> GameBody
 advancePlayer game = 
     let

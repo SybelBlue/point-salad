@@ -5,7 +5,7 @@ import Card exposing (Card)
 import SideEffect exposing (..)
 import Basics.Extra exposing (uncurry)
 
-{-| (# of Players, Startseed) -}
+{-| (# of Players, this player's id, start seed) -}
 type alias Flags = (Int, PlayerId, Seed)
 
 type alias Model =

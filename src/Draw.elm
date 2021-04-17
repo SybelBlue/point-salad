@@ -1,12 +1,16 @@
 module Draw exposing (..)
 
-import Card exposing (..)
-import Vector3 exposing (from3)
-import Utils exposing (unconsOrDie)
-import Game exposing (..)
-import Veggie exposing (Veggie)
-import SideEffect exposing (..)
 import Tuple exposing (mapFirst, pair)
+
+import SideEffect exposing (..)
+import Game exposing (..)
+import Vector6 exposing (Index(..))
+import Card exposing (Card)
+import Veggie exposing (Veggie)
+import Utils exposing (unconsOrDie)
+
+import Vector3 exposing (from3)
+import Basics.Extra exposing (flip)
 
 type alias Seed = Int
 
@@ -39,3 +43,11 @@ aisle = liftA3 Game.aisle card veggie veggie
 
 board : Draw Board
 board = liftA3 from3 aisle aisle aisle
+
+gameBody : Int -> Draw GameBody
+gameBody playerCount = flip fmap board <| 
+    \b ->
+        { players = makePlayers playerCount
+        , board = b
+        , playing = Index0 
+        }
