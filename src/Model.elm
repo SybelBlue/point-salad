@@ -14,6 +14,7 @@ type alias Flags = (Int, PlayerId, Seed)
 type alias Model =
     { body : GameBody
     , seData : (List Card, Seed)
+    , pid : PlayerId
     }
 
 type alias GameAction a = SE Model a
@@ -38,4 +39,4 @@ init (playerCount, pid, seed) =
     let
         (body, seData) = run (gameBody playerCount) (cards, seed)
     in
-        withNone { body = body, seData = seData }
+        withNone { body = body, seData = seData, pid = pid }
