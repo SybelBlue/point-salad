@@ -2,7 +2,10 @@ module SideEffect exposing (..)
 import Tuple exposing (mapFirst, pair)
 import Basics.Extra exposing (uncurry)
 
-{-| A monadic generic side effect isolator -}
+{-| A monadic generic side effect isolator 
+
+    (result, nextSideEffect) = run func sideEfect
+-}
 type SE se res = SE (se -> (res, se))
 
 {-| Unwraps a side-effect object -}

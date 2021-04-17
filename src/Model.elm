@@ -1,8 +1,9 @@
 module Model exposing (..)
 import Game exposing (GameBody)
-import Draw exposing (Seed)
+import Draw exposing (Draw, Seed)
 import Card exposing (Card)
 import SideEffect exposing (..)
+import Basics.Extra exposing (uncurry)
 
 type alias Model =
     { body : GameBody
@@ -11,12 +12,20 @@ type alias Model =
 
 type alias GameAction a = SE Model a
 
-draw : GameAction Card
-draw = SE (\model -> 
+intoAction : Draw a -> GameAction a
+intoAction da = SE (\model -> 
         let
-            (c, nse) = run Draw.card model.seData
+            (c, nse) = run da model.seData
         in
             (c, { model | seData = nse }))
 
-init : Model
-init = Debug.todo "write meeee"
+type alias ModelUpdate a = a -> Model -> Model
+
+updateAction : ModelUpdate a -> ModelUpdate (GameAction a)
+updateAction fam ga = uncurry fam << run ga
+
+draw : GameAction Card
+draw = intoAction Draw.card
+
+init : Int -> (Model, Cmd msg)
+init _ = (Debug.todo "write meeee", Cmd.none)
