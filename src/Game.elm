@@ -28,20 +28,17 @@ type Move = Move
 
 type alias Board = Vector3 Aisle
 
-type alias Game = 
+type alias GameBody = 
     { players : Vector6 (Maybe Player)
     , playing : Index
-    , deck : List Card
     , board : Board
-    , seed : Int
     }
 
-nextPlayer : Game -> Game
-nextPlayer game = 
+advancePlayer : GameBody -> GameBody
+advancePlayer game = 
     let
         next = { game | playing = Maybe.withDefault Index0 <| nextIndex game.playing }
     in
         if Vector6.get next.playing next.players == Nothing 
-            then nextPlayer next
+            then advancePlayer next
             else next
-    
