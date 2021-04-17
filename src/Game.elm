@@ -3,6 +3,7 @@ module Game exposing (..)
 import Card exposing (Card)
 import Veggie exposing (Veggie)
 import Vector3 exposing (Vector3)
+import Vector6 exposing (Vector6, Index(..))
 
 type alias Player = 
     { veggies : List Veggie
@@ -28,8 +29,8 @@ type Move = Move
 type alias Board = Vector3 Aisle
 
 type alias Game = 
-    { players : List Player
-    , playing : Int
+    { players : Vector6 (Maybe Player)
+    , playing : Index
     , deck : List Card
     , board : Board
     }
