@@ -8,6 +8,7 @@ import Random
 import Vector3 exposing (from3)
 import Utils exposing (unconsOrDie)
 import Game exposing (..)
+import Veggie exposing (Veggie)
 
 
 type Draw a = Draw (List Card -> Gen (a, List Card))
@@ -59,12 +60,15 @@ card = Draw (\cards ->
                 (c, tl) = unconsOrDie "bad card gen" <| List.drop n cards
             in (c, hd ++ tl)
     in Random.fmap (getNth << valid) Random.rand)
-    
+
+veggie : Draw Veggie
+veggie = fmap Card.veggie card
+
 cardPair : Draw (Card, Card)
 cardPair = liftA2 pair card card
 
 aisle : Draw Aisle
-aisle = liftA3 from3 card card card
+aisle = liftA3 Game.aisle card veggie veggie
 
 board : Draw Board
 board = liftA3 from3 aisle aisle aisle

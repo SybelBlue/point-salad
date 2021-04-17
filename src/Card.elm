@@ -18,3 +18,12 @@ type Objective
 
 
 type Card = Card Int Veggie Objective
+
+id : Card -> Int
+id (Card i _ _) = i
+
+veggie : Card -> Veggie
+veggie (Card _ v _) = v
+
+objective : Card -> Objective
+objective (Card _ _ o) = o
