@@ -2,9 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Html exposing (Html)
-import Draw exposing (Draw)
-import Game exposing (Game)
-import SideEffect
+import Model exposing (..)
 
 
 
@@ -15,19 +13,6 @@ main =
   Browser.sandbox { init = init, update = update, view = view }
 
 
-updateGame : Draw a -> Game -> (a, Game)
-updateGame da game = 
-  let
-      (a, (cards, seed)) = SideEffect.run da (game.deck, game.seed)
-  in (a, { game | seed = seed, deck = cards })
-
-
--- MODEL
-
-type alias Model = ()
-
-init : Model
-init = Debug.todo "write meeee"
 
 
 -- UPDATE
