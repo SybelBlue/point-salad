@@ -1,7 +1,6 @@
 module Card exposing (..)
 
 import Veggie exposing (..)
-import Vector3 exposing (Vector3)
 
 type alias Points = Int
 
@@ -19,5 +18,3 @@ type Objective
 
 
 type Card = Card Int Veggie Objective
-
-type alias Aisle = Vector3 Card
