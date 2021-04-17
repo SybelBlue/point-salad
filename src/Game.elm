@@ -3,7 +3,7 @@ module Game exposing (..)
 import Card exposing (Card)
 import Veggie exposing (Veggie)
 import Vector3 exposing (Vector3)
-import Vector6 exposing (Vector6, Index(..))
+import Vector6 exposing (Vector6, Index(..), nextIndex)
 
 type alias Player = 
     { veggies : List Veggie
@@ -33,4 +33,15 @@ type alias Game =
     , playing : Index
     , deck : List Card
     , board : Board
+    , seed : Int
     }
+
+nextPlayer : Game -> Game
+nextPlayer game = 
+    let
+        next = { game | playing = Maybe.withDefault Index0 <| nextIndex game.playing }
+    in
+        if Vector6.get next.playing next.players == Nothing 
+            then nextPlayer next
+            else next
+    
