@@ -11,7 +11,7 @@ import Draw exposing (Seed)
 -- MAIN
 
 
-main : Program Seed Model Msg
+main : Program Flags Model Msg
 main = Browser.element 
   { init = init
   , update = update

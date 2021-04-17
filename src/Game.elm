@@ -5,13 +5,16 @@ import Veggie exposing (Veggie)
 import Vector3 exposing (Vector3)
 import Vector6 exposing (Vector6, Index(..), nextIndex)
 
+
+type alias PlayerId = Int
+
 type alias Player = 
     { veggies : List Veggie
     , objectiveCards : List Card
-    , id : Int
+    , id : PlayerId
     }
 
-newPlayer : Int -> Player
+newPlayer : PlayerId -> Player
 newPlayer id = 
     { veggies = [], objectiveCards = [], id = id }
 

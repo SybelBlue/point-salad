@@ -1,9 +1,12 @@
 module Model exposing (..)
-import Game exposing (GameBody)
+import Game exposing (GameBody, PlayerId)
 import Draw exposing (Draw, Seed)
 import Card exposing (Card)
 import SideEffect exposing (..)
 import Basics.Extra exposing (uncurry)
+
+{-| (# of Players, Startseed) -}
+type alias Flags = (Int, PlayerId, Seed)
 
 type alias Model =
     { body : GameBody
@@ -27,5 +30,9 @@ updateAction fam ga = uncurry fam << run ga
 draw : GameAction Card
 draw = intoAction Draw.card
 
-init : Int -> (Model, Cmd msg)
-init _ = (Debug.todo "write meeee", Cmd.none)
+init : Flags -> (Model, Cmd msg)
+init _ = 
+    let
+        test = 3
+    in
+        (Debug.todo "write meeee", Cmd.none)
