@@ -15,8 +15,8 @@ run (Gen f) = f
 
 {-| Applies a function across a Gen Monad.
     see Haskell's Functor fmap or (<$>) -}
-map : (a -> b) -> Gen a -> Gen b
-map fab ga = Gen (mapFirst fab << run ga)
+fmap : (a -> b) -> Gen a -> Gen b
+fmap fab ga = Gen (mapFirst fab << run ga)
 
 {-| Applies a function generator across a parameter generator,
     see Haskell's Control.Applicative (<*>) -}
@@ -51,7 +51,7 @@ thenRun gb (a, s) = mapFirst (pair a) <| run gb s
     liftA2 (::) rand (repeated rand 4)
  -}
 liftA2 : (a -> b -> c) -> (Gen a -> Gen b -> Gen c)
-liftA2 fabc = ap << map fabc
+liftA2 fabc = ap << fmap fabc
 
 {-| Sequentially generates from a single generator n times -}
 repeated : Gen a -> Int -> Gen (List a)
