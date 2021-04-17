@@ -1,5 +1,7 @@
 module Veggie exposing (Veggie(..), VeggieDict, empty, get, insert, size)
 
+import Vector6 exposing (Index(..), Vector6)
+
 {-| The basic vegetable types -}
 type Veggie
     = Tomato
@@ -9,26 +11,26 @@ type Veggie
     | Cabbage
     | Onion
 
+toIndex : Veggie -> Index
+toIndex v =
+    case v of
+        Tomato -> Index0
+        Carrot -> Index1
+        Pepper -> Index2
+        Lettuce -> Index3
+        Cabbage -> Index4
+        Onion -> Index5
+
 {-| A type to represent a mapping from Veggie to Value a -}
 type VeggieDict a = VDict
-    { tomato : Maybe a
-    , carrot : Maybe a
-    , pepper : Maybe a
-    , lettuce : Maybe a
-    , cabbage : Maybe a
-    , onion : Maybe a
+    { data : Vector6 (Maybe a)
     , size : Int
     }
 
 {-| Returns a new, empty VeggieDict -}
 empty : VeggieDict a
 empty = VDict
-    { tomato = Nothing
-    , carrot = Nothing
-    , pepper = Nothing
-    , lettuce = Nothing
-    , cabbage = Nothing
-    , onion = Nothing
+    { data = Vector6.repeat Nothing
     , size = 0
     }
 
@@ -36,27 +38,20 @@ empty = VDict
     replacing what was there before 
  -}
 insert : VeggieDict a -> Veggie -> a -> VeggieDict a
-insert (VDict vd) k v = VDict <|
-    case k of
-        Tomato -> { vd | tomato = Just v, size = if vd.tomato == Nothing then vd.size + 1 else vd.size }
-        Carrot -> { vd | carrot = Just v, size = if vd.carrot == Nothing then vd.size + 1 else vd.size }
-        Pepper -> { vd | pepper = Just v, size = if vd.pepper == Nothing then vd.size + 1 else vd.size }
-        Lettuce -> { vd | lettuce = Just v, size = if vd.lettuce == Nothing then vd.size + 1 else vd.size }
-        Cabbage -> { vd | cabbage = Just v, size = if vd.cabbage == Nothing then vd.size + 1 else vd.size }
-        Onion -> { vd | onion = Just v, size = if vd.onion == Nothing then vd.size + 1 else vd.size }
+insert (VDict vd) k v =
+    let
+        i : Index
+        i = toIndex k
+        prev : Maybe a
+        prev = Vector6.get i vd.data
+    in VDict { vd | data = Vector6.set i (Just v) vd.data, size = if prev == Nothing then vd.size + 1 else vd.size }
+    
 
 {-| Gets a value from a VeggieDict using a Veggie key if present,
     Nothing otherwise
  -}
 get : VeggieDict a -> Veggie -> Maybe a
-get (VDict vd) k = 
-    case k of
-        Tomato -> vd.tomato
-        Carrot -> vd.carrot
-        Pepper -> vd.pepper
-        Lettuce -> vd.lettuce
-        Cabbage -> vd.cabbage
-        Onion -> vd.onion
+get (VDict vd) k = Vector6.get (toIndex k) vd.data
 
 {-| Returns the number of entries in this VeggieDict -}
 size : VeggieDict a -> Int
