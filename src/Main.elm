@@ -4,6 +4,7 @@ import Browser
 import Html exposing (Html)
 import Draw exposing (Draw)
 import Game exposing (Game)
+import SideEffect
 
 
 
@@ -17,7 +18,7 @@ main =
 updateGame : Draw a -> Game -> (a, Game)
 updateGame da game = 
   let
-      ((a, cards), seed) = Draw.runUsing da game.deck game.seed
+      (a, (cards, seed)) = SideEffect.run da (game.deck, game.seed)
   in (a, { game | seed = seed, deck = cards })
 
 
