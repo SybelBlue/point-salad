@@ -6214,31 +6214,77 @@ var $author$project$Main$subscriptions = function (_v0) {
 var $author$project$Update$update = function (_v0) {
 	return A2($elm$core$Basics$composeL, $author$project$Utils$withNone, $elm$core$Basics$identity);
 };
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$html$Html$p = _VirtualDom_node('p');
+var $elm$core$List$singleton = function (value) {
+	return _List_fromArray(
+		[value]);
+};
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$core$Debug$toString = _Debug_toString;
+var $author$project$View$aisle = function (_v0) {
+	var c = _v0.a;
+	var _v1 = _v0.b;
+	var v0 = _v1.a;
+	var v1 = _v1.b;
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('column')
+			]),
+		A2(
+			$elm$core$List$map,
+			A2(
+				$elm$core$Basics$composeL,
+				A2(
+					$elm$core$Basics$composeL,
+					$elm$html$Html$p(_List_Nil),
+					$elm$core$List$singleton),
+				$elm$html$Html$text),
+			_List_fromArray(
+				[
+					$elm$core$Debug$toString(c),
+					$elm$core$Debug$toString(v0),
+					$elm$core$Debug$toString(v1)
+				])));
+};
+var $Chadtech$elm_vector$Vector3$toList = function (_v0) {
+	var vector = _v0.a;
+	return _List_fromArray(
+		[vector.n0, vector.n1, vector.n2]);
+};
+var $author$project$View$mapToList = function (f) {
+	return A2(
+		$elm$core$Basics$composeL,
+		$elm$core$List$map(f),
+		$Chadtech$elm_vector$Vector3$toList);
+};
+var $author$project$View$board = A2(
+	$elm$core$Basics$composeL,
+	$elm$html$Html$div(
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('row')
+			])),
+	$author$project$View$mapToList($author$project$View$aisle));
 var $author$project$View$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
 		_List_fromArray(
 			[
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Board:')
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						$elm$core$Debug$toString(model.body.board))
-					]))
+				$author$project$View$board(model.body.board)
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
