@@ -6261,6 +6261,33 @@ var $author$project$View$getVeggieImgPath = function (v) {
 		$author$project$Veggie$toString(v)) + '.jpeg');
 };
 var $elm$html$Html$img = _VirtualDom_node('img');
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$List$singleton = function (value) {
+	return _List_fromArray(
+		[value]);
+};
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Utils$maybeAsList = A2(
+	$elm$core$Basics$composeL,
+	$elm$core$Maybe$withDefault(_List_Nil),
+	$elm$core$Maybe$map($elm$core$List$singleton));
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6288,16 +6315,18 @@ var $author$project$View$getVeggieImg = F3(
 	function (v, big, m) {
 		return A2(
 			$elm$html$Html$img,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class(
-					'veggie ' + (big ? 'big' : 'small')),
-					$elm$html$Html$Attributes$src(
-					$author$project$View$getVeggieImgPath(v)),
-					$elm$html$Html$Attributes$alt(
-					$author$project$Veggie$toString(v)),
-					$elm$html$Html$Events$onClick(m)
-				]),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class(
+						'veggie ' + (big ? 'big' : 'small')),
+						$elm$html$Html$Attributes$src(
+						$author$project$View$getVeggieImgPath(v)),
+						$elm$html$Html$Attributes$alt(
+						$author$project$Veggie$toString(v))
+					]),
+				$author$project$Utils$maybeAsList(
+					A2($elm$core$Maybe$map, $elm$html$Html$Events$onClick, m))),
 			_List_Nil);
 	});
 var $elm$core$List$maybeCons = F3(
@@ -6326,16 +6355,6 @@ var $author$project$Veggie$get = F2(
 			$author$project$Veggie$toIndex(k),
 			vd.data);
 	});
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $elm$core$Tuple$pair = F2(
 	function (a, b) {
 		return _Utils_Tuple2(a, b);
@@ -6362,20 +6381,27 @@ var $author$project$Veggie$entries = function (d) {
 		},
 		$Chadtech$elm_vector$Vector6$toList($author$project$Veggie$veggies));
 };
-var $elm$core$List$singleton = function (value) {
-	return _List_fromArray(
-		[value]);
-};
+var $elm$html$Html$span = _VirtualDom_node('span');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$View$objective = F2(
 	function (obj, msg) {
+		var toString = A2($elm$core$Basics$composeL, $elm$core$String$toLower, $author$project$Veggie$toString);
+		var singleText = A2(
+			$elm$core$Basics$composeL,
+			A2(
+				$elm$core$Basics$composeL,
+				A2(
+					$elm$core$Basics$composeL,
+					$elm$core$List$singleton,
+					$elm$html$Html$span(_List_Nil)),
+				$elm$core$List$singleton),
+			$elm$html$Html$text);
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('objective'),
-					$elm$html$Html$Events$onClick(msg)
+					$elm$html$Html$Attributes$class('objective')
 				]),
 			function () {
 				switch (obj.$) {
@@ -6391,22 +6417,18 @@ var $author$project$View$objective = F2(
 									A2(
 										$elm$core$List$map,
 										function (v) {
-											return A3($author$project$View$getVeggieImg, v, false, msg);
+											return A3($author$project$View$getVeggieImg, v, false, $elm$core$Maybe$Nothing);
 										},
 										vs),
-									_List_fromArray(
-										[
-											$elm$html$Html$text(
-											' = ' + $elm$core$String$fromInt(ps))
-										])))
+									singleText(
+										' = ' + $elm$core$String$fromInt(ps))))
 							]);
 					case 'Stacked':
 						var v = obj.a;
 						var n = obj.b;
 						var p = obj.c;
-						return $elm$core$List$singleton(
-							$elm$html$Html$text(
-								$elm$core$String$fromInt(p) + (' / ' + ($elm$core$String$fromInt(n) + (' ' + ($author$project$Veggie$toString(v) + 's'))))));
+						return singleText(
+							$elm$core$String$fromInt(p) + (' / ' + ($elm$core$String$fromInt(n) + (' ' + (toString(v) + 's')))));
 					case 'Items':
 						var vdict = obj.a;
 						return A2(
@@ -6415,57 +6437,47 @@ var $author$project$View$objective = F2(
 								$elm$core$Basics$composeL,
 								A2(
 									$elm$core$Basics$composeL,
-									A2(
-										$elm$core$Basics$composeL,
-										$elm$html$Html$div(_List_Nil),
-										$elm$core$List$singleton),
-									$elm$html$Html$text),
+									$elm$html$Html$div(_List_Nil),
+									singleText),
 								function (_v1) {
 									var v = _v1.a;
 									var p = _v1.b;
-									return $elm$core$String$fromInt(p) + (' / ' + $author$project$Veggie$toString(v));
+									return $elm$core$String$fromInt(p) + (' / ' + toString(v));
 								}),
 							$author$project$Veggie$entries(vdict));
 					case 'Most':
 						var v = obj.a;
 						var p = obj.b;
-						return $elm$core$List$singleton(
-							$elm$html$Html$text(
-								'most ' + ($author$project$Veggie$toString(v) + (' = ' + $elm$core$String$fromInt(p)))));
+						return singleText(
+							'most ' + (toString(v) + (' = ' + $elm$core$String$fromInt(p))));
 					case 'Fewest':
 						var v = obj.a;
 						var p = obj.b;
-						return $elm$core$List$singleton(
-							$elm$html$Html$text(
-								'fewest ' + ($author$project$Veggie$toString(v) + (' = ' + $elm$core$String$fromInt(p)))));
+						return singleText(
+							'fewest ' + (toString(v) + (' = ' + $elm$core$String$fromInt(p))));
 					case 'MostTotal':
 						var p = obj.a;
-						return $elm$core$List$singleton(
-							$elm$html$Html$text(
-								'most veggies = ' + $elm$core$String$fromInt(p)));
+						return singleText(
+							'most veggies = ' + $elm$core$String$fromInt(p));
 					case 'FewestTotal':
 						var p = obj.a;
-						return $elm$core$List$singleton(
-							$elm$html$Html$text(
-								'fewest veggies = ' + $elm$core$String$fromInt(p)));
+						return singleText(
+							'fewest veggies = ' + $elm$core$String$fromInt(p));
 					case 'PerTypeWith':
 						var n = obj.a;
 						var p = obj.b;
-						return $elm$core$List$singleton(
-							$elm$html$Html$text(
-								$elm$core$String$fromInt(p) + (' / veggie with ' + ($elm$core$String$fromInt(n) + '+'))));
+						return singleText(
+							$elm$core$String$fromInt(p) + (' / veggie with ' + ($elm$core$String$fromInt(n) + '+')));
 					case 'PerMissing':
 						var p = obj.a;
-						return $elm$core$List$singleton(
-							$elm$html$Html$text(
-								$elm$core$String$fromInt(p) + ' / missing veggie'));
+						return singleText(
+							$elm$core$String$fromInt(p) + ' / missing veggie');
 					default:
 						var v = obj.a;
 						var e = obj.b;
 						var o = obj.c;
-						return $elm$core$List$singleton(
-							$elm$html$Html$text(
-								'even ' + ($author$project$Veggie$toString(v) + ('s = ' + ($elm$core$String$fromInt(e) + (', odd' + ($author$project$Veggie$toString(v) + ('s = ' + $elm$core$String$fromInt(o)))))))));
+						return singleText(
+							'even ' + (toString(v) + ('s = ' + ($elm$core$String$fromInt(e) + (', odd' + (toString(v) + ('s = ' + $elm$core$String$fromInt(o))))))));
 				}
 			}());
 	});
@@ -6495,7 +6507,7 @@ var $author$project$View$card = F2(
 				]),
 			_List_fromArray(
 				[
-					A3($author$project$View$getVeggieImg, veg, false, m),
+					A3($author$project$View$getVeggieImg, veg, false, $elm$core$Maybe$Nothing),
 					A2($author$project$View$objective, obj, m)
 				]));
 	});
@@ -6520,22 +6532,24 @@ var $author$project$View$aisle = F2(
 					$author$project$View$getVeggieImg,
 					v0,
 					true,
-					$author$project$Message$Selected(
-						{
-							aisle: i,
-							item: $elm$core$Result$Ok(
-								{first: true, veggie: v0})
-						})),
+					$elm$core$Maybe$Just(
+						$author$project$Message$Selected(
+							{
+								aisle: i,
+								item: $elm$core$Result$Ok(
+									{first: true, veggie: v0})
+							}))),
 					A3(
 					$author$project$View$getVeggieImg,
 					v1,
 					true,
-					$author$project$Message$Selected(
-						{
-							aisle: i,
-							item: $elm$core$Result$Ok(
-								{first: false, veggie: v1})
-						}))
+					$elm$core$Maybe$Just(
+						$author$project$Message$Selected(
+							{
+								aisle: i,
+								item: $elm$core$Result$Ok(
+									{first: false, veggie: v1})
+							})))
 				]));
 	});
 var $Chadtech$elm_vector$Vector3$Index0 = {$: 'Index0'};

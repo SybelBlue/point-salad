@@ -8,3 +8,6 @@ unconsOrDie msg ls =
 
 withNone : a -> (a, Cmd msg)
 withNone x = (x, Cmd.none)
+
+maybeAsList : Maybe a -> List a
+maybeAsList = Maybe.withDefault [] << Maybe.map List.singleton
