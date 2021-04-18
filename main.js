@@ -6216,9 +6216,14 @@ var $elm$core$Debug$toString = _Debug_toString;
 var $author$project$Update$update = function (m) {
 	return A2(
 		$elm$core$Basics$composeL,
-		A2($elm$core$Basics$composeL, $author$project$Utils$withNone, $elm$core$Basics$identity),
-		$elm$core$Debug$log(
-			$elm$core$Debug$toString(m)));
+		$author$project$Utils$withNone,
+		function () {
+			var s = m.a;
+			return A2(
+				$elm$core$Debug$log,
+				$elm$core$Debug$toString(s),
+				$elm$core$Basics$identity);
+		}());
 };
 var $author$project$Message$Selected = function (a) {
 	return {$: 'Selected', a: a};
