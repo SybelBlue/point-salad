@@ -6225,6 +6225,9 @@ var $author$project$Update$update = function (m) {
 				$elm$core$Basics$identity);
 		}());
 };
+var $author$project$Either$Right = function (a) {
+	return {$: 'Right', a: a};
+};
 var $author$project$Message$Selected = function (a) {
 	return {$: 'Selected', a: a};
 };
@@ -6336,9 +6339,6 @@ var $author$project$Card$objective = function (_v0) {
 };
 var $author$project$Either$Left = function (a) {
 	return {$: 'Left', a: a};
-};
-var $author$project$Either$Right = function (a) {
-	return {$: 'Right', a: a};
 };
 var $elm$core$List$append = F2(
 	function (xs, ys) {
@@ -6461,7 +6461,6 @@ var $elm$html$Html$span = _VirtualDom_node('span');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$View$objective = function (obj) {
-	var toString = A2($elm$core$Basics$composeL, $elm$core$String$toLower, $author$project$Veggie$toString);
 	var spandext = A2(
 		$elm$core$Basics$composeL,
 		A2(
@@ -6602,7 +6601,7 @@ var $author$project$Message$selectObjective = F2(
 		return $author$project$Message$Selected(
 			{
 				aisle: i,
-				item: $elm$core$Result$Err(c)
+				item: $author$project$Either$Left(c)
 			});
 	});
 var $author$project$View$card = F2(
@@ -6652,7 +6651,7 @@ var $author$project$View$aisle = F2(
 						$author$project$Message$Selected(
 							{
 								aisle: i,
-								item: $elm$core$Result$Ok(
+								item: $author$project$Either$Right(
 									{first: true, veggie: v0})
 							}))),
 					A3(
@@ -6663,7 +6662,7 @@ var $author$project$View$aisle = F2(
 						$author$project$Message$Selected(
 							{
 								aisle: i,
-								item: $elm$core$Result$Ok(
+								item: $author$project$Either$Right(
 									{first: false, veggie: v1})
 							})))
 				]));

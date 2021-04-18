@@ -77,8 +77,8 @@ aisle i (c, (v0, v1)) =
     [ class "column" ] 
     [ card i c
     , hr [] []
-    , getVeggieImg v0 True <| Just <| Message.Selected { item = Ok { veggie = v0, first = True }, aisle = i }
-    , getVeggieImg v1 True <| Just <| Message.Selected { item = Ok { veggie = v1, first = False }, aisle = i }
+    , getVeggieImg v0 True <| Just <| Message.Selected { item = Right { veggie = v0, first = True }, aisle = i }
+    , getVeggieImg v1 True <| Just <| Message.Selected { item = Right { veggie = v1, first = False }, aisle = i }
     ]
 
 board : Board -> Html Msg
