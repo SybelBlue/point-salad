@@ -6300,6 +6300,7 @@ var $author$project$View$getVeggieImg = F3(
 				]),
 			_List_Nil);
 	});
+var $elm$html$Html$hr = _VirtualDom_node('hr');
 var $elm$html$Html$p = _VirtualDom_node('p');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
@@ -6319,12 +6320,16 @@ var $author$project$View$aisle = F2(
 				[
 					A2(
 					$elm$html$Html$p,
-					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('objective')
+						]),
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
 							$elm$core$Debug$toString(c))
 						])),
+					A2($elm$html$Html$hr, _List_Nil, _List_Nil),
 					A3(
 					$author$project$View$getVeggieImg,
 					v0,

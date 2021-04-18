@@ -1,6 +1,6 @@
 module View exposing (view)
 
-import Html exposing (Html, div, p, text, img)
+import Html exposing (..)
 import Html.Attributes exposing (..)
 
 import Vector3 exposing (Index, indexedMap)
@@ -29,7 +29,8 @@ aisle : Index -> Aisle -> Html Msg
 aisle i (c, (v0, v1)) = 
   div 
     [ class "column" ] 
-    [ p [] [ text <| Debug.toString c ]
+    [ p [ class "objective" ] [ text <| Debug.toString c ]
+    , hr [] []
     , getVeggieImg v0 True <| Message.Selected { item = Ok { veggie = v0, first = True }, aisle = i }
     , getVeggieImg v1 True <| Message.Selected { item = Ok { veggie = v1, first = False }, aisle = i }
     ]
