@@ -6340,6 +6340,22 @@ var $author$project$Either$Left = function (a) {
 var $author$project$Either$Right = function (a) {
 	return {$: 'Right', a: a};
 };
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$List$concat = function (lists) {
+	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+};
+var $elm$core$List$concatMap = F2(
+	function (f, list) {
+		return $elm$core$List$concat(
+			A2($elm$core$List$map, f, list));
+	});
 var $author$project$Either$either = F3(
 	function (f, g, e) {
 		if (e.$ === 'Left') {
@@ -6402,6 +6418,24 @@ var $author$project$Veggie$entries = function (d) {
 		},
 		$Chadtech$elm_vector$Vector6$toList($author$project$Veggie$veggies));
 };
+var $elm$core$List$intersperse = F2(
+	function (sep, xs) {
+		if (!xs.b) {
+			return _List_Nil;
+		} else {
+			var hd = xs.a;
+			var tl = xs.b;
+			var step = F2(
+				function (x, rest) {
+					return A2(
+						$elm$core$List$cons,
+						sep,
+						A2($elm$core$List$cons, x, rest));
+				});
+			var spersed = A3($elm$core$List$foldr, step, _List_Nil, tl);
+			return A2($elm$core$List$cons, hd, spersed);
+		}
+	});
 var $elm$core$List$repeatHelp = F3(
 	function (result, n, value) {
 		repeatHelp:
@@ -6461,9 +6495,12 @@ var $author$project$View$objective = function (obj) {
 					return fromSeq(
 						_Utils_ap(
 							A2(
-								$elm$core$List$map,
-								A2($elm$core$Basics$composeL, $author$project$Either$Right, simpleVeggieImg),
-								vs),
+								$elm$core$List$intersperse,
+								$author$project$Either$Left(' + '),
+								A2(
+									$elm$core$List$map,
+									A2($elm$core$Basics$composeL, $author$project$Either$Right, simpleVeggieImg),
+									vs)),
 							_List_fromArray(
 								[
 									$author$project$Either$Left(
@@ -6476,9 +6513,12 @@ var $author$project$View$objective = function (obj) {
 					return fromSeq(
 						_Utils_ap(
 							A2(
-								$elm$core$List$map,
-								A2($elm$core$Basics$composeL, $author$project$Either$Right, simpleVeggieImg),
-								A2($elm$core$List$repeat, n, v)),
+								$elm$core$List$intersperse,
+								$author$project$Either$Left(' + '),
+								A2(
+									$elm$core$List$map,
+									A2($elm$core$Basics$composeL, $author$project$Either$Right, simpleVeggieImg),
+									A2($elm$core$List$repeat, n, v))),
 							_List_fromArray(
 								[
 									$author$project$Either$Left(
@@ -6486,20 +6526,21 @@ var $author$project$View$objective = function (obj) {
 								])));
 				case 'Items':
 					var vdict = obj.a;
-					return A2(
-						$elm$core$List$map,
+					return fromSeq(
 						A2(
-							$elm$core$Basics$composeL,
-							A2(
-								$elm$core$Basics$composeL,
-								$elm$html$Html$div(_List_Nil),
-								singleText),
+							$elm$core$List$concatMap,
 							function (_v1) {
 								var v = _v1.a;
 								var p = _v1.b;
-								return $elm$core$String$fromInt(p) + (' / ' + toString(v));
-							}),
-						$author$project$Veggie$entries(vdict));
+								return _List_fromArray(
+									[
+										$author$project$Either$Left(
+										$elm$core$String$fromInt(p) + ' / '),
+										$author$project$Either$Right(
+										simpleVeggieImg(v))
+									]);
+							},
+							$author$project$Veggie$entries(vdict)));
 				case 'Most':
 					var v = obj.a;
 					var p = obj.b;

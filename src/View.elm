@@ -41,11 +41,11 @@ objective obj =
     div [ class "objective" ] <|
       case obj of
         Combo vs p -> 
-          fromSeq <| List.map (Right << simpleVeggieImg) vs ++ [ Left <| " = " ++ fromInt p ]
+          fromSeq <| (List.intersperse (Left " + ") <| List.map (Right << simpleVeggieImg) vs) ++ [ Left <| " = " ++ fromInt p ]
         Stacked v n p -> 
-          fromSeq <| List.map (Right << simpleVeggieImg) (List.repeat n v) ++ [ Left <| " = " ++ fromInt p ]
+          fromSeq <| (List.intersperse (Left " + ") <| List.map (Right << simpleVeggieImg) (List.repeat n v)) ++ [ Left <| " = " ++ fromInt p ]
         Items vdict -> 
-          List.map (div [] << singleText << \(v, p) -> fromInt p ++ " / " ++ toString v) (Veggie.entries vdict)
+          fromSeq <| List.concatMap (\(v, p) -> [ Left <| fromInt p ++ " / ", Right <| simpleVeggieImg v ]) (Veggie.entries vdict)
         Most v p -> 
           fromSeq [Left "most", Right <| simpleVeggieImg v, Left <| "= " ++ fromInt p ]
         Fewest v p -> 
@@ -59,7 +59,7 @@ objective obj =
         PerMissing p -> 
           singleText <| fromInt p ++ " / missing veggie"
         EvenOdd v e o -> 
-          fromSeq <| [ Right <| simpleVeggieImg v, Left <| ": even = " ++ fromInt e ++ "; odd = " ++ fromInt o ]
+          fromSeq [ Right <| simpleVeggieImg v, Left <| ": even = " ++ fromInt e ++ "; odd = " ++ fromInt o ]
 
 card : Index -> Card -> Html Msg
 card i c =
