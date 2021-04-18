@@ -74,10 +74,10 @@ givePlayerPicked pid ecv body =
         Nothing -> body
         Just oldPlayer ->
             let
-                newPlayer = either 
+                nplayer = either 
                         (\c p -> { p | objectiveCards = c :: p.objectiveCards })
                         (\v p -> { p | veggies = v :: p.veggies })
                         ecv
                         oldPlayer
-            in { body | players = Vector6.set pid (Just newPlayer) body.players }
+            in { body | players = Vector6.set pid (Just nplayer) body.players }
     
