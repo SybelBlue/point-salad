@@ -4,12 +4,13 @@ import SideEffect exposing (..)
 import Game exposing (GameBody, PlayerId)
 import Draw exposing (Draw, Seed, gameBody)
 import Card exposing (Card)
-import Basics.Extra exposing (uncurry)
 import Utils exposing (withNone)
 import Cards exposing (cards)
 import Message exposing (Msg)
 import Flags exposing (Flags)
 import Message exposing (Selection)
+import Tuple exposing (pair)
+import Vector6
 
 type alias Model =
     { body : GameBody
@@ -29,8 +30,11 @@ intoAction da = SE (\model ->
 
 type alias ModelUpdate a = a -> Model -> Model
 
-updateAction : ModelUpdate a -> ModelUpdate (GameAction a)
-updateAction fam ga = uncurry fam << run ga
+fromUpdate : ModelUpdate a -> (a -> GameAction ())
+fromUpdate famm a = SE (pair () << famm a)
+
+bindUpdate : GameAction a -> ModelUpdate a -> GameAction ()
+bindUpdate ga = bind ga << fromUpdate
 
 draw : GameAction Card
 draw = intoAction Draw.card
@@ -39,5 +43,6 @@ init : Flags -> (Model, Cmd Msg)
 init flags = 
     let
         (body, seData) = run (gameBody flags.playerCount) (cards, flags.seed)
+        pid = Maybe.withDefault Vector6.Index0 (Vector6.intToIndex flags.rawPlayerId)
     in
-        withNone { body = body, seData = seData, pid = flags.playerId, selected = Nothing }
+        withNone { body = body, seData = seData, pid = pid, selected = Nothing }

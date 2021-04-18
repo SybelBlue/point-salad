@@ -5146,6 +5146,7 @@ var $elm$core$Task$perform = F2(
 	});
 var $elm$browser$Browser$element = _Browser_element;
 var $elm$json$Json$Decode$field = _Json_decodeField;
+var $Chadtech$elm_vector$Vector6$Index0 = {$: 'Index0'};
 var $author$project$Veggie$Cabbage = {$: 'Cabbage'};
 var $author$project$Veggie$Carrot = {$: 'Carrot'};
 var $author$project$Card$Combo = F2(
@@ -5269,7 +5270,6 @@ var $Chadtech$elm_vector$Vector6$set = F3(
 						{n5: a}));
 		}
 	});
-var $Chadtech$elm_vector$Vector6$Index0 = {$: 'Index0'};
 var $Chadtech$elm_vector$Vector6$Index1 = {$: 'Index1'};
 var $Chadtech$elm_vector$Vector6$Index2 = {$: 'Index2'};
 var $Chadtech$elm_vector$Vector6$Index3 = {$: 'Index3'};
@@ -5879,9 +5879,7 @@ var $author$project$Cards$cards = A2(
 		]));
 var $author$project$Game$aisle = F3(
 	function (c, v0, v1) {
-		return _Utils_Tuple2(
-			c,
-			_Utils_Tuple2(v0, v1));
+		return _Utils_Tuple3(c, v0, v1);
 	});
 var $author$project$SideEffect$SE = function (a) {
 	return {$: 'SE', a: a};
@@ -6156,24 +6154,42 @@ var $elm_community$basics_extra$Basics$Extra$flip = F3(
 	function (f, b, a) {
 		return A2(f, a, b);
 	});
-var $Chadtech$elm_vector$Vector6$initializeFromInt = function (f) {
+var $Chadtech$elm_vector$Vector6$indexToInt = function (index) {
+	switch (index.$) {
+		case 'Index0':
+			return 0;
+		case 'Index1':
+			return 1;
+		case 'Index2':
+			return 2;
+		case 'Index3':
+			return 3;
+		case 'Index4':
+			return 4;
+		default:
+			return 5;
+	}
+};
+var $Chadtech$elm_vector$Vector6$initializeFromIndex = function (f) {
 	return $Chadtech$elm_vector$Vector6$Internal$Vector(
 		{
-			n0: f(0),
-			n1: f(1),
-			n2: f(2),
-			n3: f(3),
-			n4: f(4),
-			n5: f(5)
+			n0: f($Chadtech$elm_vector$Vector6$Index0),
+			n1: f($Chadtech$elm_vector$Vector6$Index1),
+			n2: f($Chadtech$elm_vector$Vector6$Index2),
+			n3: f($Chadtech$elm_vector$Vector6$Index3),
+			n4: f($Chadtech$elm_vector$Vector6$Index4),
+			n5: f($Chadtech$elm_vector$Vector6$Index5)
 		});
 };
 var $author$project$Game$newPlayer = function (id) {
 	return {id: id, objectiveCards: _List_Nil, veggies: _List_Nil};
 };
 var $author$project$Game$makePlayers = function (n) {
-	return $Chadtech$elm_vector$Vector6$initializeFromInt(
+	return $Chadtech$elm_vector$Vector6$initializeFromIndex(
 		function (i) {
-			return (_Utils_cmp(i + 1, n) < 0) ? $elm$core$Maybe$Just(
+			return (_Utils_cmp(
+				$Chadtech$elm_vector$Vector6$indexToInt(i) + 1,
+				n) < 0) ? $elm$core$Maybe$Just(
 				$author$project$Game$newPlayer(i)) : $elm$core$Maybe$Nothing;
 		});
 };
@@ -6190,12 +6206,43 @@ var $author$project$Draw$gameBody = function (playerCount) {
 			};
 		});
 };
+var $Chadtech$elm_vector$Vector6$intToIndex = function (_int) {
+	switch (_int) {
+		case 0:
+			return $elm$core$Maybe$Just($Chadtech$elm_vector$Vector6$Index0);
+		case 1:
+			return $elm$core$Maybe$Just($Chadtech$elm_vector$Vector6$Index1);
+		case 2:
+			return $elm$core$Maybe$Just($Chadtech$elm_vector$Vector6$Index2);
+		case 3:
+			return $elm$core$Maybe$Just($Chadtech$elm_vector$Vector6$Index3);
+		case 4:
+			return $elm$core$Maybe$Just($Chadtech$elm_vector$Vector6$Index4);
+		case 5:
+			return $elm$core$Maybe$Just($Chadtech$elm_vector$Vector6$Index5);
+		default:
+			return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Utils$withNone = function (x) {
 	return _Utils_Tuple2(x, $elm$core$Platform$Cmd$none);
 };
 var $author$project$Model$init = function (flags) {
+	var pid = A2(
+		$elm$core$Maybe$withDefault,
+		$Chadtech$elm_vector$Vector6$Index0,
+		$Chadtech$elm_vector$Vector6$intToIndex(flags.rawPlayerId));
 	var _v0 = A2(
 		$author$project$SideEffect$run,
 		$author$project$Draw$gameBody(flags.playerCount),
@@ -6203,7 +6250,7 @@ var $author$project$Model$init = function (flags) {
 	var body = _v0.a;
 	var seData = _v0.b;
 	return $author$project$Utils$withNone(
-		{body: body, pid: flags.playerId, seData: seData, selected: $elm$core$Maybe$Nothing});
+		{body: body, pid: pid, seData: seData, selected: $elm$core$Maybe$Nothing});
 };
 var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -6309,15 +6356,6 @@ var $elm$core$List$singleton = function (value) {
 	return _List_fromArray(
 		[value]);
 };
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
 var $author$project$Utils$maybeAsList = A2(
 	$elm$core$Basics$composeL,
 	$elm$core$Maybe$withDefault(_List_Nil),
@@ -6660,9 +6698,8 @@ var $elm$html$Html$hr = _VirtualDom_node('hr');
 var $author$project$View$aisle = F2(
 	function (i, _v0) {
 		var c = _v0.a;
-		var _v1 = _v0.b;
-		var v0 = _v1.a;
-		var v1 = _v1.b;
+		var v0 = _v0.b;
+		var v1 = _v0.c;
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -6743,15 +6780,15 @@ _Platform_export({'Main':{'init':$author$project$Main$main(
 		function (seed) {
 			return A2(
 				$elm$json$Json$Decode$andThen,
-				function (playerId) {
+				function (rawPlayerId) {
 					return A2(
 						$elm$json$Json$Decode$andThen,
 						function (playerCount) {
 							return $elm$json$Json$Decode$succeed(
-								{playerCount: playerCount, playerId: playerId, seed: seed});
+								{playerCount: playerCount, rawPlayerId: rawPlayerId, seed: seed});
 						},
 						A2($elm$json$Json$Decode$field, 'playerCount', $elm$json$Json$Decode$int));
 				},
-				A2($elm$json$Json$Decode$field, 'playerId', $elm$json$Json$Decode$int));
+				A2($elm$json$Json$Decode$field, 'rawPlayerId', $elm$json$Json$Decode$int));
 		},
 		A2($elm$json$Json$Decode$field, 'seed', $elm$json$Json$Decode$int)))(0)}});}(this));

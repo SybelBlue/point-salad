@@ -1,10 +1,19 @@
 module Update exposing (..)
 
 import Model exposing (Model)
-import Message exposing (Msg)
+import Message exposing (Msg(..), Selection)
 import Utils exposing (withNone)
-import Message exposing (Msg(..))
 import Either exposing (isLeft)
+import Card exposing (Card)
+import Model exposing (ModelUpdate)
+import Game exposing (swapCard)
+
+replacePickedCard : Selection -> ModelUpdate Card
+replacePickedCard selection replacement model = 
+    let
+        newBody = swapCard selection replacement model.body
+    in
+        Debug.todo "ret model"
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update (Selected s) model = withNone <| 
