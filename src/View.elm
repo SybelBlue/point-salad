@@ -1,15 +1,15 @@
 module View exposing (view)
 
-import Model exposing (Model)
-import Html exposing (Html)
-import Message exposing (Msg)
-import Html exposing (div, p, text, img)
-import Game exposing (Board)
-import Vector3
-import Veggie exposing (Veggie)
+import Html exposing (Html, div, p, text, img)
 import Html.Attributes exposing (..)
+
+import Vector3
+
+import Model exposing (Model)
+import Message exposing (Msg)
+import Game exposing (Board)
+import Veggie exposing (Veggie)
 import Game exposing (Aisle)
-import List exposing (singleton)
 
 mapToList : (a -> b) -> Vector3.Vector3 a -> List b
 mapToList f = List.map f << Vector3.toList
@@ -17,7 +17,7 @@ mapToList f = List.map f << Vector3.toList
 getVeggieImgPath : Veggie -> String
 getVeggieImgPath v = "res/" ++ String.toLower (Veggie.toString v) ++ ".jpeg"
 
-getVeggieImg : Veggie -> Bool -> Html msg
+getVeggieImg : Veggie -> Bool -> Html Msg
 getVeggieImg v big = 
   img 
     [ class <| "veggie " ++ if big then "big" else "small"
