@@ -6259,9 +6259,8 @@ var $author$project$View$getVeggieImg = F2(
 			$elm$html$Html$img,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('veggie'),
 					$elm$html$Html$Attributes$class(
-					big ? 'big' : 'small'),
+					'veggie ' + (big ? 'big' : 'small')),
 					$elm$html$Html$Attributes$src(
 					$author$project$View$getVeggieImgPath(v)),
 					$elm$html$Html$Attributes$alt(

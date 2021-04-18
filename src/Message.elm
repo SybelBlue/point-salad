@@ -1,3 +1,5 @@
 module Message exposing (..)
+import Vector3
 
-type alias Msg = ()
+type Msg 
+    = Selected Vector3.Index (Maybe Bool)
