@@ -1,4 +1,4 @@
-module Veggie exposing (Veggie(..), VeggieDict, empty, get, insert, size)
+module Veggie exposing (Veggie(..), VeggieDict, empty, get, insert, size, toString, toInt)
 
 import Vector6 exposing (Index(..), Vector6)
 
@@ -10,6 +10,27 @@ type Veggie
     | Lettuce
     | Cabbage
     | Onion
+
+toString : Veggie -> String
+toString v = 
+  case v of
+    Cabbage -> "Cabbage"
+    Tomato -> "Tomato"
+    Carrot -> "Carrot"
+    Pepper -> "Pepper"
+    Lettuce -> "Lettuce"
+    Onion -> "Onion"
+
+{-| Converts a veggie to a unique int -}
+toInt : Veggie -> Int
+toInt v =
+    case v of
+        Tomato -> 0
+        Carrot -> 1
+        Pepper -> 2
+        Lettuce -> 3
+        Cabbage -> 4
+        Onion -> 5
 
 toIndex : Veggie -> Index
 toIndex v =

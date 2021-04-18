@@ -6224,11 +6224,52 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$div = _VirtualDom_node('div');
-var $elm$html$Html$p = _VirtualDom_node('p');
-var $elm$core$List$singleton = function (value) {
-	return _List_fromArray(
-		[value]);
+var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
+var $elm$core$String$toLower = _String_toLower;
+var $author$project$Veggie$toString = function (v) {
+	switch (v.$) {
+		case 'Cabbage':
+			return 'Cabbage';
+		case 'Tomato':
+			return 'Tomato';
+		case 'Carrot':
+			return 'Carrot';
+		case 'Pepper':
+			return 'Pepper';
+		case 'Lettuce':
+			return 'Lettuce';
+		default:
+			return 'Onion';
+	}
 };
+var $author$project$View$getVeggieImgPath = function (v) {
+	return 'res/' + ($elm$core$String$toLower(
+		$author$project$Veggie$toString(v)) + '.jpeg');
+};
+var $elm$html$Html$img = _VirtualDom_node('img');
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
+var $author$project$View$getVeggieImg = F2(
+	function (v, big) {
+		return A2(
+			$elm$html$Html$img,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('veggie'),
+					$elm$html$Html$Attributes$class(
+					big ? 'big' : 'small'),
+					$elm$html$Html$Attributes$src(
+					$author$project$View$getVeggieImgPath(v)),
+					$elm$html$Html$Attributes$alt(
+					$author$project$Veggie$toString(v))
+				]),
+			_List_Nil);
+	});
+var $elm$html$Html$p = _VirtualDom_node('p');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$core$Debug$toString = _Debug_toString;
@@ -6243,21 +6284,19 @@ var $author$project$View$aisle = function (_v0) {
 			[
 				$elm$html$Html$Attributes$class('column')
 			]),
-		A2(
-			$elm$core$List$map,
-			A2(
-				$elm$core$Basics$composeL,
+		_List_fromArray(
+			[
 				A2(
-					$elm$core$Basics$composeL,
-					$elm$html$Html$p(_List_Nil),
-					$elm$core$List$singleton),
-				$elm$html$Html$text),
-			_List_fromArray(
-				[
-					$elm$core$Debug$toString(c),
-					$elm$core$Debug$toString(v0),
-					$elm$core$Debug$toString(v1)
-				])));
+				$elm$html$Html$p,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$elm$core$Debug$toString(c))
+					])),
+				A2($author$project$View$getVeggieImg, v0, true),
+				A2($author$project$View$getVeggieImg, v1, true)
+			]));
 };
 var $Chadtech$elm_vector$Vector3$toList = function (_v0) {
 	var vector = _v0.a;
