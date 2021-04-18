@@ -11,3 +11,6 @@ withNone x = (x, Cmd.none)
 
 maybeAsList : Maybe a -> List a
 maybeAsList = Maybe.withDefault [] << Maybe.map List.singleton
+
+const : a -> b -> a
+const x _ = x
