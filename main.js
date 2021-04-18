@@ -6203,7 +6203,7 @@ var $author$project$Model$init = function (flags) {
 	var body = _v0.a;
 	var seData = _v0.b;
 	return $author$project$Utils$withNone(
-		{body: body, pid: flags.playerId, seData: seData});
+		{body: body, pid: flags.playerId, seData: seData, selected: $elm$core$Maybe$Nothing});
 };
 var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -6213,18 +6213,15 @@ var $author$project$Main$subscriptions = function (_v0) {
 };
 var $elm$core$Debug$log = _Debug_log;
 var $elm$core$Debug$toString = _Debug_toString;
-var $author$project$Update$update = function (m) {
-	return A2(
-		$elm$core$Basics$composeL,
-		$author$project$Utils$withNone,
-		function () {
-			var s = m.a;
-			return A2(
+var $author$project$Update$update = F2(
+	function (_v0, model) {
+		var s = _v0.a;
+		return $author$project$Utils$withNone(
+			A2(
 				$elm$core$Debug$log,
 				$elm$core$Debug$toString(s),
-				$elm$core$Basics$identity);
-		}());
-};
+				$elm$core$Basics$identity)(model));
+	});
 var $author$project$Either$Right = function (a) {
 	return {$: 'Right', a: a};
 };

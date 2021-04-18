@@ -9,11 +9,13 @@ import Utils exposing (withNone)
 import Cards exposing (cards)
 import Message exposing (Msg)
 import Flags exposing (Flags)
+import Message exposing (Selection)
 
 type alias Model =
     { body : GameBody
     , seData : (List Card, Seed)
     , pid : PlayerId
+    , selected : Maybe Selection
     }
 
 type alias GameAction a = SE Model a
@@ -38,4 +40,4 @@ init flags =
     let
         (body, seData) = run (gameBody flags.playerCount) (cards, flags.seed)
     in
-        withNone { body = body, seData = seData, pid = flags.playerId }
+        withNone { body = body, seData = seData, pid = flags.playerId, selected = Nothing }
