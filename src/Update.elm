@@ -1,14 +1,13 @@
-module Update exposing (..)
+module Update exposing (update)
 
-import Model exposing (Model)
+import Model exposing (Model, ModelUpdate, GameAction, bindUpdate, draw)
 import Message exposing (Msg(..), Selection)
 import Utils exposing (withNone)
 import Either exposing (isLeft)
 import Card exposing (Card)
-import Model exposing (ModelUpdate)
-import Game exposing (swapCard)
-import Game exposing (givePlayerPicked)
+import Game exposing (swapCard, givePlayerPicked)
 import Basics.Extra exposing (uncurry)
+import SideEffect exposing (run)
 
 replacePickedCard : Selection -> ModelUpdate Card
 replacePickedCard selection replacement model = 
@@ -18,19 +17,46 @@ replacePickedCard selection replacement model =
     in
         { model | body = newBody }
 
+runSelection : Selection -> GameAction ()
+runSelection = bindUpdate draw << replacePickedCard
+
+
+type SelectionOutcome
+    = Accept
+    | Save Selection
+    | Cancel
+
+validSelection : Selection -> Model -> SelectionOutcome
+validSelection s model = 
+    if isLeft s.item
+        then
+            if model.selected == Nothing 
+                then Accept
+                else Cancel
+        else
+            case model.selected of
+                Nothing -> 
+                    Save s
+                Just ms -> 
+                    if ms == s
+                        then Cancel
+                        else Accept
+
 update : Msg -> Model -> (Model, Cmd Msg)
 update (Selected s) model = withNone <| 
-    if isLeft s.item
-        then 
-            (if model.selected == Nothing
-                then Debug.log ("accept obj: " ++ Debug.toString s) identity
-                else identity)
-                { model | selected = Nothing }
-        else case model.selected of
-            Nothing -> { model | selected = Just s }
-            Just ms -> 
-                (if ms == s 
-                    then identity
-                    else Debug.log ("accept veg:" ++ Debug.toString (ms, s)) identity)
-                    { model | selected = Nothing }
+    case validSelection s model of
+        Cancel -> 
+            { model | selected = Nothing }
+
+        Accept ->
+            let 
+                ((), afterCurr) = run (runSelection s) model
+                ((), afterCards) = 
+                    case model.selected of
+                       Nothing -> ((), afterCurr)
+                       Just prevSelection -> run (runSelection prevSelection) model
+            in
+                { afterCards | selected = Nothing }
+        Save r ->
+            { model | selected = Just r }
     

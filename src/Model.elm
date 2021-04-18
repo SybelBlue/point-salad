@@ -6,9 +6,8 @@ import Draw exposing (Draw, Seed, gameBody)
 import Card exposing (Card)
 import Utils exposing (withNone)
 import Cards exposing (cards)
-import Message exposing (Msg)
+import Message exposing (Msg, Selection)
 import Flags exposing (Flags)
-import Message exposing (Selection)
 import Tuple exposing (pair)
 import Vector6
 

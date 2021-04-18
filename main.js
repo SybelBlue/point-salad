@@ -6258,6 +6258,194 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
+var $elm_community$basics_extra$Basics$Extra$uncurry = F2(
+	function (f, _v0) {
+		var a = _v0.a;
+		var b = _v0.b;
+		return A2(f, a, b);
+	});
+var $author$project$SideEffect$bind = F2(
+	function (sa, fasb) {
+		return $author$project$SideEffect$SE(
+			A2(
+				$elm$core$Basics$composeL,
+				A2(
+					$elm$core$Basics$composeL,
+					$elm_community$basics_extra$Basics$Extra$uncurry($author$project$SideEffect$run),
+					$elm$core$Tuple$mapFirst(fasb)),
+				$author$project$SideEffect$run(sa)));
+	});
+var $elm$core$Tuple$pair = F2(
+	function (a, b) {
+		return _Utils_Tuple2(a, b);
+	});
+var $author$project$Model$fromUpdate = F2(
+	function (famm, a) {
+		return $author$project$SideEffect$SE(
+			A2(
+				$elm$core$Basics$composeL,
+				$elm$core$Tuple$pair(_Utils_Tuple0),
+				famm(a)));
+	});
+var $author$project$Model$bindUpdate = function (ga) {
+	return A2(
+		$elm$core$Basics$composeL,
+		$author$project$SideEffect$bind(ga),
+		$author$project$Model$fromUpdate);
+};
+var $author$project$Model$intoAction = function (da) {
+	return $author$project$SideEffect$SE(
+		function (model) {
+			var _v0 = A2($author$project$SideEffect$run, da, model.seData);
+			var c = _v0.a;
+			var nse = _v0.b;
+			return _Utils_Tuple2(
+				c,
+				_Utils_update(
+					model,
+					{seData: nse}));
+		});
+};
+var $author$project$Model$draw = $author$project$Model$intoAction($author$project$Draw$card);
+var $author$project$Either$either = F3(
+	function (f, g, e) {
+		if (e.$ === 'Left') {
+			var x = e.a;
+			return f(x);
+		} else {
+			var x = e.a;
+			return g(x);
+		}
+	});
+var $author$project$Game$givePlayerPicked = F3(
+	function (pid, ecv, body) {
+		var _v0 = A2($Chadtech$elm_vector$Vector6$get, pid, body.players);
+		if (_v0.$ === 'Nothing') {
+			return body;
+		} else {
+			var oldPlayer = _v0.a;
+			var nplayer = A4(
+				$author$project$Either$either,
+				F2(
+					function (c, p) {
+						return _Utils_update(
+							p,
+							{
+								objectiveCards: A2($elm$core$List$cons, c, p.objectiveCards)
+							});
+					}),
+				F2(
+					function (v, p) {
+						return _Utils_update(
+							p,
+							{
+								veggies: A2($elm$core$List$cons, v, p.veggies)
+							});
+					}),
+				ecv,
+				oldPlayer);
+			return _Utils_update(
+				body,
+				{
+					players: A3(
+						$Chadtech$elm_vector$Vector6$set,
+						pid,
+						$elm$core$Maybe$Just(nplayer),
+						body.players)
+				});
+		}
+	});
+var $author$project$Either$Left = function (a) {
+	return {$: 'Left', a: a};
+};
+var $author$project$Either$Right = function (a) {
+	return {$: 'Right', a: a};
+};
+var $Chadtech$elm_vector$Vector3$get = F2(
+	function (index, _v0) {
+		var vector = _v0.a;
+		switch (index.$) {
+			case 'Index0':
+				return vector.n0;
+			case 'Index1':
+				return vector.n1;
+			default:
+				return vector.n2;
+		}
+	});
+var $Chadtech$elm_vector$Vector3$set = F3(
+	function (index, a, _v0) {
+		var vector = _v0.a;
+		switch (index.$) {
+			case 'Index0':
+				return $Chadtech$elm_vector$Vector3$Internal$Vector(
+					_Utils_update(
+						vector,
+						{n0: a}));
+			case 'Index1':
+				return $Chadtech$elm_vector$Vector3$Internal$Vector(
+					_Utils_update(
+						vector,
+						{n1: a}));
+			default:
+				return $Chadtech$elm_vector$Vector3$Internal$Vector(
+					_Utils_update(
+						vector,
+						{n2: a}));
+		}
+	});
+var $author$project$Game$swapCard = F3(
+	function (s, c, body) {
+		var _v0 = A2($Chadtech$elm_vector$Vector3$get, s.aisle, body.board);
+		var oldObj = _v0.a;
+		var v0 = _v0.b;
+		var v1 = _v0.c;
+		var _v1 = function () {
+			var _v2 = s.item;
+			if (_v2.$ === 'Left') {
+				var oldc = _v2.a;
+				return _Utils_Tuple2(
+					$author$project$Either$Left(oldc),
+					_Utils_Tuple3(c, v0, v1));
+			} else {
+				var vegFirst = _v2.a;
+				var cv = $author$project$Card$veggie(c);
+				var _v3 = vegFirst.first ? _Utils_Tuple2(cv, v1) : _Utils_Tuple2(v0, cv);
+				var nv0 = _v3.a;
+				var nv1 = _v3.b;
+				return _Utils_Tuple2(
+					$author$project$Either$Right(vegFirst.veggie),
+					_Utils_Tuple3(oldObj, nv0, nv1));
+			}
+		}();
+		var oldItem = _v1.a;
+		var newAisle = _v1.b;
+		var newBoard = A3($Chadtech$elm_vector$Vector3$set, s.aisle, newAisle, body.board);
+		return _Utils_Tuple2(
+			oldItem,
+			_Utils_update(
+				body,
+				{board: newBoard}));
+	});
+var $author$project$Update$replacePickedCard = F3(
+	function (selection, replacement, model) {
+		var giveCurrent = $elm_community$basics_extra$Basics$Extra$uncurry(
+			$author$project$Game$givePlayerPicked(model.pid));
+		var newBody = giveCurrent(
+			A3($author$project$Game$swapCard, selection, replacement, model.body));
+		return _Utils_update(
+			model,
+			{body: newBody});
+	});
+var $author$project$Update$runSelection = A2(
+	$elm$core$Basics$composeL,
+	$author$project$Model$bindUpdate($author$project$Model$draw),
+	$author$project$Update$replacePickedCard);
+var $author$project$Update$Accept = {$: 'Accept'};
+var $author$project$Update$Cancel = {$: 'Cancel'};
+var $author$project$Update$Save = function (a) {
+	return {$: 'Save', a: a};
+};
 var $author$project$Either$isLeft = function (e) {
 	if (e.$ === 'Left') {
 		return true;
@@ -6265,46 +6453,63 @@ var $author$project$Either$isLeft = function (e) {
 		return false;
 	}
 };
-var $elm$core$Debug$log = _Debug_log;
-var $elm$core$Debug$toString = _Debug_toString;
+var $author$project$Update$validSelection = F2(
+	function (s, model) {
+		if ($author$project$Either$isLeft(s.item)) {
+			return _Utils_eq(model.selected, $elm$core$Maybe$Nothing) ? $author$project$Update$Accept : $author$project$Update$Cancel;
+		} else {
+			var _v0 = model.selected;
+			if (_v0.$ === 'Nothing') {
+				return $author$project$Update$Save(s);
+			} else {
+				var ms = _v0.a;
+				return _Utils_eq(ms, s) ? $author$project$Update$Cancel : $author$project$Update$Accept;
+			}
+		}
+	});
 var $author$project$Update$update = F2(
 	function (_v0, model) {
 		var s = _v0.a;
 		return $author$project$Utils$withNone(
 			function () {
-				if ($author$project$Either$isLeft(s.item)) {
-					return (_Utils_eq(model.selected, $elm$core$Maybe$Nothing) ? A2(
-						$elm$core$Debug$log,
-						'accept obj: ' + $elm$core$Debug$toString(s),
-						$elm$core$Basics$identity) : $elm$core$Basics$identity)(
-						_Utils_update(
+				var _v1 = A2($author$project$Update$validSelection, s, model);
+				switch (_v1.$) {
+					case 'Cancel':
+						return _Utils_update(
 							model,
-							{selected: $elm$core$Maybe$Nothing}));
-				} else {
-					var _v1 = model.selected;
-					if (_v1.$ === 'Nothing') {
+							{selected: $elm$core$Maybe$Nothing});
+					case 'Accept':
+						var _v2 = A2(
+							$author$project$SideEffect$run,
+							$author$project$Update$runSelection(s),
+							model);
+						var afterCurr = _v2.b;
+						var _v3 = function () {
+							var _v4 = model.selected;
+							if (_v4.$ === 'Nothing') {
+								return _Utils_Tuple2(_Utils_Tuple0, afterCurr);
+							} else {
+								var prevSelection = _v4.a;
+								return A2(
+									$author$project$SideEffect$run,
+									$author$project$Update$runSelection(prevSelection),
+									model);
+							}
+						}();
+						var afterCards = _v3.b;
+						return _Utils_update(
+							afterCards,
+							{selected: $elm$core$Maybe$Nothing});
+					default:
+						var r = _v1.a;
 						return _Utils_update(
 							model,
 							{
-								selected: $elm$core$Maybe$Just(s)
+								selected: $elm$core$Maybe$Just(r)
 							});
-					} else {
-						var ms = _v1.a;
-						return (_Utils_eq(ms, s) ? $elm$core$Basics$identity : A2(
-							$elm$core$Debug$log,
-							'accept veg:' + $elm$core$Debug$toString(
-								_Utils_Tuple2(ms, s)),
-							$elm$core$Basics$identity))(
-							_Utils_update(
-								model,
-								{selected: $elm$core$Maybe$Nothing}));
-					}
 				}
 			}());
 	});
-var $author$project$Either$Right = function (a) {
-	return {$: 'Right', a: a};
-};
 var $author$project$Message$Selected = function (a) {
 	return {$: 'Selected', a: a};
 };
@@ -6405,9 +6610,6 @@ var $author$project$Card$objective = function (_v0) {
 	var o = _v0.c;
 	return o;
 };
-var $author$project$Either$Left = function (a) {
-	return {$: 'Left', a: a};
-};
 var $elm$core$List$append = F2(
 	function (xs, ys) {
 		if (!ys.b) {
@@ -6423,16 +6625,6 @@ var $elm$core$List$concatMap = F2(
 	function (f, list) {
 		return $elm$core$List$concat(
 			A2($elm$core$List$map, f, list));
-	});
-var $author$project$Either$either = F3(
-	function (f, g, e) {
-		if (e.$ === 'Left') {
-			var x = e.a;
-			return f(x);
-		} else {
-			var x = e.a;
-			return g(x);
-		}
 	});
 var $elm$core$List$maybeCons = F3(
 	function (f, mx, xs) {
@@ -6459,10 +6651,6 @@ var $author$project$Veggie$get = F2(
 			$Chadtech$elm_vector$Vector6$get,
 			$author$project$Veggie$toIndex(k),
 			vd.data);
-	});
-var $elm$core$Tuple$pair = F2(
-	function (a, b) {
-		return _Utils_Tuple2(a, b);
 	});
 var $Chadtech$elm_vector$Vector6$toList = function (_v0) {
 	var vector = _v0.a;
