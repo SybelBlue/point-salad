@@ -6228,6 +6228,7 @@ var $author$project$Update$update = function (m) {
 var $author$project$Message$Selected = function (a) {
 	return {$: 'Selected', a: a};
 };
+var $elm$html$Html$br = _VirtualDom_node('br');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -6329,6 +6330,26 @@ var $author$project$View$getVeggieImg = F3(
 					A2($elm$core$Maybe$map, $elm$html$Html$Events$onClick, m))),
 			_List_Nil);
 	});
+var $author$project$Card$objective = function (_v0) {
+	var o = _v0.c;
+	return o;
+};
+var $author$project$Either$Left = function (a) {
+	return {$: 'Left', a: a};
+};
+var $author$project$Either$Right = function (a) {
+	return {$: 'Right', a: a};
+};
+var $author$project$Either$either = F3(
+	function (f, g, e) {
+		if (e.$ === 'Left') {
+			var x = e.a;
+			return f(x);
+		} else {
+			var x = e.a;
+			return g(x);
+		}
+	});
 var $elm$core$List$maybeCons = F3(
 	function (f, mx, xs) {
 		var _v0 = f(mx);
@@ -6381,106 +6402,160 @@ var $author$project$Veggie$entries = function (d) {
 		},
 		$Chadtech$elm_vector$Vector6$toList($author$project$Veggie$veggies));
 };
+var $elm$core$List$repeatHelp = F3(
+	function (result, n, value) {
+		repeatHelp:
+		while (true) {
+			if (n <= 0) {
+				return result;
+			} else {
+				var $temp$result = A2($elm$core$List$cons, value, result),
+					$temp$n = n - 1,
+					$temp$value = value;
+				result = $temp$result;
+				n = $temp$n;
+				value = $temp$value;
+				continue repeatHelp;
+			}
+		}
+	});
+var $elm$core$List$repeat = F2(
+	function (n, value) {
+		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
+	});
 var $elm$html$Html$span = _VirtualDom_node('span');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$View$objective = F2(
-	function (obj, msg) {
-		var toString = A2($elm$core$Basics$composeL, $elm$core$String$toLower, $author$project$Veggie$toString);
-		var singleText = A2(
+var $author$project$View$objective = function (obj) {
+	var toString = A2($elm$core$Basics$composeL, $elm$core$String$toLower, $author$project$Veggie$toString);
+	var spandext = A2(
+		$elm$core$Basics$composeL,
+		A2(
 			$elm$core$Basics$composeL,
-			A2(
-				$elm$core$Basics$composeL,
-				A2(
-					$elm$core$Basics$composeL,
-					$elm$core$List$singleton,
-					$elm$html$Html$span(_List_Nil)),
-				$elm$core$List$singleton),
-			$elm$html$Html$text);
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('objective')
-				]),
-			function () {
-				switch (obj.$) {
-					case 'Combo':
-						var vs = obj.a;
-						var ps = obj.b;
-						return _List_fromArray(
-							[
-								A2(
-								$elm$html$Html$div,
-								_List_Nil,
-								_Utils_ap(
-									A2(
-										$elm$core$List$map,
-										function (v) {
-											return A3($author$project$View$getVeggieImg, v, false, $elm$core$Maybe$Nothing);
-										},
-										vs),
-									singleText(
-										' = ' + $elm$core$String$fromInt(ps))))
-							]);
-					case 'Stacked':
-						var v = obj.a;
-						var n = obj.b;
-						var p = obj.c;
-						return singleText(
-							$elm$core$String$fromInt(p) + (' / ' + ($elm$core$String$fromInt(n) + (' ' + (toString(v) + 's')))));
-					case 'Items':
-						var vdict = obj.a;
-						return A2(
-							$elm$core$List$map,
+			$elm$html$Html$span(_List_Nil),
+			$elm$core$List$singleton),
+		$elm$html$Html$text);
+	var singleText = A2($elm$core$Basics$composeL, $elm$core$List$singleton, spandext);
+	var simpleVeggieImg = function (v) {
+		return A3($author$project$View$getVeggieImg, v, false, $elm$core$Maybe$Nothing);
+	};
+	var fromSeq = A2(
+		$elm$core$Basics$composeL,
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$core$List$singleton,
+			$elm$html$Html$div(_List_Nil)),
+		$elm$core$List$map(
+			A2($author$project$Either$either, spandext, $elm$core$Basics$identity)));
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('objective')
+			]),
+		function () {
+			switch (obj.$) {
+				case 'Combo':
+					var vs = obj.a;
+					var p = obj.b;
+					return fromSeq(
+						_Utils_ap(
+							A2(
+								$elm$core$List$map,
+								A2($elm$core$Basics$composeL, $author$project$Either$Right, simpleVeggieImg),
+								vs),
+							_List_fromArray(
+								[
+									$author$project$Either$Left(
+									' = ' + $elm$core$String$fromInt(p))
+								])));
+				case 'Stacked':
+					var v = obj.a;
+					var n = obj.b;
+					var p = obj.c;
+					return fromSeq(
+						_Utils_ap(
+							A2(
+								$elm$core$List$map,
+								A2($elm$core$Basics$composeL, $author$project$Either$Right, simpleVeggieImg),
+								A2($elm$core$List$repeat, n, v)),
+							_List_fromArray(
+								[
+									$author$project$Either$Left(
+									' = ' + $elm$core$String$fromInt(p))
+								])));
+				case 'Items':
+					var vdict = obj.a;
+					return A2(
+						$elm$core$List$map,
+						A2(
+							$elm$core$Basics$composeL,
 							A2(
 								$elm$core$Basics$composeL,
-								A2(
-									$elm$core$Basics$composeL,
-									$elm$html$Html$div(_List_Nil),
-									singleText),
-								function (_v1) {
-									var v = _v1.a;
-									var p = _v1.b;
-									return $elm$core$String$fromInt(p) + (' / ' + toString(v));
-								}),
-							$author$project$Veggie$entries(vdict));
-					case 'Most':
-						var v = obj.a;
-						var p = obj.b;
-						return singleText(
-							'most ' + (toString(v) + (' = ' + $elm$core$String$fromInt(p))));
-					case 'Fewest':
-						var v = obj.a;
-						var p = obj.b;
-						return singleText(
-							'fewest ' + (toString(v) + (' = ' + $elm$core$String$fromInt(p))));
-					case 'MostTotal':
-						var p = obj.a;
-						return singleText(
-							'most veggies = ' + $elm$core$String$fromInt(p));
-					case 'FewestTotal':
-						var p = obj.a;
-						return singleText(
-							'fewest veggies = ' + $elm$core$String$fromInt(p));
-					case 'PerTypeWith':
-						var n = obj.a;
-						var p = obj.b;
-						return singleText(
-							$elm$core$String$fromInt(p) + (' / veggie with ' + ($elm$core$String$fromInt(n) + '+')));
-					case 'PerMissing':
-						var p = obj.a;
-						return singleText(
-							$elm$core$String$fromInt(p) + ' / missing veggie');
-					default:
-						var v = obj.a;
-						var e = obj.b;
-						var o = obj.c;
-						return singleText(
-							'even ' + (toString(v) + ('s = ' + ($elm$core$String$fromInt(e) + (', odd' + (toString(v) + ('s = ' + $elm$core$String$fromInt(o))))))));
-				}
-			}());
-	});
+								$elm$html$Html$div(_List_Nil),
+								singleText),
+							function (_v1) {
+								var v = _v1.a;
+								var p = _v1.b;
+								return $elm$core$String$fromInt(p) + (' / ' + toString(v));
+							}),
+						$author$project$Veggie$entries(vdict));
+				case 'Most':
+					var v = obj.a;
+					var p = obj.b;
+					return fromSeq(
+						_List_fromArray(
+							[
+								$author$project$Either$Left('most'),
+								$author$project$Either$Right(
+								simpleVeggieImg(v)),
+								$author$project$Either$Left(
+								'= ' + $elm$core$String$fromInt(p))
+							]));
+				case 'Fewest':
+					var v = obj.a;
+					var p = obj.b;
+					return fromSeq(
+						_List_fromArray(
+							[
+								$author$project$Either$Left('fewest'),
+								$author$project$Either$Right(
+								simpleVeggieImg(v)),
+								$author$project$Either$Left(
+								'= ' + $elm$core$String$fromInt(p))
+							]));
+				case 'MostTotal':
+					var p = obj.a;
+					return singleText(
+						'most veggies = ' + $elm$core$String$fromInt(p));
+				case 'FewestTotal':
+					var p = obj.a;
+					return singleText(
+						'fewest veggies = ' + $elm$core$String$fromInt(p));
+				case 'PerTypeWith':
+					var n = obj.a;
+					var p = obj.b;
+					return singleText(
+						$elm$core$String$fromInt(p) + (' / veggie with ' + ($elm$core$String$fromInt(n) + '+')));
+				case 'PerMissing':
+					var p = obj.a;
+					return singleText(
+						$elm$core$String$fromInt(p) + ' / missing veggie');
+				default:
+					var v = obj.a;
+					var e = obj.b;
+					var o = obj.c;
+					return fromSeq(
+						_List_fromArray(
+							[
+								$author$project$Either$Right(
+								simpleVeggieImg(v)),
+								$author$project$Either$Left(
+								': even = ' + ($elm$core$String$fromInt(e) + ('; odd = ' + $elm$core$String$fromInt(o))))
+							]));
+			}
+		}());
+};
 var $author$project$Message$selectObjective = F2(
 	function (i, c) {
 		return $author$project$Message$Selected(
@@ -6490,25 +6565,25 @@ var $author$project$Message$selectObjective = F2(
 			});
 	});
 var $author$project$View$card = F2(
-	function (i, _v0) {
-		var id = _v0.a;
-		var veg = _v0.b;
-		var obj = _v0.c;
-		var m = A2(
-			$author$project$Message$selectObjective,
-			i,
-			A3($author$project$Card$Card, id, veg, obj));
+	function (i, c) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
 					$elm$html$Html$Attributes$class('objective-box'),
-					$elm$html$Html$Events$onClick(m)
+					$elm$html$Html$Events$onClick(
+					A2($author$project$Message$selectObjective, i, c))
 				]),
 			_List_fromArray(
 				[
-					A3($author$project$View$getVeggieImg, veg, false, $elm$core$Maybe$Nothing),
-					A2($author$project$View$objective, obj, m)
+					A3(
+					$author$project$View$getVeggieImg,
+					$author$project$Card$veggie(c),
+					false,
+					$elm$core$Maybe$Nothing),
+					A2($elm$html$Html$br, _List_Nil, _List_Nil),
+					$author$project$View$objective(
+					$author$project$Card$objective(c))
 				]));
 	});
 var $elm$html$Html$hr = _VirtualDom_node('hr');

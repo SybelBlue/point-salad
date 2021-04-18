@@ -14,6 +14,7 @@ import Game exposing (Aisle, Board)
 import Veggie exposing (Veggie)
 import Card exposing (Card(..), Objective(..))
 import Utils exposing (maybeAsList)
+import Either exposing (..)
 
 getVeggieImgPath : Veggie -> String
 getVeggieImgPath v = "res/" ++ String.toLower (Veggie.toString v) ++ ".jpeg"
@@ -30,21 +31,25 @@ getVeggieImg v big m =
 objective : Objective -> Html Msg
 objective obj =
   let  
-    singleText = singleton << span [] << singleton << text
+    spandext = span [] << singleton << text
+    singleText = singleton << spandext
     toString = String.toLower << Veggie.toString
+    fromSeq : List (Either String (Html Msg)) -> List (Html Msg)
+    fromSeq = singleton << div [ ] << List.map (either spandext identity)
+    simpleVeggieImg v = getVeggieImg v False Nothing
   in
     div [ class "objective" ] <|
       case obj of
-        Combo vs ps -> 
-          [ div [ ] <| List.map (\v -> getVeggieImg v False Nothing) vs ++ (singleText <| " = " ++ fromInt ps) ]
+        Combo vs p -> 
+          fromSeq <| List.map (Right << simpleVeggieImg) vs ++ [ Left <| " = " ++ fromInt p ]
         Stacked v n p -> 
-          singleText <| fromInt p ++ " / " ++ fromInt n ++ " " ++ toString v ++ "s"
+          fromSeq <| List.map (Right << simpleVeggieImg) (List.repeat n v) ++ [ Left <| " = " ++ fromInt p ]
         Items vdict -> 
           List.map (div [] << singleText << \(v, p) -> fromInt p ++ " / " ++ toString v) (Veggie.entries vdict)
         Most v p -> 
-          singleText <| "most " ++ toString v ++ " = " ++ fromInt p
+          fromSeq [Left "most", Right <| simpleVeggieImg v, Left <| "= " ++ fromInt p ]
         Fewest v p -> 
-          singleText <| "fewest " ++ toString v ++ " = " ++ fromInt p
+          fromSeq [ Left "fewest", Right <| simpleVeggieImg v, Left <| "= " ++ fromInt p ]
         MostTotal p -> 
           singleText <| "most veggies = " ++ fromInt p
         FewestTotal p -> 
@@ -54,7 +59,7 @@ objective obj =
         PerMissing p -> 
           singleText <| fromInt p ++ " / missing veggie"
         EvenOdd v e o -> 
-          singleText <| "even " ++ toString v ++ "s = " ++ fromInt e ++ ", odd" ++ toString v ++ "s = " ++ fromInt o
+          fromSeq <| [ Right <| simpleVeggieImg v, Left <| ": even = " ++ fromInt e ++ "; odd = " ++ fromInt o ]
 
 card : Index -> Card -> Html Msg
 card i c =
@@ -63,6 +68,7 @@ card i c =
     , onClick <| Message.selectObjective i c
     ] 
     [ getVeggieImg (Card.veggie c) False Nothing
+    , br [] []
     , objective <| Card.objective c 
     ]
 
