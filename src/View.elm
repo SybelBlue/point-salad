@@ -72,7 +72,7 @@ card i c =
     ]
 
 aisle : Index -> Aisle -> Html Msg
-aisle i (c, (v0, v1)) = 
+aisle i (c, v0, v1) = 
   div 
     [ class "column" ] 
     [ card i c
