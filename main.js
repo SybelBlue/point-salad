@@ -6211,16 +6211,49 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
+var $author$project$Either$isLeft = function (e) {
+	if (e.$ === 'Left') {
+		return true;
+	} else {
+		return false;
+	}
+};
 var $elm$core$Debug$log = _Debug_log;
 var $elm$core$Debug$toString = _Debug_toString;
 var $author$project$Update$update = F2(
 	function (_v0, model) {
 		var s = _v0.a;
 		return $author$project$Utils$withNone(
-			A2(
-				$elm$core$Debug$log,
-				$elm$core$Debug$toString(s),
-				$elm$core$Basics$identity)(model));
+			function () {
+				if ($author$project$Either$isLeft(s.item)) {
+					return (_Utils_eq(model.selected, $elm$core$Maybe$Nothing) ? A2(
+						$elm$core$Debug$log,
+						'accept obj: ' + $elm$core$Debug$toString(s),
+						$elm$core$Basics$identity) : $elm$core$Basics$identity)(
+						_Utils_update(
+							model,
+							{selected: $elm$core$Maybe$Nothing}));
+				} else {
+					var _v1 = model.selected;
+					if (_v1.$ === 'Nothing') {
+						return _Utils_update(
+							model,
+							{
+								selected: $elm$core$Maybe$Just(s)
+							});
+					} else {
+						var ms = _v1.a;
+						return (_Utils_eq(ms, s) ? $elm$core$Basics$identity : A2(
+							$elm$core$Debug$log,
+							'accept veg:' + $elm$core$Debug$toString(
+								_Utils_Tuple2(ms, s)),
+							$elm$core$Basics$identity))(
+							_Utils_update(
+								model,
+								{selected: $elm$core$Maybe$Nothing}));
+					}
+				}
+			}());
 	});
 var $author$project$Either$Right = function (a) {
 	return {$: 'Right', a: a};
