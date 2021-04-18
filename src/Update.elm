@@ -7,13 +7,16 @@ import Either exposing (isLeft)
 import Card exposing (Card)
 import Model exposing (ModelUpdate)
 import Game exposing (swapCard)
+import Game exposing (givePlayerPicked)
+import Basics.Extra exposing (uncurry)
 
 replacePickedCard : Selection -> ModelUpdate Card
 replacePickedCard selection replacement model = 
     let
-        newBody = swapCard selection replacement model.body
+        giveCurrent = uncurry (givePlayerPicked model.pid)
+        newBody = giveCurrent <| swapCard selection replacement model.body
     in
-        Debug.todo "ret model"
+        { model | body = newBody }
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update (Selected s) model = withNone <| 
