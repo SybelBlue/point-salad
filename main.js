@@ -6300,10 +6300,40 @@ var $author$project$View$getVeggieImg = F3(
 				]),
 			_List_Nil);
 	});
-var $elm$html$Html$hr = _VirtualDom_node('hr');
-var $elm$html$Html$p = _VirtualDom_node('p');
+var $author$project$Message$selectObjective = F2(
+	function (i, c) {
+		return $author$project$Message$Selected(
+			{
+				aisle: i,
+				item: $elm$core$Result$Err(c)
+			});
+	});
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$View$card = F2(
+	function (i, _v0) {
+		var id = _v0.a;
+		var veg = _v0.b;
+		var obj = _v0.c;
+		var m = A2(
+			$author$project$Message$selectObjective,
+			i,
+			A3($author$project$Card$Card, id, veg, obj));
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('objective'),
+					$elm$html$Html$Events$onClick(m)
+				]),
+			_List_fromArray(
+				[
+					A3($author$project$View$getVeggieImg, veg, false, m),
+					$elm$html$Html$text(
+					$elm$core$Debug$toString(obj))
+				]));
+	});
+var $elm$html$Html$hr = _VirtualDom_node('hr');
 var $author$project$View$aisle = F2(
 	function (i, _v0) {
 		var c = _v0.a;
@@ -6318,17 +6348,7 @@ var $author$project$View$aisle = F2(
 				]),
 			_List_fromArray(
 				[
-					A2(
-					$elm$html$Html$p,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('objective')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text(
-							$elm$core$Debug$toString(c))
-						])),
+					A2($author$project$View$card, i, c),
 					A2($elm$html$Html$hr, _List_Nil, _List_Nil),
 					A3(
 					$author$project$View$getVeggieImg,
