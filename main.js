@@ -6211,8 +6211,17 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
-var $author$project$Update$update = function (_v0) {
-	return A2($elm$core$Basics$composeL, $author$project$Utils$withNone, $elm$core$Basics$identity);
+var $elm$core$Debug$log = _Debug_log;
+var $elm$core$Debug$toString = _Debug_toString;
+var $author$project$Update$update = function (m) {
+	return A2(
+		$elm$core$Basics$composeL,
+		A2($elm$core$Basics$composeL, $author$project$Utils$withNone, $elm$core$Basics$identity),
+		$elm$core$Debug$log(
+			$elm$core$Debug$toString(m)));
+};
+var $author$project$Message$Selected = function (a) {
+	return {$: 'Selected', a: a};
 };
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -6247,14 +6256,31 @@ var $author$project$View$getVeggieImgPath = function (v) {
 		$author$project$Veggie$toString(v)) + '.jpeg');
 };
 var $elm$html$Html$img = _VirtualDom_node('img');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $elm$html$Html$Attributes$src = function (url) {
 	return A2(
 		$elm$html$Html$Attributes$stringProperty,
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
-var $author$project$View$getVeggieImg = F2(
-	function (v, big) {
+var $author$project$View$getVeggieImg = F3(
+	function (v, big, m) {
 		return A2(
 			$elm$html$Html$img,
 			_List_fromArray(
@@ -6264,58 +6290,87 @@ var $author$project$View$getVeggieImg = F2(
 					$elm$html$Html$Attributes$src(
 					$author$project$View$getVeggieImgPath(v)),
 					$elm$html$Html$Attributes$alt(
-					$author$project$Veggie$toString(v))
+					$author$project$Veggie$toString(v)),
+					$elm$html$Html$Events$onClick(m)
 				]),
 			_List_Nil);
 	});
 var $elm$html$Html$p = _VirtualDom_node('p');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$core$Debug$toString = _Debug_toString;
-var $author$project$View$aisle = function (_v0) {
-	var c = _v0.a;
-	var _v1 = _v0.b;
-	var v0 = _v1.a;
-	var v1 = _v1.b;
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('column')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$p,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						$elm$core$Debug$toString(c))
-					])),
-				A2($author$project$View$getVeggieImg, v0, true),
-				A2($author$project$View$getVeggieImg, v1, true)
-			]));
-};
+var $author$project$View$aisle = F2(
+	function (i, _v0) {
+		var c = _v0.a;
+		var _v1 = _v0.b;
+		var v0 = _v1.a;
+		var v1 = _v1.b;
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('column')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$p,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							$elm$core$Debug$toString(c))
+						])),
+					A3(
+					$author$project$View$getVeggieImg,
+					v0,
+					true,
+					$author$project$Message$Selected(
+						{
+							aisle: i,
+							item: $elm$core$Result$Ok(
+								{first: true, veggie: v0})
+						})),
+					A3(
+					$author$project$View$getVeggieImg,
+					v1,
+					true,
+					$author$project$Message$Selected(
+						{
+							aisle: i,
+							item: $elm$core$Result$Ok(
+								{first: false, veggie: v1})
+						}))
+				]));
+	});
+var $Chadtech$elm_vector$Vector3$Index0 = {$: 'Index0'};
+var $Chadtech$elm_vector$Vector3$Index1 = {$: 'Index1'};
+var $Chadtech$elm_vector$Vector3$Index2 = {$: 'Index2'};
+var $Chadtech$elm_vector$Vector3$indexedMap = F2(
+	function (f, _v0) {
+		var vector = _v0.a;
+		return $Chadtech$elm_vector$Vector3$Internal$Vector(
+			{
+				n0: A2(f, $Chadtech$elm_vector$Vector3$Index0, vector.n0),
+				n1: A2(f, $Chadtech$elm_vector$Vector3$Index1, vector.n1),
+				n2: A2(f, $Chadtech$elm_vector$Vector3$Index2, vector.n2)
+			});
+	});
 var $Chadtech$elm_vector$Vector3$toList = function (_v0) {
 	var vector = _v0.a;
 	return _List_fromArray(
 		[vector.n0, vector.n1, vector.n2]);
 };
-var $author$project$View$mapToList = function (f) {
-	return A2(
-		$elm$core$Basics$composeL,
-		$elm$core$List$map(f),
-		$Chadtech$elm_vector$Vector3$toList);
-};
 var $author$project$View$board = A2(
 	$elm$core$Basics$composeL,
-	$elm$html$Html$div(
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('row')
-			])),
-	$author$project$View$mapToList($author$project$View$aisle));
+	A2(
+		$elm$core$Basics$composeL,
+		$elm$html$Html$div(
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('row')
+				])),
+		$Chadtech$elm_vector$Vector3$toList),
+	$Chadtech$elm_vector$Vector3$indexedMap($author$project$View$aisle));
 var $author$project$View$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
