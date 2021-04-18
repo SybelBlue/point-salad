@@ -5,4 +5,4 @@ import Message exposing (Msg)
 import Utils exposing (withNone)
 
 update : Msg -> Model -> (Model, Cmd Msg)
-update _ = withNone << identity
+update m = withNone << identity << Debug.log (Debug.toString m)

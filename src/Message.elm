@@ -14,5 +14,3 @@ type Msg
 selectObjective : Index -> Card -> Msg
 selectObjective i c = Selected { item = Err c, aisle = i }
 
-selectVeggie : Index -> Veggie -> Bool -> Msg
-selectVeggie i v first = Selected { item = Ok { veggie = v, first = first }, aisle = i }
