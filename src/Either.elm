@@ -31,3 +31,12 @@ either f g e =
 
 toMaybe : Either a b -> Maybe a
 toMaybe = either Just (const Nothing)
+
+isLeft : Either a b -> Bool
+isLeft e = 
+    case e of
+       Left _  -> True
+       Right _ -> False
+
+isRight : Either a b -> Bool
+isRight = not << isLeft
