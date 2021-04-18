@@ -8,10 +8,11 @@
 <body>
   <div id="myapp"></div>
   <script>
-  var app = Elm.Main.init({
-    node: document.getElementById('myapp'),
-    flags: { playerCount: 1, playerId: 0, seed: 1234 }
-  });
+    const seed = Date.now(); // TODO: get from URL
+    var app = Elm.Main.init({
+      node: document.getElementById('myapp'),
+      flags: { playerCount: 1, playerId: 0, seed: seed }
+    });
   </script>
   <style>
     body {
@@ -48,8 +49,13 @@
       width: 40;
     }
 
-    .objective {
+    .objective-box {
       height: 100;
+    }
+
+    .column .objective img {
+      display: inline-flex;
+      margin: auto;
     }
 
     .column img {

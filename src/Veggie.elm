@@ -1,6 +1,7 @@
-module Veggie exposing (Veggie(..), VeggieDict, empty, get, insert, size, toString, toInt)
+module Veggie exposing (Veggie(..), VeggieDict, empty, get, insert, size, toString, toInt, veggies, entries)
 
 import Vector6 exposing (Index(..), Vector6)
+import Tuple exposing (pair)
 
 {-| The basic vegetable types -}
 type Veggie
@@ -10,6 +11,9 @@ type Veggie
     | Lettuce
     | Cabbage
     | Onion
+
+veggies : Vector6 Veggie
+veggies = Vector6.from6 Tomato Carrot Pepper Lettuce Cabbage Onion
 
 toString : Veggie -> String
 toString v = 
@@ -77,3 +81,7 @@ get (VDict vd) k = Vector6.get (toIndex k) vd.data
 {-| Returns the number of entries in this VeggieDict -}
 size : VeggieDict a -> Int
 size (VDict v) = v.size
+
+{-| Gets all entries from the dict -}
+entries : VeggieDict a -> List (Veggie, a)
+entries d =  List.filterMap (\v -> Maybe.map (pair v) <| get d v) <| Vector6.toList veggies
