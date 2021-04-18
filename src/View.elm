@@ -33,7 +33,6 @@ objective obj =
   let  
     spandext = span [] << singleton << text
     singleText = singleton << spandext
-    toString = String.toLower << Veggie.toString
     fromSeq : List (Either String (Html Msg)) -> List (Html Msg)
     fromSeq = singleton << div [ ] << List.map (either spandext identity)
     simpleVeggieImg v = getVeggieImg v False Nothing
