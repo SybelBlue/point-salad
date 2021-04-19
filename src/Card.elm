@@ -35,13 +35,11 @@ isGlobalObjective o =
         _ ->
             False
 
-type Card = Card Int Veggie Objective
+type alias Card =
+    { id : Int
+    , veggie : Veggie
+    , objective : Objective
+    }
 
-id : Card -> Int
-id (Card i _ _) = i
-
-veggie : Card -> Veggie
-veggie (Card _ v _) = v
-
-objective : Card -> Objective
-objective (Card _ _ o) = o
+hasGlobalObjective : Card -> Bool
+hasGlobalObjective = isGlobalObjective << .objective

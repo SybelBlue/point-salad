@@ -33,7 +33,7 @@ card = SE (\(cards, seed) ->
     
 
 veggie : Draw Veggie
-veggie = fmap Card.veggie card
+veggie = fmap .veggie card
 
 aisle : Draw Aisle
 aisle = liftA3 Game.aisle card veggie veggie

@@ -8,7 +8,6 @@ import Message exposing (Selection)
 import Either exposing (Either(..), either)
 import Card exposing (isGlobalObjective)
 import Utils exposing (maybe)
-import Card exposing (objective)
 
 
 type alias PlayerId = Index
@@ -63,7 +62,7 @@ swapCard s c body =
                 Left oldc -> (Left oldc, (c, v0, v1))
                 Right vegFirst -> 
                     let
-                        cv = Card.veggie c
+                        cv = c.veggie
                         (nv0, nv1) = if vegFirst.first then (cv, v1) else (v0, cv)
                     in
                         (Right vegFirst.veggie, (oldObj, nv0, nv1))
@@ -89,7 +88,7 @@ scores gbody =
     let
         globalObjs = 
             List.filter isGlobalObjective <| 
-             List.map objective <|
+             List.map .objective <|
               List.concatMap (maybe [] (.objectiveCards)) <| 
                Vector6.toList gbody.players
         ps = gbody.players

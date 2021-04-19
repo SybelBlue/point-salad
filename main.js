@@ -5187,8 +5187,8 @@ var $author$project$Card$Stacked = F3(
 	});
 var $author$project$Veggie$Tomato = {$: 'Tomato'};
 var $author$project$Card$Card = F3(
-	function (a, b, c) {
-		return {$: 'Card', a: a, b: b, c: c};
+	function (id, veggie, objective) {
+		return {id: id, objective: objective, veggie: veggie};
 	});
 var $author$project$Cards$cycle3 = F4(
 	function (fabcd, b, c, a) {
@@ -6135,11 +6135,12 @@ var $author$project$SideEffect$liftA3 = F2(
 			$author$project$SideEffect$ap,
 			A2($author$project$SideEffect$liftA2, fabcd, da));
 	});
-var $author$project$Card$veggie = function (_v0) {
-	var v = _v0.b;
-	return v;
-};
-var $author$project$Draw$veggie = A2($author$project$SideEffect$fmap, $author$project$Card$veggie, $author$project$Draw$card);
+var $author$project$Draw$veggie = A2(
+	$author$project$SideEffect$fmap,
+	function ($) {
+		return $.veggie;
+	},
+	$author$project$Draw$card);
 var $author$project$Draw$aisle = A4($author$project$SideEffect$liftA3, $author$project$Game$aisle, $author$project$Draw$card, $author$project$Draw$veggie, $author$project$Draw$veggie);
 var $Chadtech$elm_vector$Vector3$Internal$Vector = function (a) {
 	return {$: 'Vector', a: a};
@@ -6509,7 +6510,7 @@ var $author$project$Game$swapCard = F3(
 					_Utils_Tuple3(c, v0, v1));
 			} else {
 				var vegFirst = _v2.a;
-				var cv = $author$project$Card$veggie(c);
+				var cv = c.veggie;
 				var _v3 = vegFirst.first ? _Utils_Tuple2(cv, v1) : _Utils_Tuple2(v0, cv);
 				var nv0 = _v3.a;
 				var nv1 = _v3.b;
@@ -6683,10 +6684,6 @@ var $author$project$View$getVeggieImg = F3(
 					A2($elm$core$Maybe$map, $elm$html$Html$Events$onClick, m))),
 			_List_Nil);
 	});
-var $author$project$Card$objective = function (_v0) {
-	var o = _v0.c;
-	return o;
-};
 var $elm$core$List$append = F2(
 	function (xs, ys) {
 		if (!ys.b) {
@@ -6949,14 +6946,9 @@ var $author$project$View$card = F2(
 				]),
 			_List_fromArray(
 				[
-					A3(
-					$author$project$View$getVeggieImg,
-					$author$project$Card$veggie(c),
-					false,
-					$elm$core$Maybe$Nothing),
+					A3($author$project$View$getVeggieImg, c.veggie, false, $elm$core$Maybe$Nothing),
 					A2($elm$html$Html$br, _List_Nil, _List_Nil),
-					$author$project$View$objective(
-					$author$project$Card$objective(c))
+					$author$project$View$objective(c.objective)
 				]));
 	});
 var $elm$html$Html$hr = _VirtualDom_node('hr');
@@ -7150,7 +7142,12 @@ var $author$project$View$player = F2(
 					_List_Nil,
 					A2(
 						$elm$core$List$map,
-						A2($elm$core$Basics$composeL, $author$project$View$objective, $author$project$Card$objective),
+						A2(
+							$elm$core$Basics$composeL,
+							$author$project$View$objective,
+							function ($) {
+								return $.objective;
+							}),
 						p.objectiveCards))
 				]));
 	});

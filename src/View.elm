@@ -12,12 +12,13 @@ import Model exposing (Model)
 import Message exposing (Msg)
 import Game exposing (Aisle, Board)
 import Veggie exposing (Veggie)
-import Card exposing (Card(..), Objective(..))
+import Card exposing ( Objective(..))
 import Utils exposing (maybeAsList, count)
 import Either exposing (..)
 import Vector6
 import Game exposing (Player)
 import Game exposing (PlayerId)
+import Card exposing (Card)
 
 getVeggieImgPath : Veggie -> String
 getVeggieImgPath v = "res/" ++ String.toLower (Veggie.toString v) ++ ".jpeg"
@@ -72,9 +73,9 @@ card i c =
     [ class "objective-box" 
     , onClick <| Message.selectObjective i c
     ] 
-    [ getVeggieImg (Card.veggie c) False Nothing
+    [ getVeggieImg (c.veggie) False Nothing
     , br [] []
-    , objective <| Card.objective c 
+    , objective c.objective
     ]
 
 aisle : Index -> Aisle -> Html Msg
@@ -101,7 +102,7 @@ player playing p =
   in div [] <|
     [ heading [] [ text <| "Player " ++ fromInt (1 + Vector6.indexToInt p.id) ] 
     , div [] <| fromSeq <| List.concatMap vegMap sorted
-    , div [] <| List.map (objective << Card.objective) p.objectiveCards
+    , div [] <| List.map (objective << .objective) p.objectiveCards
     ]
 
 view : Model -> Html Msg
