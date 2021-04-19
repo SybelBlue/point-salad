@@ -94,7 +94,8 @@ player : Player -> Html Msg
 player p = 
   let 
     vcount = count p.veggies
-  in div [] <| fromSeq <| List.concatMap (\(v, n) -> [Left <| fromInt n ++ "x", Right <| getVeggieImg v False Nothing]) vcount
+    sorted = List.sortBy (Veggie.toInt << Tuple.first) vcount
+  in div [] <| fromSeq <| List.concatMap (\(v, n) -> [Left <| fromInt n ++ "x", Right <| getVeggieImg v False Nothing]) sorted
 
 view : Model -> Html Msg
 view model =

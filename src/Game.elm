@@ -40,7 +40,7 @@ type alias GameBody =
     }
 
 makePlayers : Int -> Vector6 (Maybe Player)
-makePlayers n = Vector6.initializeFromIndex (\i -> if Vector6.indexToInt i + 1 < n then Just (newPlayer i) else Nothing)
+makePlayers n = Debug.log "players" <| Vector6.initializeFromIndex (\i -> if Vector6.indexToInt i < n then Just (newPlayer i) else Nothing)
 
 advancePlayer : GameBody -> GameBody
 advancePlayer game = 
@@ -71,7 +71,7 @@ swapCard s c body =
 givePlayerPicked : PlayerId -> Either Card Veggie -> GameBody -> GameBody
 givePlayerPicked pid ecv body =
     case Vector6.get pid body.players of
-        Nothing -> body
+        Nothing -> Debug.log ("err: " ++ Debug.toString (pid, ecv, body)) body
         Just oldPlayer ->
             let
                 nplayer = either 
@@ -79,5 +79,5 @@ givePlayerPicked pid ecv body =
                         (\v p -> { p | veggies = v :: p.veggies })
                         ecv
                         oldPlayer
-            in { body | players = Vector6.set pid (Just nplayer) body.players }
+            in { body | players = Vector6.set pid (Just <| Debug.log "giving" nplayer) body.players }
     

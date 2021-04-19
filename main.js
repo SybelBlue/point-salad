@@ -6181,17 +6181,21 @@ var $Chadtech$elm_vector$Vector6$initializeFromIndex = function (f) {
 			n5: f($Chadtech$elm_vector$Vector6$Index5)
 		});
 };
+var $elm$core$Debug$log = _Debug_log;
 var $author$project$Game$newPlayer = function (id) {
 	return {id: id, objectiveCards: _List_Nil, veggies: _List_Nil};
 };
 var $author$project$Game$makePlayers = function (n) {
-	return $Chadtech$elm_vector$Vector6$initializeFromIndex(
-		function (i) {
-			return (_Utils_cmp(
-				$Chadtech$elm_vector$Vector6$indexToInt(i) + 1,
-				n) < 0) ? $elm$core$Maybe$Just(
-				$author$project$Game$newPlayer(i)) : $elm$core$Maybe$Nothing;
-		});
+	return A2(
+		$elm$core$Debug$log,
+		'players',
+		$Chadtech$elm_vector$Vector6$initializeFromIndex(
+			function (i) {
+				return (_Utils_cmp(
+					$Chadtech$elm_vector$Vector6$indexToInt(i),
+					n) < 0) ? $elm$core$Maybe$Just(
+					$author$project$Game$newPlayer(i)) : $elm$core$Maybe$Nothing;
+			}));
 };
 var $author$project$Draw$gameBody = function (playerCount) {
 	return A3(
@@ -6362,11 +6366,16 @@ var $author$project$Either$either = F3(
 			return g(x);
 		}
 	});
+var $elm$core$Debug$toString = _Debug_toString;
 var $author$project$Game$givePlayerPicked = F3(
 	function (pid, ecv, body) {
 		var _v0 = A2($Chadtech$elm_vector$Vector6$get, pid, body.players);
 		if (_v0.$ === 'Nothing') {
-			return body;
+			return A2(
+				$elm$core$Debug$log,
+				'err: ' + $elm$core$Debug$toString(
+					_Utils_Tuple3(pid, ecv, body)),
+				body);
 		} else {
 			var oldPlayer = _v0.a;
 			var nplayer = A4(
@@ -6395,7 +6404,8 @@ var $author$project$Game$givePlayerPicked = F3(
 					players: A3(
 						$Chadtech$elm_vector$Vector6$set,
 						pid,
-						$elm$core$Maybe$Just(nplayer),
+						$elm$core$Maybe$Just(
+							A2($elm$core$Debug$log, 'giving', nplayer)),
 						body.players)
 				});
 		}
@@ -7010,9 +7020,10 @@ var $author$project$Utils$groupBy = F2(
 				t);
 			var eqis = _v1.a;
 			var neqis = _v1.b;
-			var front = ($elm$core$List$length(eqis) > 0) ? $elm$core$List$cons(eqis) : $elm$core$Basics$identity;
-			return front(
-				A2($author$project$Utils$groupBy, f, neqis));
+			return A2(
+				$elm$core$List$cons,
+				A2($elm$core$List$cons, h, eqis),
+				_Utils_eq(neqis, _List_Nil) ? _List_Nil : A2($author$project$Utils$groupBy, f, neqis));
 		}
 	});
 var $author$project$Utils$group = $author$project$Utils$groupBy($elm$core$Basics$eq);
@@ -7039,8 +7050,29 @@ var $author$project$Utils$count = A2(
 				$elm$core$List$head(ls));
 		}),
 	$author$project$Utils$group);
+var $elm$core$List$sortBy = _List_sortBy;
+var $author$project$Veggie$toInt = function (v) {
+	switch (v.$) {
+		case 'Tomato':
+			return 0;
+		case 'Carrot':
+			return 1;
+		case 'Pepper':
+			return 2;
+		case 'Lettuce':
+			return 3;
+		case 'Cabbage':
+			return 4;
+		default:
+			return 5;
+	}
+};
 var $author$project$View$player = function (p) {
 	var vcount = $author$project$Utils$count(p.veggies);
+	var sorted = A2(
+		$elm$core$List$sortBy,
+		A2($elm$core$Basics$composeL, $author$project$Veggie$toInt, $elm$core$Tuple$first),
+		vcount);
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -7058,7 +7090,7 @@ var $author$project$View$player = function (p) {
 							A3($author$project$View$getVeggieImg, v, false, $elm$core$Maybe$Nothing))
 						]);
 				},
-				vcount)));
+				sorted)));
 };
 var $author$project$View$view = function (model) {
 	var ps = A2(

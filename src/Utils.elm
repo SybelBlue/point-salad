@@ -28,9 +28,8 @@ groupBy f items =
         h :: t -> 
             let
                 (eqis, neqis) = List.partition (f h) t
-                front = if List.length eqis > 0 then (::) eqis else identity
             in
-                front <| groupBy f neqis
+                (h :: eqis) :: (if neqis == [] then [] else groupBy f neqis)
 
 group : List a -> List (List a)
 group = groupBy (==)
