@@ -6258,6 +6258,11 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
+var $author$project$Model$clearSelected = function (model) {
+	return _Utils_update(
+		model,
+		{selected: $elm$core$Maybe$Nothing});
+};
 var $elm$core$Tuple$second = function (_v0) {
 	var y = _v0.b;
 	return y;
@@ -6342,17 +6347,8 @@ var $author$project$Model$intoAction = function (da) {
 					{seData: nse}));
 		});
 };
+var $author$project$Model$draw = $author$project$Model$intoAction($author$project$Draw$card);
 var $elm$core$Debug$log = _Debug_log;
-var $elm$core$Debug$toString = _Debug_toString;
-var $author$project$Model$draw = A2(
-	$author$project$SideEffect$fmap,
-	function (c) {
-		return A2(
-			$elm$core$Debug$log,
-			'draw: ' + $elm$core$Debug$toString(c),
-			c);
-	},
-	$author$project$Model$intoAction($author$project$Draw$card));
 var $author$project$Either$either = F3(
 	function (f, g, e) {
 		if (e.$ === 'Left') {
@@ -6483,6 +6479,7 @@ var $author$project$Update$replacePickedCard = F3(
 			model,
 			{body: newBody});
 	});
+var $elm$core$Debug$toString = _Debug_toString;
 var $author$project$Update$runSelection = function (s) {
 	return A3(
 		$elm$core$Basics$composeL,
@@ -6493,6 +6490,13 @@ var $author$project$Update$runSelection = function (s) {
 			$author$project$Model$bindUpdate($author$project$Model$draw)),
 		$author$project$Update$replacePickedCard,
 		s);
+};
+var $author$project$Model$simply = function (fmm) {
+	return $author$project$SideEffect$SE(
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$core$Tuple$pair(_Utils_Tuple0),
+			fmm));
 };
 var $author$project$Update$Accept = {$: 'Accept'};
 var $author$project$Update$Cancel = {$: 'Cancel'};
@@ -6533,26 +6537,22 @@ var $author$project$Update$update = F2(
 				var _v1 = A2($author$project$Update$validSelection, s, model);
 				switch (_v1.$) {
 					case 'Cancel':
-						return _Utils_update(
-							model,
-							{selected: $elm$core$Maybe$Nothing});
+						return $author$project$Model$clearSelected(model);
 					case 'Accept':
 						var prevCard = A3(
 							$author$project$Utils$maybe,
 							$elm$core$Tuple$pair(_Utils_Tuple0),
 							A2($elm$core$Basics$composeL, $author$project$SideEffect$run, $author$project$Update$runSelection),
 							model.selected);
-						var newModel = A2(
+						return A2(
 							$author$project$SideEffect$do,
 							_List_fromArray(
 								[
 									$author$project$SideEffect$SE(prevCard),
-									$author$project$Update$runSelection(s)
+									$author$project$Update$runSelection(s),
+									$author$project$Model$simply($author$project$Model$clearSelected)
 								]),
 							model);
-						return _Utils_update(
-							newModel,
-							{selected: $elm$core$Maybe$Nothing});
 					default:
 						var r = _v1.a;
 						return _Utils_update(
