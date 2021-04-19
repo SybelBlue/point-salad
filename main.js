@@ -6702,6 +6702,24 @@ var $author$project$Veggie$entries = function (d) {
 		},
 		$Chadtech$elm_vector$Vector6$toList($author$project$Veggie$veggies));
 };
+var $elm$html$Html$span = _VirtualDom_node('span');
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$View$spandext = A2(
+	$elm$core$Basics$composeL,
+	A2(
+		$elm$core$Basics$composeL,
+		$elm$html$Html$span(_List_Nil),
+		$elm$core$List$singleton),
+	$elm$html$Html$text);
+var $author$project$View$fromSeq = A2(
+	$elm$core$Basics$composeL,
+	A2(
+		$elm$core$Basics$composeL,
+		$elm$core$List$singleton,
+		$elm$html$Html$div(_List_Nil)),
+	$elm$core$List$map(
+		A2($author$project$Either$either, $author$project$View$spandext, $elm$core$Basics$identity)));
 var $elm$core$List$intersperse = F2(
 	function (sep, xs) {
 		if (!xs.b) {
@@ -6741,29 +6759,11 @@ var $elm$core$List$repeat = F2(
 	function (n, value) {
 		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
 	});
-var $elm$html$Html$span = _VirtualDom_node('span');
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$View$objective = function (obj) {
-	var spandext = A2(
-		$elm$core$Basics$composeL,
-		A2(
-			$elm$core$Basics$composeL,
-			$elm$html$Html$span(_List_Nil),
-			$elm$core$List$singleton),
-		$elm$html$Html$text);
-	var singleText = A2($elm$core$Basics$composeL, $elm$core$List$singleton, spandext);
+	var singleText = A2($elm$core$Basics$composeL, $elm$core$List$singleton, $author$project$View$spandext);
 	var simpleVeggieImg = function (v) {
 		return A3($author$project$View$getVeggieImg, v, false, $elm$core$Maybe$Nothing);
 	};
-	var fromSeq = A2(
-		$elm$core$Basics$composeL,
-		A2(
-			$elm$core$Basics$composeL,
-			$elm$core$List$singleton,
-			$elm$html$Html$div(_List_Nil)),
-		$elm$core$List$map(
-			A2($author$project$Either$either, spandext, $elm$core$Basics$identity)));
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
@@ -6775,7 +6775,7 @@ var $author$project$View$objective = function (obj) {
 				case 'Combo':
 					var vs = obj.a;
 					var p = obj.b;
-					return fromSeq(
+					return $author$project$View$fromSeq(
 						_Utils_ap(
 							A2(
 								$elm$core$List$intersperse,
@@ -6793,7 +6793,7 @@ var $author$project$View$objective = function (obj) {
 					var v = obj.a;
 					var n = obj.b;
 					var p = obj.c;
-					return fromSeq(
+					return $author$project$View$fromSeq(
 						_Utils_ap(
 							A2(
 								$elm$core$List$intersperse,
@@ -6809,7 +6809,7 @@ var $author$project$View$objective = function (obj) {
 								])));
 				case 'Items':
 					var vdict = obj.a;
-					return fromSeq(
+					return $author$project$View$fromSeq(
 						A2(
 							$elm$core$List$concatMap,
 							function (_v1) {
@@ -6827,7 +6827,7 @@ var $author$project$View$objective = function (obj) {
 				case 'Most':
 					var v = obj.a;
 					var p = obj.b;
-					return fromSeq(
+					return $author$project$View$fromSeq(
 						_List_fromArray(
 							[
 								$author$project$Either$Left('most'),
@@ -6839,7 +6839,7 @@ var $author$project$View$objective = function (obj) {
 				case 'Fewest':
 					var v = obj.a;
 					var p = obj.b;
-					return fromSeq(
+					return $author$project$View$fromSeq(
 						_List_fromArray(
 							[
 								$author$project$Either$Left('fewest'),
@@ -6869,7 +6869,7 @@ var $author$project$View$objective = function (obj) {
 					var v = obj.a;
 					var e = obj.b;
 					var o = obj.c;
-					return fromSeq(
+					return $author$project$View$fromSeq(
 						_List_fromArray(
 							[
 								$author$project$Either$Right(
@@ -6979,14 +6979,99 @@ var $author$project$View$board = A2(
 				])),
 		$Chadtech$elm_vector$Vector3$toList),
 	$Chadtech$elm_vector$Vector3$indexedMap($author$project$View$aisle));
-var $author$project$View$view = function (model) {
+var $elm$core$List$partition = F2(
+	function (pred, list) {
+		var step = F2(
+			function (x, _v0) {
+				var trues = _v0.a;
+				var falses = _v0.b;
+				return pred(x) ? _Utils_Tuple2(
+					A2($elm$core$List$cons, x, trues),
+					falses) : _Utils_Tuple2(
+					trues,
+					A2($elm$core$List$cons, x, falses));
+			});
+		return A3(
+			$elm$core$List$foldr,
+			step,
+			_Utils_Tuple2(_List_Nil, _List_Nil),
+			list);
+	});
+var $author$project$Utils$groupBy = F2(
+	function (f, items) {
+		if (!items.b) {
+			return _List_Nil;
+		} else {
+			var h = items.a;
+			var t = items.b;
+			var _v1 = A2(
+				$elm$core$List$partition,
+				f(h),
+				t);
+			var eqis = _v1.a;
+			var neqis = _v1.b;
+			var front = ($elm$core$List$length(eqis) > 0) ? $elm$core$List$cons(eqis) : $elm$core$Basics$identity;
+			return front(
+				A2($author$project$Utils$groupBy, f, neqis));
+		}
+	});
+var $author$project$Utils$group = $author$project$Utils$groupBy($elm$core$Basics$eq);
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$Utils$count = A2(
+	$elm$core$Basics$composeL,
+	$elm$core$List$filterMap(
+		function (ls) {
+			return A2(
+				$elm$core$Maybe$map,
+				function (x) {
+					return _Utils_Tuple2(
+						x,
+						$elm$core$List$length(ls));
+				},
+				$elm$core$List$head(ls));
+		}),
+	$author$project$Utils$group);
+var $author$project$View$player = function (p) {
+	var vcount = $author$project$Utils$count(p.veggies);
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
-		_List_fromArray(
-			[
-				$author$project$View$board(model.body.board)
-			]));
+		$author$project$View$fromSeq(
+			A2(
+				$elm$core$List$concatMap,
+				function (_v0) {
+					var v = _v0.a;
+					var n = _v0.b;
+					return _List_fromArray(
+						[
+							$author$project$Either$Left(
+							$elm$core$String$fromInt(n) + 'x'),
+							$author$project$Either$Right(
+							A3($author$project$View$getVeggieImg, v, false, $elm$core$Maybe$Nothing))
+						]);
+				},
+				vcount)));
+};
+var $author$project$View$view = function (model) {
+	var ps = A2(
+		$elm$core$List$filterMap,
+		$elm$core$Basics$identity,
+		$Chadtech$elm_vector$Vector6$toList(model.body.players));
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		A2(
+			$elm$core$List$cons,
+			$author$project$View$board(model.body.board),
+			A2($elm$core$List$map, $author$project$View$player, ps)));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{init: $author$project$Model$init, subscriptions: $author$project$Main$subscriptions, update: $author$project$Update$update, view: $author$project$View$view});

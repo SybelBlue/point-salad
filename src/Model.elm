@@ -7,9 +7,16 @@ import Card exposing (Card)
 import Utils exposing (withNone)
 import Cards exposing (cards)
 import Message exposing (Msg, Selection)
-import Flags exposing (Flags)
 import Tuple exposing (pair)
 import Vector6
+
+
+{-| (# of Players, this player's id, start seed) -}
+type alias Flags = 
+    { playerCount : Int
+    , rawPlayerId : Int
+    , seed : Seed
+    }
 
 type alias Model =
     { body : GameBody

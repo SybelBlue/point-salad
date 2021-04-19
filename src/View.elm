@@ -13,8 +13,10 @@ import Message exposing (Msg)
 import Game exposing (Aisle, Board)
 import Veggie exposing (Veggie)
 import Card exposing (Card(..), Objective(..))
-import Utils exposing (maybeAsList)
+import Utils exposing (maybeAsList, count)
 import Either exposing (..)
+import Vector6
+import Game exposing (Player)
 
 getVeggieImgPath : Veggie -> String
 getVeggieImgPath v = "res/" ++ String.toLower (Veggie.toString v) ++ ".jpeg"
@@ -28,13 +30,16 @@ getVeggieImg v big m =
      ] ++ maybeAsList (Maybe.map onClick m))
     []
 
+spandext : String -> Html msg
+spandext = span [] << singleton << text
+
+fromSeq : List (Either String (Html Msg)) -> List (Html Msg)
+fromSeq = singleton << div [ ] << List.map (either spandext identity)
+
 objective : Objective -> Html Msg
 objective obj =
   let  
-    spandext = span [] << singleton << text
     singleText = singleton << spandext
-    fromSeq : List (Either String (Html Msg)) -> List (Html Msg)
-    fromSeq = singleton << div [ ] << List.map (either spandext identity)
     simpleVeggieImg v = getVeggieImg v False Nothing
   in
     div [ class "objective" ] <|
@@ -74,7 +79,7 @@ card i c =
 aisle : Index -> Aisle -> Html Msg
 aisle i (c, v0, v1) = 
   div 
-    [ class "column" ] 
+    [ class "column" ]
     [ card i c
     , hr [] []
     , getVeggieImg v0 True <| Just <| Message.Selected { item = Right { veggie = v0, first = True }, aisle = i }
@@ -85,8 +90,16 @@ board : Board -> Html Msg
 board =
   div [ class "row" ] << Vector3.toList << indexedMap aisle
 
+player : Player -> Html Msg
+player p = 
+  let 
+    vcount = count p.veggies
+  in div [] <| fromSeq <| List.concatMap (\(v, n) -> [Left <| fromInt n ++ "x", Right <| getVeggieImg v False Nothing]) vcount
+
 view : Model -> Html Msg
 view model =
-  div []
-    [ board model.body.board
-    ]
+  let
+      ps = List.filterMap identity <| Vector6.toList model.body.players
+  in div [] <| 
+    board model.body.board :: List.map player ps
+
