@@ -54,6 +54,7 @@ update (Selected s) model = withNone <|
                 , simply clearSelected
                 ]
                 model
+
         Save r ->
             { model | selected = Just r }
     
