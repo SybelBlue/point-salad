@@ -6258,22 +6258,62 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
-var $author$project$SideEffect$bind = F2(
-	function (sa, fasb) {
-		return $author$project$SideEffect$SE(
-			function (se) {
-				var _v0 = A2($author$project$SideEffect$run, sa, se);
-				var a = _v0.a;
-				var nse = _v0.b;
-				return A2(
-					$author$project$SideEffect$run,
-					fasb(a),
-					nse);
-			});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $author$project$SideEffect$do = function (sunits) {
+	if (!sunits.b) {
+		return $elm$core$Basics$identity;
+	} else {
+		var sunit = sunits.a;
+		var rest = sunits.b;
+		return A2(
+			$elm$core$Basics$composeL,
+			A2(
+				$elm$core$Basics$composeL,
+				$author$project$SideEffect$do(rest),
+				$elm$core$Tuple$second),
+			$author$project$SideEffect$run(sunit));
+	}
+};
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $author$project$Utils$maybe = F2(
+	function (x, f) {
+		return A2(
+			$elm$core$Basics$composeL,
+			$elm$core$Maybe$withDefault(x),
+			$elm$core$Maybe$map(f));
 	});
 var $elm$core$Tuple$pair = F2(
 	function (a, b) {
 		return _Utils_Tuple2(a, b);
+	});
+var $elm_community$basics_extra$Basics$Extra$uncurry = F2(
+	function (f, _v0) {
+		var a = _v0.a;
+		var b = _v0.b;
+		return A2(f, a, b);
+	});
+var $author$project$SideEffect$bind = F2(
+	function (sa, fasb) {
+		return $author$project$SideEffect$SE(
+			A2(
+				$elm$core$Basics$composeL,
+				A2(
+					$elm$core$Basics$composeL,
+					$elm_community$basics_extra$Basics$Extra$uncurry($author$project$SideEffect$run),
+					$elm$core$Tuple$mapFirst(fasb)),
+				$author$project$SideEffect$run(sa)));
 	});
 var $author$project$Model$fromUpdate = F2(
 	function (famm, a) {
@@ -6433,12 +6473,6 @@ var $author$project$Game$swapCard = F3(
 				body,
 				{board: newBoard}));
 	});
-var $elm_community$basics_extra$Basics$Extra$uncurry = F2(
-	function (f, _v0) {
-		var a = _v0.a;
-		var b = _v0.b;
-		return A2(f, a, b);
-	});
 var $author$project$Update$replacePickedCard = F3(
 	function (selection, replacement, model) {
 		var giveCurrent = $elm_community$basics_extra$Basics$Extra$uncurry(
@@ -6503,26 +6537,21 @@ var $author$project$Update$update = F2(
 							model,
 							{selected: $elm$core$Maybe$Nothing});
 					case 'Accept':
-						var _v2 = A2(
-							$author$project$SideEffect$run,
-							$author$project$Update$runSelection(s),
+						var prevCard = A3(
+							$author$project$Utils$maybe,
+							$elm$core$Tuple$pair(_Utils_Tuple0),
+							A2($elm$core$Basics$composeL, $author$project$SideEffect$run, $author$project$Update$runSelection),
+							model.selected);
+						var newModel = A2(
+							$author$project$SideEffect$do,
+							_List_fromArray(
+								[
+									$author$project$SideEffect$SE(prevCard),
+									$author$project$Update$runSelection(s)
+								]),
 							model);
-						var afterCurr = _v2.b;
-						var _v3 = function () {
-							var _v4 = model.selected;
-							if (_v4.$ === 'Nothing') {
-								return _Utils_Tuple2(_Utils_Tuple0, afterCurr);
-							} else {
-								var prevSelection = _v4.a;
-								return A2(
-									$author$project$SideEffect$run,
-									$author$project$Update$runSelection(prevSelection),
-									model);
-							}
-						}();
-						var afterCards = _v3.b;
 						return _Utils_update(
-							afterCards,
+							newModel,
 							{selected: $elm$core$Maybe$Nothing});
 					default:
 						var r = _v1.a;
@@ -6571,16 +6600,6 @@ var $author$project$View$getVeggieImgPath = function (v) {
 		$author$project$Veggie$toString(v)) + '.jpeg');
 };
 var $elm$html$Html$img = _VirtualDom_node('img');
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $elm$core$List$singleton = function (value) {
 	return _List_fromArray(
 		[value]);

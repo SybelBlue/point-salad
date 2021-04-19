@@ -29,6 +29,9 @@ intoAction da = SE (\model ->
 
 type alias ModelUpdate a = a -> Model -> Model
 
+simply : (Model -> Model) -> GameAction ()
+simply fmm = SE (pair () << fmm)
+
 fromUpdate : ModelUpdate a -> (a -> GameAction ())
 fromUpdate famm a = SE (pair () << famm a)
 
@@ -36,7 +39,11 @@ bindUpdate : GameAction a -> ModelUpdate a -> GameAction ()
 bindUpdate ga = bind ga << fromUpdate
 
 draw : GameAction Card
-draw = fmap (\c -> Debug.log ("draw: " ++ Debug.toString c) c) <| intoAction Draw.card
+draw = intoAction Draw.card
+
+clearSelected : Model -> Model
+clearSelected model = 
+    { model | selected = Nothing }
 
 init : Flags -> (Model, Cmd Msg)
 init flags = 

@@ -14,3 +14,6 @@ maybeAsList = Maybe.withDefault [] << Maybe.map List.singleton
 
 const : a -> b -> a
 const x _ = x
+
+maybe : b -> (a -> b) -> Maybe a -> b
+maybe x f = Maybe.withDefault x << Maybe.map f
