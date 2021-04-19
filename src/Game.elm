@@ -6,8 +6,13 @@ import Vector3 exposing (Vector3)
 import Vector6 exposing (Vector6, Index(..), nextIndex)
 import Message exposing (Selection)
 import Either exposing (Either(..), either)
-import Card exposing (isGlobalObjective)
+import Card exposing (hasGlobalObjective)
 import Utils exposing (maybe)
+import Card exposing (Objective)
+import Card exposing (Objective(..))
+import Basics.Extra exposing (flip)
+import Basics.Extra exposing (safeIntegerDivide)
+import Utils exposing (count)
 
 
 type alias PlayerId = Index
@@ -83,19 +88,66 @@ givePlayerPicked pid ecv body =
                         oldPlayer
             in { body | players = Vector6.set pid (Just nplayer) body.players }
 
+scoreObjective : Vector6 (List Veggie) -> PlayerId -> Objective -> Int
+scoreObjective veggies pid obj =
+    let
+        pVeggies = Vector6.get pid veggies
+        numOfVeggie v = List.length << List.filter (\x -> v == x)
+        
+        isBest : (List Int -> Maybe Int) -> (List Veggie -> Int) -> Int -> Int
+        isBest folder scorer p = 
+            let
+                best = Maybe.withDefault 0 << folder << Vector6.toList << Vector6.map scorer
+            in
+                if scorer pVeggies == best veggies
+                    then p
+                    else 0
+    in 
+        case obj of
+            Most v p -> 
+                isBest List.maximum (numOfVeggie v) p
+
+            Fewest v p ->
+                isBest List.minimum (numOfVeggie v) p
+
+            MostTotal p ->
+                isBest List.maximum List.length p
+
+            FewestTotal p ->
+                isBest List.minimum List.length p
+
+            Combo vs p ->
+                maybe 0 ((*) p) <| List.minimum <| List.map (flip numOfVeggie pVeggies) vs
+
+            Stacked v n p ->
+                maybe 0 ((*) p) <| safeIntegerDivide n <| numOfVeggie v pVeggies
+
+            Items vd ->
+                List.sum <| List.map (\(v, p) -> p * numOfVeggie v pVeggies) <| Veggie.entries vd
+
+            PerTypeWith n p ->
+                p * (List.length <| List.filter (Tuple.second >> (\x -> x >= n)) <| count <| pVeggies)
+
+            PerMissing p ->
+                p * (6 - (List.length <| count <| pVeggies))
+
+            EvenOdd v e o ->
+                if modBy 2 (numOfVeggie v pVeggies) == 0 then e else o
+
 scores : GameBody -> Vector6 Int
 scores gbody =
     let
         globalObjs = 
-            List.filter isGlobalObjective <| 
-             List.map .objective <|
+            List.map .objective <|
+             List.filter hasGlobalObjective <| 
               List.concatMap (maybe [] (.objectiveCards)) <| 
                Vector6.toList gbody.players
         ps = gbody.players
-        -- score player = 
-        --     let
-        --         objectives =
-        --     in
-            
+        scoreP : Player -> Int
+        scoreP player = 
+            let
+                personalObjs = List.map .objective player.objectiveCards
+            in
+                0
     in
         Debug.todo "finish me"
