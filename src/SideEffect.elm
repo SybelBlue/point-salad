@@ -1,5 +1,5 @@
 module SideEffect exposing (..)
-import Tuple exposing (mapFirst, pair)
+import Tuple exposing (mapFirst, second, pair)
 import Basics.Extra exposing (uncurry)
 
 {-| A monadic generic side effect isolator 
@@ -11,6 +11,13 @@ type SE se res = SE (se -> (res, se))
 {-| Unwraps a side-effect object -}
 run : SE se res -> se -> (res, se)
 run (SE f) = f
+
+{-| Sequentially composes side effect operations -}
+do : List (SE se ()) -> se -> se
+do sunits =
+    case sunits of
+       [] -> identity
+       sunit :: rest -> do rest << second << run sunit
 
 {-| Returns a new side effect object -}
 return : res -> SE se res

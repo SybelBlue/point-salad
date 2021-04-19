@@ -36,7 +36,7 @@ bindUpdate : GameAction a -> ModelUpdate a -> GameAction ()
 bindUpdate ga = bind ga << fromUpdate
 
 draw : GameAction Card
-draw = intoAction Draw.card
+draw = fmap (\c -> Debug.log ("draw: " ++ Debug.toString c) c) <| intoAction Draw.card
 
 init : Flags -> (Model, Cmd Msg)
 init flags = 

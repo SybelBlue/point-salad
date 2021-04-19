@@ -6258,22 +6258,18 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
-var $elm_community$basics_extra$Basics$Extra$uncurry = F2(
-	function (f, _v0) {
-		var a = _v0.a;
-		var b = _v0.b;
-		return A2(f, a, b);
-	});
 var $author$project$SideEffect$bind = F2(
 	function (sa, fasb) {
 		return $author$project$SideEffect$SE(
-			A2(
-				$elm$core$Basics$composeL,
-				A2(
-					$elm$core$Basics$composeL,
-					$elm_community$basics_extra$Basics$Extra$uncurry($author$project$SideEffect$run),
-					$elm$core$Tuple$mapFirst(fasb)),
-				$author$project$SideEffect$run(sa)));
+			function (se) {
+				var _v0 = A2($author$project$SideEffect$run, sa, se);
+				var a = _v0.a;
+				var nse = _v0.b;
+				return A2(
+					$author$project$SideEffect$run,
+					fasb(a),
+					nse);
+			});
 	});
 var $elm$core$Tuple$pair = F2(
 	function (a, b) {
@@ -6306,7 +6302,17 @@ var $author$project$Model$intoAction = function (da) {
 					{seData: nse}));
 		});
 };
-var $author$project$Model$draw = $author$project$Model$intoAction($author$project$Draw$card);
+var $elm$core$Debug$log = _Debug_log;
+var $elm$core$Debug$toString = _Debug_toString;
+var $author$project$Model$draw = A2(
+	$author$project$SideEffect$fmap,
+	function (c) {
+		return A2(
+			$elm$core$Debug$log,
+			'draw: ' + $elm$core$Debug$toString(c),
+			c);
+	},
+	$author$project$Model$intoAction($author$project$Draw$card));
 var $author$project$Either$either = F3(
 	function (f, g, e) {
 		if (e.$ === 'Left') {
@@ -6427,6 +6433,12 @@ var $author$project$Game$swapCard = F3(
 				body,
 				{board: newBoard}));
 	});
+var $elm_community$basics_extra$Basics$Extra$uncurry = F2(
+	function (f, _v0) {
+		var a = _v0.a;
+		var b = _v0.b;
+		return A2(f, a, b);
+	});
 var $author$project$Update$replacePickedCard = F3(
 	function (selection, replacement, model) {
 		var giveCurrent = $elm_community$basics_extra$Basics$Extra$uncurry(
@@ -6437,10 +6449,17 @@ var $author$project$Update$replacePickedCard = F3(
 			model,
 			{body: newBody});
 	});
-var $author$project$Update$runSelection = A2(
-	$elm$core$Basics$composeL,
-	$author$project$Model$bindUpdate($author$project$Model$draw),
-	$author$project$Update$replacePickedCard);
+var $author$project$Update$runSelection = function (s) {
+	return A3(
+		$elm$core$Basics$composeL,
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$core$Debug$log(
+				'running: ' + $elm$core$Debug$toString(s)),
+			$author$project$Model$bindUpdate($author$project$Model$draw)),
+		$author$project$Update$replacePickedCard,
+		s);
+};
 var $author$project$Update$Accept = {$: 'Accept'};
 var $author$project$Update$Cancel = {$: 'Cancel'};
 var $author$project$Update$Save = function (a) {
@@ -6455,17 +6474,22 @@ var $author$project$Either$isLeft = function (e) {
 };
 var $author$project$Update$validSelection = F2(
 	function (s, model) {
-		if ($author$project$Either$isLeft(s.item)) {
-			return _Utils_eq(model.selected, $elm$core$Maybe$Nothing) ? $author$project$Update$Accept : $author$project$Update$Cancel;
-		} else {
-			var _v0 = model.selected;
-			if (_v0.$ === 'Nothing') {
-				return $author$project$Update$Save(s);
-			} else {
-				var ms = _v0.a;
-				return _Utils_eq(ms, s) ? $author$project$Update$Cancel : $author$project$Update$Accept;
-			}
-		}
+		return A2(
+			$elm$core$Debug$log,
+			'clicked: ' + $elm$core$Debug$toString(s),
+			function () {
+				if ($author$project$Either$isLeft(s.item)) {
+					return _Utils_eq(model.selected, $elm$core$Maybe$Nothing) ? $author$project$Update$Accept : $author$project$Update$Cancel;
+				} else {
+					var _v0 = model.selected;
+					if (_v0.$ === 'Nothing') {
+						return $author$project$Update$Save(s);
+					} else {
+						var ms = _v0.a;
+						return _Utils_eq(ms, s) ? $author$project$Update$Cancel : $author$project$Update$Accept;
+					}
+				}
+			}());
 	});
 var $author$project$Update$update = F2(
 	function (_v0, model) {

@@ -18,7 +18,7 @@ replacePickedCard selection replacement model =
         { model | body = newBody }
 
 runSelection : Selection -> GameAction ()
-runSelection = bindUpdate draw << replacePickedCard
+runSelection s = Debug.log ("running: " ++ Debug.toString s) << bindUpdate draw << replacePickedCard <| s
 
 
 type SelectionOutcome
@@ -27,7 +27,7 @@ type SelectionOutcome
     | Cancel
 
 validSelection : Selection -> Model -> SelectionOutcome
-validSelection s model = 
+validSelection s model = Debug.log ("clicked: " ++ Debug.toString s) <|
     if isLeft s.item
         then
             if model.selected == Nothing 
