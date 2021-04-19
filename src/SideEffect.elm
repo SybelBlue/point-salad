@@ -14,7 +14,14 @@ type SE se res = SE (se -> (res, se))
 run : SE se res -> se -> (res, se)
 run (SE f) = f
 
-{-| Sequentially composes side effect operations -}
+{-| Composes to side effects, ignoring the 
+    result of the first (but chaining side effects),
+    see Haskell's (>>)
+-}
+seq : SE se a -> SE se b -> SE se b
+seq sa sb = SE (run sa >> second >> run sb)
+
+{-| Sequentially composes simple side effect operations -}
 do : List (SE se ()) -> se -> se
 do sunits =
     case sunits of
