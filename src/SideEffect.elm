@@ -3,6 +3,7 @@ import Tuple exposing (mapFirst, second, pair)
 import Basics.Extra exposing (uncurry)
 import Utils exposing (maybe)
 import Basics.Extra exposing (flip)
+import List exposing (foldl)
 
 {-| A monadic generic side effect isolator 
 
@@ -20,6 +21,12 @@ run (SE f) = f
 -}
 seq : SE se a -> SE se b -> SE se b
 seq sa sb = SE (run sa >> second >> run sb)
+
+{-| Folds left over as with a starting b to create a
+    using a folding function to create Se se b
+-}
+foldSe : (a -> b -> SE se b) -> b -> List a -> SE se b
+foldSe fabsb = foldl (flip bind << fabsb) << return
 
 {-| Sequentially composes simple side effect operations -}
 do : List (SE se ()) -> se -> se
