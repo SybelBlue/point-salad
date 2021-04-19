@@ -17,6 +17,24 @@ type Objective
     | EvenOdd Veggie Points Points  -- always _ 7 3
 
 
+isGlobalObjective : Objective -> Bool
+isGlobalObjective o =
+    case o of
+        Most _ _ ->
+            True
+        
+        Fewest _ _ ->
+            True
+        
+        MostTotal _ ->
+            True
+        
+        FewestTotal _ -> 
+            True
+
+        _ ->
+            False
+
 type Card = Card Int Veggie Objective
 
 id : Card -> Int

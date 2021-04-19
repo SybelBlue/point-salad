@@ -17,6 +17,7 @@ import Utils exposing (maybeAsList, count)
 import Either exposing (..)
 import Vector6
 import Game exposing (Player)
+import Game exposing (PlayerId)
 
 getVeggieImgPath : Veggie -> String
 getVeggieImgPath v = "res/" ++ String.toLower (Veggie.toString v) ++ ".jpeg"
@@ -90,17 +91,23 @@ board : Board -> Html Msg
 board =
   div [ class "row" ] << Vector3.toList << indexedMap aisle
 
-player : Player -> Html Msg
-player p = 
+player : PlayerId -> Player -> Html Msg
+player playing p = 
   let 
     vcount = count p.veggies
     sorted = List.sortBy (Veggie.toInt << Tuple.first) vcount
-  in div [] <| fromSeq <| List.concatMap (\(v, n) -> [Left <| fromInt n ++ "x", Right <| getVeggieImg v False Nothing]) sorted
+    heading = if playing == p.id then b else div
+    vegMap (v, n) = [ Left <| fromInt n ++ "x", Right <| getVeggieImg v False Nothing ]
+  in div [] <|
+    [ heading [] [ text <| "Player " ++ fromInt (1 + Vector6.indexToInt p.id) ] 
+    , div [] <| fromSeq <| List.concatMap vegMap sorted
+    , div [] <| List.map (objective << Card.objective) p.objectiveCards
+    ]
 
 view : Model -> Html Msg
 view model =
   let
       ps = List.filterMap identity <| Vector6.toList model.body.players
   in div [] <| 
-    board model.body.board :: List.map player ps
+    board model.body.board :: List.map (player model.body.playing) ps
 

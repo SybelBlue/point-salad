@@ -6,6 +6,9 @@ import Vector3 exposing (Vector3)
 import Vector6 exposing (Vector6, Index(..), nextIndex)
 import Message exposing (Selection)
 import Either exposing (Either(..), either)
+import Card exposing (isGlobalObjective)
+import Utils exposing (maybe)
+import Card exposing (objective)
 
 
 type alias PlayerId = Index
@@ -80,4 +83,20 @@ givePlayerPicked pid ecv body =
                         ecv
                         oldPlayer
             in { body | players = Vector6.set pid (Just nplayer) body.players }
-    
+
+scores : GameBody -> Vector6 Int
+scores gbody =
+    let
+        globalObjs = 
+            List.filter isGlobalObjective <| 
+             List.map objective <|
+              List.concatMap (maybe [] (.objectiveCards)) <| 
+               Vector6.toList gbody.players
+        ps = gbody.players
+        -- score player = 
+        --     let
+        --         objectives =
+        --     in
+            
+    in
+        Debug.todo "finish me"

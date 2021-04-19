@@ -7028,6 +7028,7 @@ var $author$project$View$board = A2(
 				])),
 		$Chadtech$elm_vector$Vector3$toList),
 	$Chadtech$elm_vector$Vector3$indexedMap($author$project$View$aisle));
+var $elm$html$Html$b = _VirtualDom_node('b');
 var $elm$core$List$partition = F2(
 	function (pred, list) {
 		var step = F2(
@@ -7106,31 +7107,53 @@ var $author$project$Veggie$toInt = function (v) {
 			return 5;
 	}
 };
-var $author$project$View$player = function (p) {
-	var vcount = $author$project$Utils$count(p.veggies);
-	var sorted = A2(
-		$elm$core$List$sortBy,
-		A2($elm$core$Basics$composeL, $author$project$Veggie$toInt, $elm$core$Tuple$first),
-		vcount);
-	return A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		$author$project$View$fromSeq(
-			A2(
-				$elm$core$List$concatMap,
-				function (_v0) {
-					var v = _v0.a;
-					var n = _v0.b;
-					return _List_fromArray(
+var $author$project$View$player = F2(
+	function (playing, p) {
+		var vegMap = function (_v0) {
+			var v = _v0.a;
+			var n = _v0.b;
+			return _List_fromArray(
+				[
+					$author$project$Either$Left(
+					$elm$core$String$fromInt(n) + 'x'),
+					$author$project$Either$Right(
+					A3($author$project$View$getVeggieImg, v, false, $elm$core$Maybe$Nothing))
+				]);
+		};
+		var vcount = $author$project$Utils$count(p.veggies);
+		var sorted = A2(
+			$elm$core$List$sortBy,
+			A2($elm$core$Basics$composeL, $author$project$Veggie$toInt, $elm$core$Tuple$first),
+			vcount);
+		var heading = _Utils_eq(playing, p.id) ? $elm$html$Html$b : $elm$html$Html$div;
+		return A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					heading,
+					_List_Nil,
+					_List_fromArray(
 						[
-							$author$project$Either$Left(
-							$elm$core$String$fromInt(n) + 'x'),
-							$author$project$Either$Right(
-							A3($author$project$View$getVeggieImg, v, false, $elm$core$Maybe$Nothing))
-						]);
-				},
-				sorted)));
-};
+							$elm$html$Html$text(
+							'Player ' + $elm$core$String$fromInt(
+								1 + $Chadtech$elm_vector$Vector6$indexToInt(p.id)))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					$author$project$View$fromSeq(
+						A2($elm$core$List$concatMap, vegMap, sorted))),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					A2(
+						$elm$core$List$map,
+						A2($elm$core$Basics$composeL, $author$project$View$objective, $author$project$Card$objective),
+						p.objectiveCards))
+				]));
+	});
 var $author$project$View$view = function (model) {
 	var ps = A2(
 		$elm$core$List$filterMap,
@@ -7142,7 +7165,10 @@ var $author$project$View$view = function (model) {
 		A2(
 			$elm$core$List$cons,
 			$author$project$View$board(model.body.board),
-			A2($elm$core$List$map, $author$project$View$player, ps)));
+			A2(
+				$elm$core$List$map,
+				$author$project$View$player(model.body.playing),
+				ps)));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{init: $author$project$Model$init, subscriptions: $author$project$Main$subscriptions, update: $author$project$Update$update, view: $author$project$View$view});
