@@ -6262,6 +6262,68 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
+var $Chadtech$elm_vector$Vector6$nextIndex = function (index) {
+	switch (index.$) {
+		case 'Index0':
+			return $elm$core$Maybe$Just($Chadtech$elm_vector$Vector6$Index1);
+		case 'Index1':
+			return $elm$core$Maybe$Just($Chadtech$elm_vector$Vector6$Index2);
+		case 'Index2':
+			return $elm$core$Maybe$Just($Chadtech$elm_vector$Vector6$Index3);
+		case 'Index3':
+			return $elm$core$Maybe$Just($Chadtech$elm_vector$Vector6$Index4);
+		case 'Index4':
+			return $elm$core$Maybe$Just($Chadtech$elm_vector$Vector6$Index5);
+		default:
+			return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$Game$advancePlayer = function (game) {
+	advancePlayer:
+	while (true) {
+		var next = _Utils_update(
+			game,
+			{
+				playing: A2(
+					$elm$core$Debug$log,
+					'next playing',
+					A2(
+						$elm$core$Maybe$withDefault,
+						$Chadtech$elm_vector$Vector6$Index0,
+						$Chadtech$elm_vector$Vector6$nextIndex(game.playing)))
+			});
+		if (_Utils_eq(
+			A2($Chadtech$elm_vector$Vector6$get, next.playing, next.players),
+			$elm$core$Maybe$Nothing)) {
+			var $temp$game = next;
+			game = $temp$game;
+			continue advancePlayer;
+		} else {
+			return next;
+		}
+	}
+};
+var $elm$core$Tuple$pair = F2(
+	function (a, b) {
+		return _Utils_Tuple2(a, b);
+	});
+var $author$project$Model$simply = function (mapping) {
+	return $author$project$SideEffect$SE(
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$core$Tuple$pair(_Utils_Tuple0),
+			mapping));
+};
+var $author$project$Model$basically = function (f) {
+	return $author$project$Model$simply(
+		function (model) {
+			return _Utils_update(
+				model,
+				{
+					body: f(model.body)
+				});
+		});
+};
 var $author$project$Model$clearSelected = function (model) {
 	return _Utils_update(
 		model,
@@ -6302,10 +6364,6 @@ var $author$project$Utils$maybe = F2(
 			$elm$core$Basics$composeL,
 			$elm$core$Maybe$withDefault(x),
 			$elm$core$Maybe$map(f));
-	});
-var $elm$core$Tuple$pair = F2(
-	function (a, b) {
-		return _Utils_Tuple2(a, b);
 	});
 var $author$project$SideEffect$return = A2($elm$core$Basics$composeL, $author$project$SideEffect$SE, $elm$core$Tuple$pair);
 var $author$project$SideEffect$ifJust = $elm_community$basics_extra$Basics$Extra$flip(
@@ -6485,7 +6543,7 @@ var $author$project$Game$swapCard = F3(
 var $author$project$Update$replacePickedCard = F3(
 	function (selection, replacement, model) {
 		var giveCurrent = $elm_community$basics_extra$Basics$Extra$uncurry(
-			$author$project$Game$givePlayerPicked(model.pid));
+			$author$project$Game$givePlayerPicked(model.body.playing));
 		var newBody = giveCurrent(
 			A3($author$project$Game$swapCard, selection, replacement, model.body));
 		return _Utils_update(
@@ -6496,13 +6554,6 @@ var $author$project$Update$runSelection = A2(
 	$elm$core$Basics$composeL,
 	$author$project$Model$bindUpdate($author$project$Model$draw),
 	$author$project$Update$replacePickedCard);
-var $author$project$Model$simply = function (mapping) {
-	return $author$project$SideEffect$SE(
-		A2(
-			$elm$core$Basics$composeL,
-			$elm$core$Tuple$pair(_Utils_Tuple0),
-			mapping));
-};
 var $author$project$Update$Accept = {$: 'Accept'};
 var $author$project$Update$Cancel = {$: 'Cancel'};
 var $author$project$Update$Save = function (a) {
@@ -6545,7 +6596,8 @@ var $author$project$Update$update = F2(
 								[
 									A2($author$project$SideEffect$ifJust, model.selected, $author$project$Update$runSelection),
 									$author$project$Update$runSelection(s),
-									$author$project$Model$simply($author$project$Model$clearSelected)
+									$author$project$Model$simply($author$project$Model$clearSelected),
+									$author$project$Model$basically($author$project$Game$advancePlayer)
 								]),
 							model);
 					default:

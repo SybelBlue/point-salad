@@ -39,6 +39,9 @@ type alias ModelUpdate a = a -> Model -> Model
 simply : (Model -> Model) -> GameAction ()
 simply mapping = SE (pair () << mapping)
 
+basically : (GameBody -> GameBody) -> GameAction ()
+basically f = simply (\model -> { model | body = f model.body })
+
 fromUpdate : ModelUpdate a -> (a -> GameAction ())
 fromUpdate aToMapping a = SE (pair () << aToMapping a)
 

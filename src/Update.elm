@@ -8,11 +8,13 @@ import Card exposing (Card)
 import Game exposing (swapCard, givePlayerPicked)
 import Basics.Extra exposing (uncurry)
 import SideEffect exposing (SE(..), do, ifJust)
+import Game exposing (advancePlayer)
+import Model exposing (basically)
 
 replacePickedCard : Selection -> ModelUpdate Card
 replacePickedCard selection replacement model = 
     let
-        giveCurrent = uncurry (givePlayerPicked model.pid)
+        giveCurrent = uncurry (givePlayerPicked model.body.playing)
         newBody = giveCurrent <| swapCard selection replacement model.body
     in
         { model | body = newBody }
@@ -52,6 +54,7 @@ update (Selected s) model = withNone <|
             do  [ ifJust model.selected runSelection
                 , runSelection s
                 , simply clearSelected
+                , basically advancePlayer
                 ]
                 model
 

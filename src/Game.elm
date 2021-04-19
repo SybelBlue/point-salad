@@ -45,7 +45,7 @@ makePlayers n = Debug.log "players" <| Vector6.initializeFromIndex (\i -> if Vec
 advancePlayer : GameBody -> GameBody
 advancePlayer game = 
     let
-        next = { game | playing = Maybe.withDefault Index0 <| nextIndex game.playing }
+        next = { game | playing = Debug.log "next playing" <| Maybe.withDefault Index0 <| nextIndex game.playing }
     in
         if Vector6.get next.playing next.players == Nothing 
             then advancePlayer next
