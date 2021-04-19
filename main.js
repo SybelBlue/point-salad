@@ -6181,21 +6181,17 @@ var $Chadtech$elm_vector$Vector6$initializeFromIndex = function (f) {
 			n5: f($Chadtech$elm_vector$Vector6$Index5)
 		});
 };
-var $elm$core$Debug$log = _Debug_log;
 var $author$project$Game$newPlayer = function (id) {
 	return {id: id, objectiveCards: _List_Nil, veggies: _List_Nil};
 };
 var $author$project$Game$makePlayers = function (n) {
-	return A2(
-		$elm$core$Debug$log,
-		'players',
-		$Chadtech$elm_vector$Vector6$initializeFromIndex(
-			function (i) {
-				return (_Utils_cmp(
-					$Chadtech$elm_vector$Vector6$indexToInt(i),
-					n) < 0) ? $elm$core$Maybe$Just(
-					$author$project$Game$newPlayer(i)) : $elm$core$Maybe$Nothing;
-			}));
+	return $Chadtech$elm_vector$Vector6$initializeFromIndex(
+		function (i) {
+			return (_Utils_cmp(
+				$Chadtech$elm_vector$Vector6$indexToInt(i),
+				n) < 0) ? $elm$core$Maybe$Just(
+				$author$project$Game$newPlayer(i)) : $elm$core$Maybe$Nothing;
+		});
 };
 var $author$project$Draw$gameBody = function (playerCount) {
 	return A3(
@@ -6285,12 +6281,9 @@ var $author$project$Game$advancePlayer = function (game) {
 			game,
 			{
 				playing: A2(
-					$elm$core$Debug$log,
-					'next playing',
-					A2(
-						$elm$core$Maybe$withDefault,
-						$Chadtech$elm_vector$Vector6$Index0,
-						$Chadtech$elm_vector$Vector6$nextIndex(game.playing)))
+					$elm$core$Maybe$withDefault,
+					$Chadtech$elm_vector$Vector6$Index0,
+					$Chadtech$elm_vector$Vector6$nextIndex(game.playing))
 			});
 		if (_Utils_eq(
 			A2($Chadtech$elm_vector$Vector6$get, next.playing, next.players),
@@ -6424,16 +6417,11 @@ var $author$project$Either$either = F3(
 			return g(x);
 		}
 	});
-var $elm$core$Debug$toString = _Debug_toString;
 var $author$project$Game$givePlayerPicked = F3(
 	function (pid, ecv, body) {
 		var _v0 = A2($Chadtech$elm_vector$Vector6$get, pid, body.players);
 		if (_v0.$ === 'Nothing') {
-			return A2(
-				$elm$core$Debug$log,
-				'err: ' + $elm$core$Debug$toString(
-					_Utils_Tuple3(pid, ecv, body)),
-				body);
+			return body;
 		} else {
 			var oldPlayer = _v0.a;
 			var nplayer = A4(
@@ -6462,8 +6450,7 @@ var $author$project$Game$givePlayerPicked = F3(
 					players: A3(
 						$Chadtech$elm_vector$Vector6$set,
 						pid,
-						$elm$core$Maybe$Just(
-							A2($elm$core$Debug$log, 'giving', nplayer)),
+						$elm$core$Maybe$Just(nplayer),
 						body.players)
 				});
 		}
