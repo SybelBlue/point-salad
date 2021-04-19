@@ -1,6 +1,6 @@
 module Draw exposing (..)
 
-import Tuple exposing (mapFirst, pair)
+import Tuple exposing (mapFirst)
 
 import SideEffect exposing (..)
 import Game exposing (..)
@@ -34,9 +34,6 @@ card = SE (\(cards, seed) ->
 
 veggie : Draw Veggie
 veggie = fmap Card.veggie card
-
-cardPair : Draw (Card, Card)
-cardPair = liftA2 pair card card
 
 aisle : Draw Aisle
 aisle = liftA3 Game.aisle card veggie veggie
