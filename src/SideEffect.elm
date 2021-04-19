@@ -1,6 +1,8 @@
 module SideEffect exposing (..)
 import Tuple exposing (mapFirst, second, pair)
 import Basics.Extra exposing (uncurry)
+import Utils exposing (maybe)
+import Basics.Extra exposing (flip)
 
 {-| A monadic generic side effect isolator 
 
@@ -18,6 +20,12 @@ do sunits =
     case sunits of
        [] -> identity
        sunit :: rest -> do rest << second << run sunit
+
+{-| Primarily for use in a do block, if (Just x) then 
+    the function will run, else just return ()
+-}
+ifJust : Maybe a -> (a -> SE se ()) -> SE se ()
+ifJust = flip (maybe <| return ())
 
 {-| Returns a new side effect object -}
 return : res -> SE se res

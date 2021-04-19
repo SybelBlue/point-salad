@@ -30,10 +30,10 @@ intoAction da = SE (\model ->
 type alias ModelUpdate a = a -> Model -> Model
 
 simply : (Model -> Model) -> GameAction ()
-simply fmm = SE (pair () << fmm)
+simply mapping = SE (pair () << mapping)
 
 fromUpdate : ModelUpdate a -> (a -> GameAction ())
-fromUpdate famm a = SE (pair () << famm a)
+fromUpdate aToMapping a = SE (pair () << aToMapping a)
 
 bindUpdate : GameAction a -> ModelUpdate a -> GameAction ()
 bindUpdate ga = bind ga << fromUpdate

@@ -6303,6 +6303,10 @@ var $elm$core$Tuple$pair = F2(
 	function (a, b) {
 		return _Utils_Tuple2(a, b);
 	});
+var $author$project$SideEffect$return = A2($elm$core$Basics$composeL, $author$project$SideEffect$SE, $elm$core$Tuple$pair);
+var $author$project$SideEffect$ifJust = $elm_community$basics_extra$Basics$Extra$flip(
+	$author$project$Utils$maybe(
+		$author$project$SideEffect$return(_Utils_Tuple0)));
 var $elm_community$basics_extra$Basics$Extra$uncurry = F2(
 	function (f, _v0) {
 		var a = _v0.a;
@@ -6321,12 +6325,12 @@ var $author$project$SideEffect$bind = F2(
 				$author$project$SideEffect$run(sa)));
 	});
 var $author$project$Model$fromUpdate = F2(
-	function (famm, a) {
+	function (aToMapping, a) {
 		return $author$project$SideEffect$SE(
 			A2(
 				$elm$core$Basics$composeL,
 				$elm$core$Tuple$pair(_Utils_Tuple0),
-				famm(a)));
+				aToMapping(a)));
 	});
 var $author$project$Model$bindUpdate = function (ga) {
 	return A2(
@@ -6348,7 +6352,6 @@ var $author$project$Model$intoAction = function (da) {
 		});
 };
 var $author$project$Model$draw = $author$project$Model$intoAction($author$project$Draw$card);
-var $elm$core$Debug$log = _Debug_log;
 var $author$project$Either$either = F3(
 	function (f, g, e) {
 		if (e.$ === 'Left') {
@@ -6479,24 +6482,16 @@ var $author$project$Update$replacePickedCard = F3(
 			model,
 			{body: newBody});
 	});
-var $elm$core$Debug$toString = _Debug_toString;
-var $author$project$Update$runSelection = function (s) {
-	return A3(
-		$elm$core$Basics$composeL,
-		A2(
-			$elm$core$Basics$composeL,
-			$elm$core$Debug$log(
-				'running: ' + $elm$core$Debug$toString(s)),
-			$author$project$Model$bindUpdate($author$project$Model$draw)),
-		$author$project$Update$replacePickedCard,
-		s);
-};
-var $author$project$Model$simply = function (fmm) {
+var $author$project$Update$runSelection = A2(
+	$elm$core$Basics$composeL,
+	$author$project$Model$bindUpdate($author$project$Model$draw),
+	$author$project$Update$replacePickedCard);
+var $author$project$Model$simply = function (mapping) {
 	return $author$project$SideEffect$SE(
 		A2(
 			$elm$core$Basics$composeL,
 			$elm$core$Tuple$pair(_Utils_Tuple0),
-			fmm));
+			mapping));
 };
 var $author$project$Update$Accept = {$: 'Accept'};
 var $author$project$Update$Cancel = {$: 'Cancel'};
@@ -6512,22 +6507,17 @@ var $author$project$Either$isLeft = function (e) {
 };
 var $author$project$Update$validSelection = F2(
 	function (s, model) {
-		return A2(
-			$elm$core$Debug$log,
-			'clicked: ' + $elm$core$Debug$toString(s),
-			function () {
-				if ($author$project$Either$isLeft(s.item)) {
-					return _Utils_eq(model.selected, $elm$core$Maybe$Nothing) ? $author$project$Update$Accept : $author$project$Update$Cancel;
-				} else {
-					var _v0 = model.selected;
-					if (_v0.$ === 'Nothing') {
-						return $author$project$Update$Save(s);
-					} else {
-						var ms = _v0.a;
-						return _Utils_eq(ms, s) ? $author$project$Update$Cancel : $author$project$Update$Accept;
-					}
-				}
-			}());
+		if ($author$project$Either$isLeft(s.item)) {
+			return _Utils_eq(model.selected, $elm$core$Maybe$Nothing) ? $author$project$Update$Accept : $author$project$Update$Cancel;
+		} else {
+			var _v0 = model.selected;
+			if (_v0.$ === 'Nothing') {
+				return $author$project$Update$Save(s);
+			} else {
+				var ms = _v0.a;
+				return _Utils_eq(ms, s) ? $author$project$Update$Cancel : $author$project$Update$Accept;
+			}
+		}
 	});
 var $author$project$Update$update = F2(
 	function (_v0, model) {
@@ -6539,16 +6529,11 @@ var $author$project$Update$update = F2(
 					case 'Cancel':
 						return $author$project$Model$clearSelected(model);
 					case 'Accept':
-						var prevCard = A3(
-							$author$project$Utils$maybe,
-							$elm$core$Tuple$pair(_Utils_Tuple0),
-							A2($elm$core$Basics$composeL, $author$project$SideEffect$run, $author$project$Update$runSelection),
-							model.selected);
 						return A2(
 							$author$project$SideEffect$do,
 							_List_fromArray(
 								[
-									$author$project$SideEffect$SE(prevCard),
+									A2($author$project$SideEffect$ifJust, model.selected, $author$project$Update$runSelection),
 									$author$project$Update$runSelection(s),
 									$author$project$Model$simply($author$project$Model$clearSelected)
 								]),

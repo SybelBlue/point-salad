@@ -2,13 +2,12 @@ module Update exposing (update)
 
 import Model exposing (Model, ModelUpdate, GameAction, bindUpdate, draw, clearSelected, simply)
 import Message exposing (Msg(..), Selection)
-import Utils exposing (withNone, maybe)
+import Utils exposing (withNone)
 import Either exposing (isLeft)
 import Card exposing (Card)
 import Game exposing (swapCard, givePlayerPicked)
 import Basics.Extra exposing (uncurry)
-import Tuple exposing (pair)
-import SideEffect exposing (SE(..), do, run)
+import SideEffect exposing (SE(..), do, ifJust)
 
 replacePickedCard : Selection -> ModelUpdate Card
 replacePickedCard selection replacement model = 
@@ -50,14 +49,11 @@ update (Selected s) model = withNone <|
             clearSelected model
 
         Accept ->
-            let 
-                prevCard = maybe (pair ()) (run << runSelection) model.selected
-            in 
-                do [ SE prevCard
-                   , runSelection s
-                   , simply clearSelected
-                   ]
-                   model
+            do  [ ifJust model.selected runSelection
+                , runSelection s
+                , simply clearSelected
+                ]
+                model
         Save r ->
             { model | selected = Just r }
     
