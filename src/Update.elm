@@ -7,9 +7,8 @@ import Either exposing (isLeft)
 import Card exposing (Card)
 import Game exposing (swapCard, givePlayerPicked)
 import Basics.Extra exposing (uncurry)
-import SideEffect exposing (run)
 import Tuple exposing (pair)
-import SideEffect exposing (SE(..), do)
+import SideEffect exposing (SE(..), do, run)
 
 replacePickedCard : Selection -> ModelUpdate Card
 replacePickedCard selection replacement model = 
@@ -20,7 +19,7 @@ replacePickedCard selection replacement model =
         { model | body = newBody }
 
 runSelection : Selection -> GameAction ()
-runSelection s = Debug.log ("running: " ++ Debug.toString s) << bindUpdate draw << replacePickedCard <| s
+runSelection = bindUpdate draw << replacePickedCard
 
 
 type SelectionOutcome
@@ -29,7 +28,7 @@ type SelectionOutcome
     | Cancel
 
 validSelection : Selection -> Model -> SelectionOutcome
-validSelection s model = Debug.log ("clicked: " ++ Debug.toString s) <|
+validSelection s model =
     if isLeft s.item
         then
             if model.selected == Nothing 
