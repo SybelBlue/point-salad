@@ -1,18 +1,13 @@
 module Game exposing (..)
 
-import Card exposing (Card)
 import Veggie exposing (Veggie)
 import Vector3 exposing (Vector3)
 import Vector6 exposing (Vector6, Index(..), nextIndex)
 import Message exposing (Selection)
 import Either exposing (Either(..), either)
-import Card exposing (hasGlobalObjective)
-import Utils exposing (maybe)
-import Card exposing (Objective)
-import Card exposing (Objective(..))
-import Basics.Extra exposing (flip)
-import Basics.Extra exposing (safeIntegerDivide)
-import Utils exposing (count)
+import Card exposing (Card, Objective(..), isGlobalObjective)
+import Basics.Extra exposing (flip, safeIntegerDivide)
+import Utils exposing (maybe, count)
 
 
 type alias PlayerId = Index
@@ -138,16 +133,19 @@ scores : GameBody -> Vector6 Int
 scores gbody =
     let
         globalObjs = 
-            List.map .objective <|
-             List.filter hasGlobalObjective <| 
+            List.filter isGlobalObjective <|
+             List.map .objective <|
               List.concatMap (maybe [] (.objectiveCards)) <| 
                Vector6.toList gbody.players
-        ps = gbody.players
-        scoreP : Player -> Int
+        veggies = Vector6.map (maybe [] (.veggies)) gbody.players
         scoreP player = 
             let
-                personalObjs = List.map .objective player.objectiveCards
+                personalObjs = 
+                    List.filter (not << isGlobalObjective) <| 
+                      List.map .objective player.objectiveCards
             in
-                0
+                List.sum <| 
+                 List.map (scoreObjective veggies player.id) <| 
+                  globalObjs ++ personalObjs
     in
-        Debug.todo "finish me"
+        Vector6.map (maybe 0 scoreP) gbody.players
