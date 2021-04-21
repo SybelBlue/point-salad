@@ -5,8 +5,9 @@ import Message exposing ( Selection )
 import Veggie exposing ( Veggie )
 
 import Either exposing ( Either (..) , either )
-import Utils exposing ( count , maybe )
+import Utils exposing ( count , ifAsMaybe , maybe )
 
+import List exposing (..)
 import Vector3 exposing ( Vector3 )
 import Vector6 exposing ( Index (..) , Vector6 , nextIndex )
 
@@ -44,7 +45,7 @@ type alias GameBody =
     }
 
 makePlayers : Int -> Vector6 (Maybe Player)
-makePlayers n = Vector6.initializeFromIndex (\i -> if Vector6.indexToInt i < n then Just (newPlayer i) else Nothing)
+makePlayers n = Vector6.initializeFromIndex (\i -> ifAsMaybe (Vector6.indexToInt i < n) (newPlayer i))
 
 advancePlayer : GameBody -> GameBody
 advancePlayer game = 
@@ -89,12 +90,11 @@ scoreObjective : Vector6 (List Veggie) -> PlayerId -> Objective -> Int
 scoreObjective veggies pid obj =
     let
         pVeggies = Vector6.get pid veggies
-        numOfVeggie v = List.length << List.filter (\x -> v == x)
+        numOfVeggie v = length << filter (\x -> v == x)
         
-        isBest : (List Int -> Maybe Int) -> (List Veggie -> Int) -> Int -> Int
         isBest folder scorer p = 
             let
-                best = Maybe.withDefault 0 << folder << Vector6.toList << Vector6.map scorer
+                best = Maybe.withDefault 0 << folder << map scorer << Vector6.toList
             in
                 if scorer pVeggies == best veggies
                     then p
@@ -102,31 +102,31 @@ scoreObjective veggies pid obj =
     in 
         case obj of
             Most v p -> 
-                isBest List.maximum (numOfVeggie v) p
+                isBest maximum (numOfVeggie v) p
 
             Fewest v p ->
-                isBest List.minimum (numOfVeggie v) p
+                isBest minimum (numOfVeggie v) p
 
             MostTotal p ->
-                isBest List.maximum List.length p
+                isBest maximum length p
 
             FewestTotal p ->
-                isBest List.minimum List.length p
+                isBest minimum length p
 
             Combo vs p ->
-                maybe 0 ((*) p) <| List.minimum <| List.map (flip numOfVeggie pVeggies) vs
+                maybe 0 ((*) p) <| minimum <| map (flip numOfVeggie pVeggies) vs
 
             Stacked v n p ->
                 maybe 0 ((*) p) <| flip safeIntegerDivide n <| numOfVeggie v pVeggies
 
             Items vd ->
-                List.sum <| List.map (\(v, p) -> p * numOfVeggie v pVeggies) <| Veggie.entries vd
+                sum <| map (\(v, p) -> p * numOfVeggie v pVeggies) <| Veggie.entries vd
 
             PerTypeWith n p ->
-                p * (List.length <| List.filter ((\(_, x) -> x >= n)) <| count <| pVeggies)
+                p * (length <| filter ((\(_, x) -> x >= n)) <| count <| pVeggies)
 
             PerMissing p ->
-                p * (6 - (List.length <| count <| pVeggies))
+                p * (6 - (length <| count <| pVeggies))
 
             EvenOdd v e o ->
                 if modBy 2 (numOfVeggie v pVeggies) == 0 then e else o
@@ -135,19 +135,19 @@ scores : GameBody -> Vector6 Int
 scores gbody =
     let
         globalObjs = 
-            List.filter isGlobalObjective <|
-             List.map .objective <|
-              List.concatMap (maybe [] (.objectiveCards)) <| 
+            filter isGlobalObjective <|
+             map .objective <|
+              concatMap (maybe [] (.objectiveCards)) <| 
                Vector6.toList gbody.players
         veggies = Vector6.map (maybe [] (.veggies)) gbody.players
         scoreP player = 
             let
                 personalObjs = 
-                    List.filter (not << isGlobalObjective) <| 
-                      List.map .objective player.objectiveCards
+                    filter (not << isGlobalObjective) <| 
+                      map .objective player.objectiveCards
             in
-                List.sum <| 
-                 List.map (scoreObjective veggies player.id) <| 
+                sum <| 
+                 map (scoreObjective veggies player.id) <| 
                   globalObjs ++ personalObjs
     in
         Vector6.map (maybe 0 scoreP) gbody.players

@@ -6064,8 +6064,8 @@ var $author$project$Utils$unconsOrDie = F2(
 			return _Debug_todo(
 				'Utils',
 				{
-					start: {line: 8, column: 14},
-					end: {line: 8, column: 24}
+					start: {line: 11, column: 14},
+					end: {line: 11, column: 24}
 				})('I died trying to uncons with: ' + msg);
 		} else {
 			var h = ls.a;
@@ -6155,6 +6155,10 @@ var $elm_community$basics_extra$Basics$Extra$flip = F3(
 	function (f, b, a) {
 		return A2(f, a, b);
 	});
+var $author$project$Utils$ifAsMaybe = F2(
+	function (x, y) {
+		return x ? $elm$core$Maybe$Just(y) : $elm$core$Maybe$Nothing;
+	});
 var $Chadtech$elm_vector$Vector6$indexToInt = function (index) {
 	switch (index.$) {
 		case 'Index0':
@@ -6188,10 +6192,12 @@ var $author$project$Game$newPlayer = function (id) {
 var $author$project$Game$makePlayers = function (n) {
 	return $Chadtech$elm_vector$Vector6$initializeFromIndex(
 		function (i) {
-			return (_Utils_cmp(
-				$Chadtech$elm_vector$Vector6$indexToInt(i),
-				n) < 0) ? $elm$core$Maybe$Just(
-				$author$project$Game$newPlayer(i)) : $elm$core$Maybe$Nothing;
+			return A2(
+				$author$project$Utils$ifAsMaybe,
+				_Utils_cmp(
+					$Chadtech$elm_vector$Vector6$indexToInt(i),
+					n) < 0,
+				$author$project$Game$newPlayer(i));
 		});
 };
 var $author$project$Draw$gameBody = function (playerCount) {
@@ -7246,8 +7252,8 @@ var $author$project$Game$scoreObjective = F3(
 							$elm$core$Basics$composeL,
 							$elm$core$Maybe$withDefault(0),
 							folder),
-						$Chadtech$elm_vector$Vector6$toList),
-					$Chadtech$elm_vector$Vector6$map(scorer));
+						$elm$core$List$map(scorer)),
+					$Chadtech$elm_vector$Vector6$toList);
 				return _Utils_eq(
 					scorer(pVeggies),
 					best(veggies)) ? p : 0;

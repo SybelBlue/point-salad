@@ -2,6 +2,9 @@ module Utils exposing (..)
 
 
 
+const : a -> b -> a
+const x _ = x
+
 unconsOrDie : String -> List a -> (a, List a)
 unconsOrDie msg ls =
     case ls of
@@ -14,8 +17,11 @@ withNone x = (x, Cmd.none)
 maybeAsList : Maybe a -> List a
 maybeAsList = Maybe.withDefault [] << Maybe.map List.singleton
 
-const : a -> b -> a
-const x _ = x
+boolAsMaybe : Bool -> Maybe ()
+boolAsMaybe x = ifAsMaybe x ()
+
+ifAsMaybe : Bool -> a -> Maybe a
+ifAsMaybe x y = if x then Just y else Nothing
 
 maybe : b -> (a -> b) -> Maybe a -> b
 maybe x f = Maybe.withDefault x << Maybe.map f
