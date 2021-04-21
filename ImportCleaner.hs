@@ -109,7 +109,18 @@ groupNumber (s, _) = maybe 0 snd $ find ((\f -> f s) . fst)
     ]
 
 formatModule :: HeaderLine -> String
-formatModule (name, exports) = "module " ++ name ++ maybe "" ((++) " exposing " . formatIdentList) exports
+formatModule (name, exports) = 
+    let 
+        basicText = "module " ++ name ++ maybe "" ((++) " exposing " . formatIdentList) exports
+
+        splitLines ('(' : ' ' : rest) = "\n\t( " ++ splitLines rest
+        splitLines (' ' : ',' : ' ' : rest) = "\n\t, " ++ splitLines rest
+        splitLines " )" = "\n\t)"
+        splitLines (c:rest) = c : splitLines rest
+    in 
+        if length basicText > 80 
+            then splitLines basicText
+            else basicText
 
 formatImport :: HeaderLine -> String
 formatImport (name, imports) = "import " ++ name ++ maybe "" ((++) " exposing " . formatIdentList) imports
