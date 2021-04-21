@@ -1,4 +1,5 @@
 module Utils exposing (..)
+import String exposing (split)
 
 
 
@@ -10,6 +11,17 @@ uncons ls =
     case ls of
        []     -> Nothing
        h :: t -> Just (h, t)
+
+splitAt : Int -> List a -> (List a, List a)
+splitAt n = split (List.take n) (List.drop n)
+
+
+removeAt : Int -> List a -> Maybe (a, List a)
+removeAt n ls =
+    case splitAt n ls of
+        (_, []) -> Nothing
+        (h, (l :: rest)) -> Just (l, h ++ rest)
+    
 
 unconsOrDie : String -> List a -> (a, List a)
 unconsOrDie msg ls =

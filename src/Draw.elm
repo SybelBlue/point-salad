@@ -5,7 +5,7 @@ import Game exposing (..)
 import SideEffect exposing (..)
 import Veggie exposing ( Veggie )
 
-import Utils exposing ( maybe , uncons )
+import Utils exposing ( maybe , removeAt )
 
 import Tuple exposing ( mapFirst )
 import Vector3 exposing ( from3 )
@@ -28,12 +28,7 @@ card = SE (\(cards, seed) ->
         let
             valid = safeModBy (List.length cards) << abs
             (mn, ns) = mapFirst valid <| run rand seed
-            nextCard n =
-                let 
-                    hd = List.take n cards
-                    (mc, tl) = maybe (Nothing, []) (Tuple.mapFirst Just) <| uncons <| List.drop n cards
-                in 
-                    (mc, hd ++ tl)
+            nextCard n = maybe (Nothing, []) (Tuple.mapFirst Just) (removeAt n cards)
             (mcard, ncards) = maybe (Nothing, cards) nextCard mn
         in 
             (mcard, (ncards, ns))
