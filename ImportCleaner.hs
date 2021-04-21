@@ -118,6 +118,7 @@ groupNumber (s, _)
     | "Html" `isPrefixOf` s = -1
     | s `elem` ["Utils", "Either"] = 1
     | "Tuple" == s = 2
+    | "List" `isPrefixOf` s = 2
     | "Vector" `isPrefixOf` s = 2
     | "Basics.Extra" == s = 3
 groupNumber _ = 0

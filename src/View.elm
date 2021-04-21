@@ -6,7 +6,6 @@ import Html.Events exposing ( onClick )
 
 import Card exposing ( Objective ( .. ) , Card )
 import Game exposing ( Aisle , Board , Player , PlayerId , scores )
-import List exposing ( singleton )
 import Message exposing ( Msg )
 import Model exposing ( Model )
 import String exposing ( fromInt )
@@ -15,6 +14,7 @@ import Veggie exposing ( Veggie )
 import Either exposing ( .. )
 import Utils exposing ( count , maybeAsList )
 
+import List exposing ( singleton )
 import Vector3 exposing ( Index , indexedMap )
 import Vector6 exposing ( Vector6 )
 
