@@ -1,16 +1,17 @@
-module Draw exposing (..)
+module Draw exposing ( .. )
 
-import Tuple exposing (mapFirst)
+import Card exposing ( Card )
+import Game exposing ( .. )
+import SideEffect exposing ( .. )
+import Tuple exposing ( mapFirst )
+import Veggie exposing ( Veggie )
 
-import SideEffect exposing (..)
-import Game exposing (..)
-import Vector6 exposing (Index(..))
-import Card exposing (Card)
-import Veggie exposing (Veggie)
-import Utils exposing (unconsOrDie)
+import Utils exposing ( unconsOrDie )
 
-import Vector3 exposing (from3)
-import Basics.Extra exposing (flip)
+import Vector3 exposing ( from3 )
+import Vector6 exposing ( Index ( .. ) )
+
+import Basics.Extra exposing ( flip )
 
 type alias Seed = Int
 

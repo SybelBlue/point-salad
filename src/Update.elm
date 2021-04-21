@@ -1,15 +1,15 @@
-module Update exposing (update)
+module Update exposing ( update )
 
-import Model exposing (Model, ModelUpdate, GameAction, bindUpdate, draw, clearSelected, simply)
-import Message exposing (Msg(..), Selection)
-import Utils exposing (withNone)
-import Either exposing (isLeft)
-import Card exposing (Card)
-import Game exposing (swapCard, givePlayerPicked)
-import Basics.Extra exposing (uncurry)
-import SideEffect exposing (SE(..), do, ifJust)
-import Game exposing (advancePlayer)
-import Model exposing (basically)
+import Card exposing ( Card )
+import Game exposing ( advancePlayer , givePlayerPicked , swapCard )
+import Message exposing ( Msg ( .. ) , Selection )
+import Model exposing ( GameAction , Model , ModelUpdate , basically , bindUpdate , clearSelected , draw , simply )
+import SideEffect exposing ( SE ( .. ) , do , ifJust )
+
+import Either exposing ( isLeft )
+import Utils exposing ( withNone )
+
+import Basics.Extra exposing ( uncurry )
 
 replacePickedCard : Selection -> ModelUpdate Card
 replacePickedCard selection replacement model = 

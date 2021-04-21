@@ -1,8 +1,11 @@
-module Message exposing (..)
-import Vector3 exposing (Index)
-import Card exposing (Card)
-import Veggie exposing (Veggie)
-import Either exposing (Either(..))
+module Message exposing ( .. )
+
+import Card exposing ( Card )
+import Veggie exposing ( Veggie )
+
+import Either exposing ( Either ( .. ) )
+
+import Vector3 exposing ( Index )
 
 type alias Selection =
     { aisle : Index

@@ -1,5 +1,6 @@
-module Either exposing (..)
-import Utils exposing (const)
+module Either exposing ( .. )
+
+import Utils exposing ( const )
 
 type Either a b
     = Left a

@@ -1,25 +1,22 @@
-module View exposing (view)
+module View exposing ( view )
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html exposing ( .. )
+import Html.Attributes exposing ( .. )
+import Html.Events exposing ( onClick )
 
-import String exposing (fromInt)
-import List exposing (singleton)
-import Vector3 exposing (Index, indexedMap)
+import Card exposing ( Objective ( .. ) , Card )
+import Game exposing ( Aisle , Board , Player , PlayerId , scores )
+import List exposing ( singleton )
+import Message exposing ( Msg )
+import Model exposing ( Model )
+import String exposing ( fromInt )
+import Veggie exposing ( Veggie )
 
-import Model exposing (Model)
-import Message exposing (Msg)
-import Game exposing (Aisle, Board)
-import Veggie exposing (Veggie)
-import Card exposing ( Objective(..))
-import Utils exposing (maybeAsList, count)
-import Either exposing (..)
-import Vector6 exposing (Vector6)
-import Game exposing (Player)
-import Game exposing (PlayerId)
-import Card exposing (Card)
-import Game exposing (scores)
+import Either exposing ( .. )
+import Utils exposing ( count , maybeAsList )
+
+import Vector3 exposing ( Index , indexedMap )
+import Vector6 exposing ( Vector6 )
 
 getVeggieImgPath : Veggie -> String
 getVeggieImgPath v = "res/" ++ String.toLower (Veggie.toString v) ++ ".jpeg"

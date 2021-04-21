@@ -1,9 +1,11 @@
-module SideEffect exposing (..)
-import Tuple exposing (mapFirst, second, pair)
-import Basics.Extra exposing (uncurry)
-import Utils exposing (maybe)
-import Basics.Extra exposing (flip)
-import List exposing (foldl)
+module SideEffect exposing ( .. )
+
+import List exposing ( foldl )
+import Tuple exposing ( mapFirst , pair , second )
+
+import Utils exposing ( maybe )
+
+import Basics.Extra exposing ( flip , uncurry )
 
 {-| A monadic generic side effect isolator 
 

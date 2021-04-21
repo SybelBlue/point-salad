@@ -1,14 +1,16 @@
-module Game exposing (..)
+module Game exposing ( .. )
 
-import Veggie exposing (Veggie)
-import Vector3 exposing (Vector3)
-import Vector6 exposing (Vector6, Index(..), nextIndex)
-import Message exposing (Selection)
-import Either exposing (Either(..), either)
-import Card exposing (Card, Objective(..), isGlobalObjective)
-import Basics.Extra exposing (flip, safeIntegerDivide)
-import Utils exposing (maybe, count)
+import Card exposing ( Objective ( .. ) , Card , isGlobalObjective )
+import Message exposing ( Selection )
+import Veggie exposing ( Veggie )
 
+import Either exposing ( Either ( .. ) , either )
+import Utils exposing ( count , maybe )
+
+import Vector3 exposing ( Vector3 )
+import Vector6 exposing ( Index ( .. ) , Vector6 , nextIndex )
+
+import Basics.Extra exposing ( flip , safeIntegerDivide )
 
 type alias PlayerId = Index
 
