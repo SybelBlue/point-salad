@@ -5957,6 +5957,11 @@ var $author$project$SideEffect$run = function (_v0) {
 	var f = _v0.a;
 	return f;
 };
+var $elm_community$basics_extra$Basics$Extra$safeModBy = F2(
+	function (modulus, x) {
+		return (!modulus) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+			A2($elm$core$Basics$modBy, modulus, x));
+	});
 var $elm$core$List$takeReverse = F3(
 	function (n, list, kept) {
 		takeReverse:
@@ -6099,29 +6104,37 @@ var $author$project$Draw$card = $author$project$SideEffect$SE(
 		var seed = _v0.b;
 		var valid = A2(
 			$elm$core$Basics$composeL,
-			$elm$core$Basics$modBy(
+			$elm_community$basics_extra$Basics$Extra$safeModBy(
 				$elm$core$List$length(cards)),
 			$elm$core$Basics$abs);
 		var _v1 = A2(
 			$elm$core$Tuple$mapFirst,
 			valid,
 			A2($author$project$SideEffect$run, $author$project$Draw$rand, seed));
-		var n = _v1.a;
+		var mn = _v1.a;
 		var ns = _v1.b;
-		var _v2 = A3(
+		return A3(
 			$author$project$Utils$maybe,
-			_Utils_Tuple2($elm$core$Maybe$Nothing, _List_Nil),
-			$elm$core$Tuple$mapFirst($elm$core$Maybe$Just),
-			$author$project$Utils$uncons(
-				A2($elm$core$List$drop, n, cards)));
-		var c = _v2.a;
-		var tl = _v2.b;
-		var hd = A2($elm$core$List$take, n, cards);
-		return _Utils_Tuple2(
-			c,
 			_Utils_Tuple2(
-				_Utils_ap(hd, tl),
-				ns));
+				$elm$core$Maybe$Nothing,
+				_Utils_Tuple2(cards, ns)),
+			function (n) {
+				var hd = A2($elm$core$List$take, n, cards);
+				var _v2 = A3(
+					$author$project$Utils$maybe,
+					_Utils_Tuple2($elm$core$Maybe$Nothing, _List_Nil),
+					$elm$core$Tuple$mapFirst($elm$core$Maybe$Just),
+					$author$project$Utils$uncons(
+						A2($elm$core$List$drop, n, cards)));
+				var c = _v2.a;
+				var tl = _v2.b;
+				return _Utils_Tuple2(
+					c,
+					_Utils_Tuple2(
+						_Utils_ap(hd, tl),
+						ns));
+			},
+			mn);
 	});
 var $author$project$SideEffect$ap = F2(
 	function (sfab, sa) {

@@ -11,7 +11,7 @@ import Tuple exposing ( mapFirst )
 import Vector3 exposing ( from3 )
 import Vector6 exposing ( Index (..) )
 
-import Basics.Extra exposing ( flip )
+import Basics.Extra exposing ( flip , safeModBy )
 
 type alias Seed = Int
 
@@ -26,11 +26,18 @@ type alias Draw a = SE (List Card, Seed) a
 card : Draw (Maybe Card)
 card = SE (\(cards, seed) -> 
     let
-        valid = modBy (List.length cards) << abs
-        (n, ns) = mapFirst valid <| run rand seed
-        hd = List.take n cards
-        (c, tl) = maybe (Nothing, []) (Tuple.mapFirst Just) <| uncons <| List.drop n cards
-    in (c, (hd ++ tl, ns)))
+        valid = safeModBy (List.length cards) << abs
+        (mn, ns) = mapFirst valid <| run rand seed
+    in maybe (Nothing, (cards, ns)) (\n ->
+                let 
+                    hd = List.take n cards
+                    (c, tl) = maybe (Nothing, []) (Tuple.mapFirst Just) <| uncons <| List.drop n cards
+                in 
+                    (c, (hd ++ tl, ns))
+            )
+            mn 
+    )
+    
     
 veggie : Draw (Maybe Veggie)
 veggie = fmap (Maybe.map .veggie) card
