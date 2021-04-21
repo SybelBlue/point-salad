@@ -6,10 +6,11 @@ import Text.Parsec.String
 import Text.Parsec
 import Control.Applicative (liftA2)
 import Data.Bifunctor 
-import Data.List (nub, intercalate, sort, sortOn, isPrefixOf, groupBy)
+import Data.List (isSuffixOf, nub, intercalate, sort, sortOn, isPrefixOf, groupBy)
 import qualified Data.Map.Strict as M
 import Data.Char (isUpper)
 import Control.Arrow (Arrow((&&&)))
+import System.Directory
 
 whitespace = " \t\n"
 
@@ -128,17 +129,26 @@ formatIdentList :: IdentList -> String
 formatIdentList list = "( " ++ maybe ".." body (intoMaybe list) ++ " )"
     where body = intercalate " , " . map ((\(s, ma) -> s ++ maybe "" ((' ':) . formatIdentList) ma) . intoTuple)
 
-formatAll m = (++) (formatModule m ++ "\n\n") . ungroup . number . cleanLines
+formatAll m = ((formatModule m ++ "\n\n") ++) . ungroup . number . cleanLines
     where
         number = map (groupNumber &&& formatImport) 
         ungroup = intercalate "\n\n" . map (intercalate "\n" . map snd) . groupBy (\a b -> fst a == fst b)
 
-parseFile :: String -> IO ()
-parseFile path =
+cleanFile :: String -> IO ()
+cleanFile path =
  do text <- readFile path
     case parse elmFile path text of
-        Left err -> print err
+        Left err -> 
+         do putStrLn $ "Error parsing file: " ++ path
+            print err
         Right (h, body) ->
          do let formatted = uncurry formatAll h
             let !_body = body
             writeFile path (formatted ++ "\n\n" ++ _body)
+
+cleanDirectory :: FilePath  -> IO ()
+cleanDirectory dirPath =
+ do paths <- getDirectoryContents dirPath
+    let files = filter (isSuffixOf ".elm") paths
+    let file_paths = map ((dirPath ++ "/") ++) files
+    sequence_ (cleanFile <$> file_paths)
