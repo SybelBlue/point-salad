@@ -1,9 +1,10 @@
 module Test exposing (..)
 
+import Card exposing ( Objective (..) )
 import Game exposing (..)
+import Veggie exposing ( Veggie (..) )
+
 import Vector6 exposing (..)
-import Card exposing (Objective(..))
-import Veggie exposing (Veggie(..))
 
 testVegs : Vector6 (List Veggie)
 testVegs = from6 
