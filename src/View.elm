@@ -1,17 +1,17 @@
 module View exposing ( view )
 
-import Html exposing ( .. )
-import Html.Attributes exposing ( .. )
+import Html exposing (..)
+import Html.Attributes exposing (..)
 import Html.Events exposing ( onClick )
 
-import Card exposing ( Objective ( .. ) , Card )
+import Card exposing ( Objective (..) , Card )
 import Game exposing ( Aisle , Board , Player , PlayerId , scores )
 import Message exposing ( Msg )
 import Model exposing ( Model )
 import String exposing ( fromInt )
 import Veggie exposing ( Veggie )
 
-import Either exposing ( .. )
+import Either exposing (..)
 import Utils exposing ( count , maybeAsList )
 
 import List exposing ( singleton )

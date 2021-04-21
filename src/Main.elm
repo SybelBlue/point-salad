@@ -1,8 +1,8 @@
-module Main exposing ( .. )
+module Main exposing (..)
 
 import Browser
 import Message exposing ( Msg )
-import Model exposing ( .. )
+import Model exposing (..)
 import Update exposing ( update )
 import View exposing ( view )
 

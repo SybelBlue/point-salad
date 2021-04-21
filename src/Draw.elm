@@ -1,15 +1,15 @@
-module Draw exposing ( .. )
+module Draw exposing (..)
 
 import Card exposing ( Card )
-import Game exposing ( .. )
-import SideEffect exposing ( .. )
+import Game exposing (..)
+import SideEffect exposing (..)
 import Veggie exposing ( Veggie )
 
 import Utils exposing ( unconsOrDie )
 
 import Tuple exposing ( mapFirst )
 import Vector3 exposing ( from3 )
-import Vector6 exposing ( Index ( .. ) )
+import Vector6 exposing ( Index (..) )
 
 import Basics.Extra exposing ( flip )
 

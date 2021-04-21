@@ -1,4 +1,4 @@
-module SideEffect exposing ( .. )
+module SideEffect exposing (..)
 
 import Utils exposing ( maybe )
 

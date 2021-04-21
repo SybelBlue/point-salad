@@ -1,14 +1,14 @@
-module Game exposing ( .. )
+module Game exposing (..)
 
-import Card exposing ( Objective ( .. ) , Card , isGlobalObjective )
+import Card exposing ( Objective (..) , Card , isGlobalObjective )
 import Message exposing ( Selection )
 import Veggie exposing ( Veggie )
 
-import Either exposing ( Either ( .. ) , either )
+import Either exposing ( Either (..) , either )
 import Utils exposing ( count , maybe )
 
 import Vector3 exposing ( Vector3 )
-import Vector6 exposing ( Index ( .. ) , Vector6 , nextIndex )
+import Vector6 exposing ( Index (..) , Vector6 , nextIndex )
 
 import Basics.Extra exposing ( flip , safeIntegerDivide )
 

@@ -1,9 +1,9 @@
-module Message exposing ( .. )
+module Message exposing (..)
 
 import Card exposing ( Card )
 import Veggie exposing ( Veggie )
 
-import Either exposing ( Either ( .. ) )
+import Either exposing ( Either (..) )
 
 import Vector3 exposing ( Index )
 

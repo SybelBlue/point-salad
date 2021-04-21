@@ -1,11 +1,11 @@
-module Model exposing ( .. )
+module Model exposing (..)
 
 import Card exposing ( Card )
 import Cards exposing ( cards )
 import Draw exposing ( Draw , Seed , gameBody )
 import Game exposing ( GameBody , PlayerId )
 import Message exposing ( Msg , Selection )
-import SideEffect exposing ( .. )
+import SideEffect exposing (..)
 
 import Utils exposing ( withNone )
 

@@ -1,4 +1,4 @@
-module Either exposing ( .. )
+module Either exposing (..)
 
 import Utils exposing ( const )
 

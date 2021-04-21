@@ -1,6 +1,6 @@
-module Card exposing ( .. )
+module Card exposing (..)
 
-import Veggie exposing ( .. )
+import Veggie exposing (..)
 
 type alias Points = Int
 

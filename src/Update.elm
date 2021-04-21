@@ -2,9 +2,9 @@ module Update exposing ( update )
 
 import Card exposing ( Card )
 import Game exposing ( advancePlayer , givePlayerPicked , swapCard )
-import Message exposing ( Msg ( .. ) , Selection )
+import Message exposing ( Msg (..) , Selection )
 import Model exposing ( GameAction , Model , ModelUpdate , basically , bindUpdate , clearSelected , draw , simply )
-import SideEffect exposing ( SE ( .. ) , do , ifJust )
+import SideEffect exposing ( SE (..) , do , ifJust )
 
 import Either exposing ( isLeft )
 import Utils exposing ( withNone )

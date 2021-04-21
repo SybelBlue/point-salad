@@ -6,7 +6,7 @@ import Text.Parsec.String ( Parser )
 import Text.Parsec
 import Control.Applicative (liftA2)
 import Data.Bifunctor ( Bifunctor(second) ) 
-import Data.List (isSuffixOf, nub, intercalate, sort, sortOn, isPrefixOf, groupBy)
+import Data.List (find, isSuffixOf, nub, intercalate, sort, sortOn, isPrefixOf, groupBy)
 import qualified Data.Map.Strict as M
 import Data.Char (isUpper)
 import Control.Arrow (Arrow((&&&)))
@@ -114,14 +114,14 @@ cleanLines = sortOn (groupNumber &&& fst) . map (second $ fmap cleanIdentList) .
         combineFn (Just (List a)) (Just (List b)) = Just (List (a ++ b))
 
 groupNumber :: HeaderLine -> Int        
-groupNumber (s, _)
-    | "Html" `isPrefixOf` s = -1
-    | s `elem` ["Utils", "Either"] = 1
-    | "Tuple" == s = 2
-    | "List" `isPrefixOf` s = 2
-    | "Vector" `isPrefixOf` s = 2
-    | "Basics.Extra" == s = 3
-groupNumber _ = 0
+groupNumber (s, _) = maybe 0 snd $ find ((\f -> f s) . fst)
+    [ (("Html" `isPrefixOf`), -1)
+    , ((`elem` ["Utils", "Either"]), 1)
+    , (("Tuple" ==), 2)
+    , (("List" `isPrefixOf`), 2)
+    , (("Vector" `isPrefixOf`), 2)
+    , (("Basics.Extra" ==), 3)
+    ]
 
 formatModule :: HeaderLine -> String
 formatModule (name, exports) = "module " ++ name ++ maybe "" ((++) " exposing " . formatIdentList) exports
@@ -130,7 +130,7 @@ formatImport :: HeaderLine -> String
 formatImport (name, imports) = "import " ++ name ++ maybe "" ((++) " exposing " . formatIdentList) imports
 
 formatIdentList :: IdentList -> String
-formatIdentList list = "( " ++ maybe ".." body (intoMaybe list) ++ " )"
+formatIdentList list = "(" ++ maybe ".." ((\s -> " " ++ s ++ " ") . body) (intoMaybe list) ++ ")"
     where body = intercalate " , " . map ((\(s, ma) -> s ++ maybe "" ((' ':) . formatIdentList) ma) . intoTuple)
 
 formatAll m = ((formatModule m ++ "\n\n") ++) . ungroup . number . cleanLines
