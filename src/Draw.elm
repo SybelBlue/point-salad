@@ -3,11 +3,11 @@ module Draw exposing ( .. )
 import Card exposing ( Card )
 import Game exposing ( .. )
 import SideEffect exposing ( .. )
-import Tuple exposing ( mapFirst )
 import Veggie exposing ( Veggie )
 
 import Utils exposing ( unconsOrDie )
 
+import Tuple exposing ( mapFirst )
 import Vector3 exposing ( from3 )
 import Vector6 exposing ( Index ( .. ) )
 

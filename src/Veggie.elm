@@ -1,7 +1,6 @@
 module Veggie exposing ( Veggie ( .. ) , VeggieDict , empty , get , insert , size , toString , toInt , veggies , entries )
 
 import Tuple exposing ( pair )
-
 import Vector6 exposing ( Index ( .. ) , Vector6 )
 
 {-| The basic vegetable types -}

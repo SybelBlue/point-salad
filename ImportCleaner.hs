@@ -2,15 +2,15 @@
 {-# LANGUAGE FlexibleContexts #-}
 module ImportCleaner where
 
-import Text.Parsec.String
+import Text.Parsec.String ( Parser )
 import Text.Parsec
 import Control.Applicative (liftA2)
-import Data.Bifunctor 
+import Data.Bifunctor ( Bifunctor(second) ) 
 import Data.List (isSuffixOf, nub, intercalate, sort, sortOn, isPrefixOf, groupBy)
 import qualified Data.Map.Strict as M
 import Data.Char (isUpper)
 import Control.Arrow (Arrow((&&&)))
-import System.Directory
+import System.Directory ( getDirectoryContents )
 
 whitespace = " \t\n"
 
@@ -55,7 +55,7 @@ instance Ord IListItem where
         | not (isUpper ah) && isUpper bh = True
     (Simple a) <= (Simple b) = a >= b -- swapped to get alpha order
 
-type HeaderLine = (String, IdentList)
+type HeaderLine = (String, Maybe IdentList)
 
 intoTuple :: IListItem -> (String, Maybe IdentList)
 intoTuple (Simple s) = (s, Nothing)
@@ -79,11 +79,11 @@ importList =
      do base <- identifier
         maybe (Simple base) (Recurs base) <$> optionMaybe importList
 
+headerLine :: String -> Parser HeaderLine
 headerLine s =
  do lexeme (string s)
     x <- identifier
-    exposing
-    exports <- importList
+    exports <- optionMaybe (exposing *> importList)
     return (x, exports)
 
 header = (,) <$> headerLine "module" <*> many (headerLine "import")
@@ -105,25 +105,28 @@ cleanIdentList (List ls) = List . reverse . sort . unique . map fromTuple . M.to
 unique = reverse . nub . reverse
 
 cleanLines :: [HeaderLine] -> [HeaderLine]
-cleanLines = sortOn (groupNumber &&& fst) . map (second cleanIdentList) . M.toList . M.fromListWith combineFn
+cleanLines = sortOn (groupNumber &&& fst) . map (second $ fmap cleanIdentList) . M.toList . M.fromListWith combineFn
     where
-        combineFn All _ = All
-        combineFn _ All = All
-        combineFn (List a) (List b) = List (a ++ b)
+        combineFn Nothing x = x
+        combineFn x Nothing = x
+        combineFn (Just All) _ = Just All
+        combineFn _ (Just All) = Just All
+        combineFn (Just (List a)) (Just (List b)) = Just (List (a ++ b))
 
 groupNumber :: HeaderLine -> Int        
 groupNumber (s, _)
     | "Html" `isPrefixOf` s = -1
     | s `elem` ["Utils", "Either"] = 1
+    | "Tuple" == s = 2
     | "Vector" `isPrefixOf` s = 2
     | "Basics.Extra" == s = 3
 groupNumber _ = 0
 
 formatModule :: HeaderLine -> String
-formatModule (name, exports) = "module " ++ name ++ " exposing " ++ formatIdentList exports
+formatModule (name, exports) = "module " ++ name ++ maybe "" ((++) " exposing " . formatIdentList) exports
 
 formatImport :: HeaderLine -> String
-formatImport (name, imports) = "import " ++ name ++ " exposing " ++ formatIdentList imports
+formatImport (name, imports) = "import " ++ name ++ maybe "" ((++) " exposing " . formatIdentList) imports
 
 formatIdentList :: IdentList -> String
 formatIdentList list = "( " ++ maybe ".." body (intoMaybe list) ++ " )"

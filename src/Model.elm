@@ -1,15 +1,16 @@
-module Model exposing (..)
+module Model exposing ( .. )
 
-import SideEffect exposing (..)
-import Game exposing (GameBody, PlayerId)
-import Draw exposing (Draw, Seed, gameBody)
-import Card exposing (Card)
-import Utils exposing (withNone)
-import Cards exposing (cards)
-import Message exposing (Msg, Selection)
-import Tuple exposing (pair)
+import Card exposing ( Card )
+import Cards exposing ( cards )
+import Draw exposing ( Draw , Seed , gameBody )
+import Game exposing ( GameBody , PlayerId )
+import Message exposing ( Msg , Selection )
+import SideEffect exposing ( .. )
+
+import Utils exposing ( withNone )
+
+import Tuple exposing ( pair )
 import Vector6
-
 
 {-| (# of Players, this player's id, start seed) -}
 type alias Flags = 

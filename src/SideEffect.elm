@@ -1,9 +1,10 @@
 module SideEffect exposing ( .. )
 
 import List exposing ( foldl )
-import Tuple exposing ( mapFirst , pair , second )
 
 import Utils exposing ( maybe )
+
+import Tuple exposing ( mapFirst , pair , second )
 
 import Basics.Extra exposing ( flip , uncurry )
 
