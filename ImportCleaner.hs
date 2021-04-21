@@ -27,8 +27,8 @@ data IdentList
     deriving (Show, Eq)
 
 instance Ord IdentList where
-    All <= (List _) = False
-    _ <= _ = True
+    All <= (List _) = True
+    _ <= _ = False
 
 intoMaybe :: IdentList -> Maybe [IListItem]
 intoMaybe All = Nothing
@@ -44,16 +44,16 @@ data IListItem
 
 instance Ord IListItem where
     (Recurs a xs) <= (Recurs b ys)
-        | ys < xs = False
-        | ys > xs = True
-        | a < b = False -- swapped to get alpha order
-        | otherwise = True
-    (Recurs _ _) <= (Simple _) = False
-    (Simple _) <= (Recurs _ _) = True
+        | ys < xs = True
+        | ys > xs = False
+        | a < b = True
+        | otherwise = False
+    (Recurs _ _) <= (Simple _) = True
+    (Simple _) <= (Recurs _ _) = False
     (Simple (ah:at)) <= (Simple (bh:bt))
-        | isUpper ah && not (isUpper bh) = False
-        | not (isUpper ah) && isUpper bh = True
-    (Simple a) <= (Simple b) = a >= b -- swapped to get alpha order
+        | isUpper ah && not (isUpper bh) = True
+        | not (isUpper ah) && isUpper bh = False
+    (Simple a) <= (Simple b) = a <= b
 
 type HeaderLine = (String, Maybe IdentList)
 
@@ -92,7 +92,7 @@ elmFile = (,) <$> header <*> many anyChar
 
 cleanIdentList :: IdentList -> IdentList
 cleanIdentList All = All
-cleanIdentList (List ls) = List . reverse . sort . unique . map fromTuple . M.toList . makeMap $ ls
+cleanIdentList (List ls) = List . sort . unique . map fromTuple . M.toList . makeMap $ ls
     where
         makeMap = M.fromListWith combineFn . map intoTuple
         combineFn :: Maybe IdentList -> Maybe IdentList -> Maybe IdentList
@@ -156,3 +156,5 @@ cleanDirectory dirPath =
     let files = filter (isSuffixOf ".elm") paths
     let file_paths = map ((dirPath ++ "/") ++) files
     sequence_ (cleanFile <$> file_paths)
+
+main = cleanDirectory "src"
