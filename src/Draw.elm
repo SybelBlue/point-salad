@@ -1,4 +1,4 @@
-module Draw exposing (..)
+module Draw exposing ( gameBody , Draw , card , Seed, rand )
 
 import Card exposing ( Card )
 import Game exposing (..)
@@ -35,6 +35,7 @@ card = SE (\(cards, seed) ->
 veggie : Draw (Maybe Veggie)
 veggie = fmap (Maybe.map .veggie) card
 
+aisle : Draw Aisle
 aisle = liftA3 Game.aisle card veggie veggie
 
 board : Draw Board
