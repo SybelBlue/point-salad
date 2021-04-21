@@ -1,4 +1,4 @@
-module Veggie exposing ( Veggie (..) , VeggieDict , empty , get , insert , size , toString , toInt , veggies , entries )
+module Veggie exposing ( Veggie (..) , VeggieDict , empty , entries , get , insert , size , toInt , toString , veggies )
 
 import Tuple exposing ( pair )
 import Vector6 exposing ( Index (..) , Vector6 )

@@ -1,4 +1,4 @@
-module Draw exposing ( gameBody , Draw , card , Seed, rand )
+module Draw exposing ( Draw , Seed , card , gameBody , rand )
 
 import Card exposing ( Card )
 import Game exposing (..)
