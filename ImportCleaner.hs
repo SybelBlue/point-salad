@@ -119,8 +119,9 @@ formatIdentList list = "(" ++ maybe ".." ((\s -> " " ++ s ++ " ") . body) (intoM
     where body = intercalate " , " . map ((\(s, ma) -> s ++ maybe "" ((' ':) . formatIdentList) ma) . intoTuple)
 
 formatAll :: HeaderLine -> [HeaderLine] -> [Char]
-formatAll m = ((formatModule m ++ "\n\n") ++) . ungroup . number . cleanLines
+formatAll m = (moduleText ++) . ungroup . number . cleanLines
     where
+        moduleText = formatModule (second (fmap cleanIdentList) m) ++ "\n\n"
         number = map (groupNumber &&& formatImport) 
         ungroup = intercalate "\n\n" . map (intercalate "\n" . map snd) . groupBy (\a b -> fst a == fst b)
 
