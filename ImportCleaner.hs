@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE FlexibleContexts #-}
 module ImportCleaner where
 
@@ -86,6 +87,8 @@ headerLine s =
 
 header = (,) <$> headerLine "module" <*> many (headerLine "import")
 
+elmFile = (,) <$> header <*> many anyChar
+
 cleanIdentList :: IdentList -> IdentList
 cleanIdentList All = All
 cleanIdentList (List ls) = List . reverse . sort . unique . map fromTuple . M.toList . makeMap $ ls
@@ -133,4 +136,9 @@ formatAll m = (++) (formatModule m ++ "\n\n") . ungroup . number . cleanLines
 parseFile :: String -> IO ()
 parseFile path =
  do text <- readFile path
-    either print (putStrLn . uncurry formatAll) $ parse header path text
+    case parse elmFile path text of
+        Left err -> print err
+        Right (h, body) ->
+         do let formatted = uncurry formatAll h
+            let !_body = body
+            writeFile path (formatted ++ "\n\n" ++ _body)
