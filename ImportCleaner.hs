@@ -16,7 +16,6 @@ whitespace = " \t\n"
 
 lexeme p = p <* many (oneOf whitespace)
 
-identifier :: Parser String
 identifier = lexeme $ many1 (alphaNum <|> oneOf "._")
 
 exposing = lexeme $ string "exposing"
@@ -30,7 +29,6 @@ instance Ord IdentList where
     All <= (List _) = True
     _ <= _ = False
 
-intoMaybe :: IdentList -> Maybe [IListItem]
 intoMaybe All = Nothing
 intoMaybe (List ls) = Just ls
 
@@ -53,14 +51,11 @@ instance Ord IListItem where
 
 type HeaderLine = (String, Maybe IdentList)
 
-intoTuple :: IListItem -> HeaderLine
 intoTuple (Simple s) = (s, Nothing)
 intoTuple (Recurs s list) = (s, Just list)
 
-fromTuple :: HeaderLine -> IListItem
 fromTuple (s, mi) = maybe (Simple s) (Recurs s) mi
 
-importList :: Parser IdentList
 importList =
  do lexeme (char '(')
     b <- lexeme (All <$ string "..") <|> fmap List (importIdentifier `sepBy` lexeme (char ','))
@@ -80,21 +75,19 @@ headerLine s =
 
 header = (,) <$> headerLine "module" <*> many (headerLine "import")
 
-elmFile = (,) <$> header <*> many anyChar
+elmFile = ((,) <$> header <*> many anyChar) <* eof
 
 cleanIdentList :: IdentList -> IdentList
-cleanIdentList All = All
-cleanIdentList (List ls) = List . sort . unique . map fromTuple . M.toList . makeMap $ ls
+cleanIdentList = maybe All (List . sort . unique . map fromTuple . M.toList . makeMap) . intoMaybe
     where
+        unique = reverse . nub . reverse
         makeMap = M.fromListWith combineFn . map intoTuple
-        combineFn :: Maybe IdentList -> Maybe IdentList -> Maybe IdentList
+
         combineFn _ (Just All) = Just All
         combineFn (Just All) _ = Just All
         combineFn Nothing (Just x) = Just $ cleanIdentList x
         combineFn (Just x) Nothing = Just $ cleanIdentList x
         combineFn (Just (List as)) (Just (List bs)) = Just . cleanIdentList . List $ as ++ bs
-
-unique = reverse . nub . reverse
 
 cleanLines :: [HeaderLine] -> [HeaderLine]
 cleanLines = sortOn (groupNumber &&& fst) . map (second $ fmap cleanIdentList) . M.toList . M.fromListWith combineFn
@@ -125,11 +118,13 @@ formatIdentList :: IdentList -> String
 formatIdentList list = "(" ++ maybe ".." ((\s -> " " ++ s ++ " ") . body) (intoMaybe list) ++ ")"
     where body = intercalate " , " . map ((\(s, ma) -> s ++ maybe "" ((' ':) . formatIdentList) ma) . intoTuple)
 
+formatAll :: HeaderLine -> [HeaderLine] -> [Char]
 formatAll m = ((formatModule m ++ "\n\n") ++) . ungroup . number . cleanLines
     where
         number = map (groupNumber &&& formatImport) 
         ungroup = intercalate "\n\n" . map (intercalate "\n" . map snd) . groupBy (\a b -> fst a == fst b)
 
+cleanFile :: FilePath -> IO ()
 cleanFile path =
  do text <- readFile path
     case parse elmFile path text of
