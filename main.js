@@ -6064,8 +6064,8 @@ var $author$project$Utils$unconsOrDie = F2(
 			return _Debug_todo(
 				'Utils',
 				{
-					start: {line: 6, column: 14},
-					end: {line: 6, column: 24}
+					start: {line: 8, column: 14},
+					end: {line: 8, column: 24}
 				})('I died trying to uncons with: ' + msg);
 		} else {
 			var h = ls.a;
@@ -7193,6 +7193,7 @@ var $Chadtech$elm_vector$Vector6$map = F2(
 	});
 var $elm$core$Basics$not = _Basics_not;
 var $elm$core$Basics$ge = _Utils_ge;
+var $elm$core$Debug$log = _Debug_log;
 var $elm$core$List$maximum = function (list) {
 	if (list.b) {
 		var x = list.a;
@@ -7224,6 +7225,7 @@ var $elm_community$basics_extra$Basics$Extra$safeIntegerDivide = F2(
 var $elm$core$List$sum = function (numbers) {
 	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
 };
+var $elm$core$Debug$toString = _Debug_toString;
 var $author$project$Game$scoreObjective = F3(
 	function (veggies, pid, obj) {
 		var pVeggies = A2($Chadtech$elm_vector$Vector6$get, pid, veggies);
@@ -7232,9 +7234,7 @@ var $author$project$Game$scoreObjective = F3(
 				$elm$core$Basics$composeL,
 				$elm$core$List$length,
 				$elm$core$List$filter(
-					function (x) {
-						return _Utils_eq(v, x);
-					}));
+					$elm$core$Basics$eq(v)));
 		};
 		var isBest = F3(
 			function (folder, scorer, p) {
@@ -7249,7 +7249,10 @@ var $author$project$Game$scoreObjective = F3(
 						$Chadtech$elm_vector$Vector6$toList),
 					$Chadtech$elm_vector$Vector6$map(scorer));
 				return _Utils_eq(
-					scorer(pVeggies),
+					A2(
+						$elm$core$Debug$log,
+						$elm$core$Debug$toString(pid),
+						scorer(pVeggies)),
 					best(veggies)) ? p : 0;
 			});
 		switch (obj.$) {
