@@ -5,6 +5,7 @@ import Vector6 exposing (..)
 import Card exposing (Objective(..))
 import Veggie exposing (Veggie(..))
 
+testVegs : Vector6 (List Veggie)
 testVegs = from6 
     [ Tomato, Tomato, Tomato ]
     [ Tomato, Carrot, Tomato ]
@@ -22,4 +23,5 @@ unwrapJust x =
        Nothing ->
             Debug.todo "you get NOTHING"
 
+testScoreObjective : Objective -> List Int
 testScoreObjective o = List.map (\p -> scoreObjective testVegs p o) (Vector6.toList Vector6.indices)
