@@ -11,7 +11,7 @@ import Utils exposing ( withNone )
 
 import Basics.Extra exposing ( uncurry )
 
-replacePickedCard : Selection -> ModelUpdate Card
+replacePickedCard : Selection -> ModelUpdate (Maybe Card)
 replacePickedCard selection replacement model = 
     let
         giveCurrent = uncurry (givePlayerPicked model.body.playing)

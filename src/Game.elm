@@ -26,9 +26,9 @@ newPlayer id =
     { veggies = [], objectiveCards = [], id = id }
 
 
-type alias Aisle = (Card, Veggie, Veggie)
+type alias Aisle = (Maybe Card, Maybe Veggie, Maybe Veggie)
 
-aisle : Card -> Veggie -> Veggie -> Aisle
+aisle : Maybe Card -> Maybe Veggie -> Maybe Veggie -> Aisle
 aisle c v0 v1 = (c, v0, v1)
 
 type Move = Move
@@ -56,7 +56,7 @@ advancePlayer game =
             then advancePlayer next
             else next
 
-swapCard : Selection -> Card -> GameBody -> (Either Card Veggie, GameBody)
+swapCard : Selection -> Maybe Card -> GameBody -> (Either Card Veggie, GameBody)
 swapCard s c body =
     let
         (oldObj, v0, v1) = Vector3.get s.aisle body.board
@@ -65,7 +65,7 @@ swapCard s c body =
                 Left oldc -> (Left oldc, (c, v0, v1))
                 Right vegFirst -> 
                     let
-                        cv = c.veggie
+                        cv = Maybe.map .veggie c
                         (nv0, nv1) = if vegFirst.first then (cv, v1) else (v0, cv)
                     in
                         (Right vegFirst.veggie, (oldObj, nv0, nv1))

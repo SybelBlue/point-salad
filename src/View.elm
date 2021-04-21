@@ -12,7 +12,7 @@ import String exposing ( fromInt )
 import Veggie exposing ( Veggie )
 
 import Either exposing (..)
-import Utils exposing ( count , maybeAsList )
+import Utils exposing ( count , maybe , maybeAsList )
 
 import List exposing ( singleton )
 import Vector3 exposing ( Index , indexedMap )
@@ -65,25 +65,30 @@ objective obj =
         EvenOdd v e o -> 
           fromSeq [ Right <| simpleVeggieImg v, Left <| ": even = " ++ fromInt e ++ "; odd = " ++ fromInt o ]
 
-card : Index -> Card -> Html Msg
-card i c =
-  div 
-    [ class "objective-box" 
-    , onClick <| Message.selectObjective i c
-    ] 
-    [ getVeggieImg (c.veggie) False Nothing
-    , br [] []
-    , objective c.objective
-    ]
+card : Index -> Maybe Card -> Html Msg
+card i mc =
+  case mc of
+    Just c ->
+      div 
+        [ class "objective-box" 
+        , onClick <| Message.selectObjective i c
+        ] 
+        [ getVeggieImg (c.veggie) False Nothing
+        , br [] []
+        , objective c.objective
+        ]
+    
+    Nothing ->
+      div [ class "objective-box" ] [ ]
 
 aisle : Index -> Aisle -> Html Msg
-aisle i (c, v0, v1) = 
+aisle i (c, mv0, mv1) = 
   div 
     [ class "column" ]
     [ card i c
     , hr [] []
-    , getVeggieImg v0 True <| Just <| Message.Selected { item = Right { veggie = v0, first = True }, aisle = i }
-    , getVeggieImg v1 True <| Just <| Message.Selected { item = Right { veggie = v1, first = False }, aisle = i }
+    , maybe (div [ ] [ ]) (\v0 -> getVeggieImg v0 True <| Just <| Message.Selected { item = Right { veggie = v0, first = True }, aisle = i }) mv0
+    , maybe (div [ ] [ ]) (\v1 -> getVeggieImg v1 True <| Just <| Message.Selected { item = Right { veggie = v1, first = False }, aisle = i }) mv1
     ]
 
 board : Board -> Html Msg

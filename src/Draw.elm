@@ -5,7 +5,7 @@ import Game exposing (..)
 import SideEffect exposing (..)
 import Veggie exposing ( Veggie )
 
-import Utils exposing ( unconsOrDie )
+import Utils exposing ( maybe , uncons )
 
 import Tuple exposing ( mapFirst )
 import Vector3 exposing ( from3 )
@@ -23,20 +23,18 @@ rand = SE (\s ->
 
 type alias Draw a = SE (List Card, Seed) a
 
-card : Draw Card
+card : Draw (Maybe Card)
 card = SE (\(cards, seed) -> 
     let
         valid = modBy (List.length cards) << abs
         (n, ns) = mapFirst valid <| run rand seed
         hd = List.take n cards
-        (c, tl) = unconsOrDie "bad card gen" <| List.drop n cards
+        (c, tl) = maybe (Nothing, []) (Tuple.mapFirst Just) <| uncons <| List.drop n cards
     in (c, (hd ++ tl, ns)))
     
+veggie : Draw (Maybe Veggie)
+veggie = fmap (Maybe.map .veggie) card
 
-veggie : Draw Veggie
-veggie = fmap .veggie card
-
-aisle : Draw Aisle
 aisle = liftA3 Game.aisle card veggie veggie
 
 board : Draw Board

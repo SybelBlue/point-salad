@@ -49,7 +49,7 @@ fromUpdate aToMapping a = SE (pair () << aToMapping a)
 bindUpdate : GameAction a -> ModelUpdate a -> GameAction ()
 bindUpdate ga = bind ga << fromUpdate
 
-draw : GameAction Card
+draw : GameAction (Maybe Card)
 draw = intoAction Draw.card
 
 clearSelected : Model -> Model

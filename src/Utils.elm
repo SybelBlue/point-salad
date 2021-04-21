@@ -5,6 +5,12 @@ module Utils exposing (..)
 const : a -> b -> a
 const x _ = x
 
+uncons : List a -> Maybe (a, List a)
+uncons ls =
+    case ls of
+       []     -> Nothing
+       h :: t -> Just (h, t)
+
 unconsOrDie : String -> List a -> (a, List a)
 unconsOrDie msg ls =
     case ls of

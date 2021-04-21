@@ -5921,6 +5921,32 @@ var $elm$core$Tuple$mapFirst = F2(
 			func(x),
 			y);
 	});
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Utils$maybe = F2(
+	function (x, f) {
+		return A2(
+			$elm$core$Basics$composeL,
+			$elm$core$Maybe$withDefault(x),
+			$elm$core$Maybe$map(f));
+	});
 var $elm$core$Basics$modBy = _Basics_modBy;
 var $author$project$Draw$rand = $author$project$SideEffect$SE(
 	function (s) {
@@ -6057,22 +6083,16 @@ var $elm$core$List$take = F2(
 	function (n, list) {
 		return A3($elm$core$List$takeFast, 0, n, list);
 	});
-var $elm$core$Debug$todo = _Debug_todo;
-var $author$project$Utils$unconsOrDie = F2(
-	function (msg, ls) {
-		if (!ls.b) {
-			return _Debug_todo(
-				'Utils',
-				{
-					start: {line: 11, column: 14},
-					end: {line: 11, column: 24}
-				})('I died trying to uncons with: ' + msg);
-		} else {
-			var h = ls.a;
-			var t = ls.b;
-			return _Utils_Tuple2(h, t);
-		}
-	});
+var $author$project$Utils$uncons = function (ls) {
+	if (!ls.b) {
+		return $elm$core$Maybe$Nothing;
+	} else {
+		var h = ls.a;
+		var t = ls.b;
+		return $elm$core$Maybe$Just(
+			_Utils_Tuple2(h, t));
+	}
+};
 var $author$project$Draw$card = $author$project$SideEffect$SE(
 	function (_v0) {
 		var cards = _v0.a;
@@ -6088,10 +6108,12 @@ var $author$project$Draw$card = $author$project$SideEffect$SE(
 			A2($author$project$SideEffect$run, $author$project$Draw$rand, seed));
 		var n = _v1.a;
 		var ns = _v1.b;
-		var _v2 = A2(
-			$author$project$Utils$unconsOrDie,
-			'bad card gen',
-			A2($elm$core$List$drop, n, cards));
+		var _v2 = A3(
+			$author$project$Utils$maybe,
+			_Utils_Tuple2($elm$core$Maybe$Nothing, _List_Nil),
+			$elm$core$Tuple$mapFirst($elm$core$Maybe$Just),
+			$author$project$Utils$uncons(
+				A2($elm$core$List$drop, n, cards)));
 		var c = _v2.a;
 		var tl = _v2.b;
 		var hd = A2($elm$core$List$take, n, cards);
@@ -6137,9 +6159,10 @@ var $author$project$SideEffect$liftA3 = F2(
 	});
 var $author$project$Draw$veggie = A2(
 	$author$project$SideEffect$fmap,
-	function ($) {
-		return $.veggie;
-	},
+	$elm$core$Maybe$map(
+		function ($) {
+			return $.veggie;
+		}),
 	$author$project$Draw$card);
 var $author$project$Draw$aisle = A4($author$project$SideEffect$liftA3, $author$project$Game$aisle, $author$project$Draw$card, $author$project$Draw$veggie, $author$project$Draw$veggie);
 var $Chadtech$elm_vector$Vector3$Internal$Vector = function (a) {
@@ -6231,15 +6254,6 @@ var $Chadtech$elm_vector$Vector6$intToIndex = function (_int) {
 			return $elm$core$Maybe$Nothing;
 	}
 };
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Utils$withNone = function (x) {
@@ -6348,23 +6362,6 @@ var $author$project$SideEffect$do = function (sunits) {
 			$author$project$SideEffect$run(sunit));
 	}
 };
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $author$project$Utils$maybe = F2(
-	function (x, f) {
-		return A2(
-			$elm$core$Basics$composeL,
-			$elm$core$Maybe$withDefault(x),
-			$elm$core$Maybe$map(f));
-	});
 var $author$project$SideEffect$return = A2($elm$core$Basics$composeL, $author$project$SideEffect$SE, $elm$core$Tuple$pair);
 var $author$project$SideEffect$ifJust = $elm_community$basics_extra$Basics$Extra$flip(
 	$author$project$Utils$maybe(
@@ -6516,7 +6513,12 @@ var $author$project$Game$swapCard = F3(
 					_Utils_Tuple3(c, v0, v1));
 			} else {
 				var vegFirst = _v2.a;
-				var cv = c.veggie;
+				var cv = A2(
+					$elm$core$Maybe$map,
+					function ($) {
+						return $.veggie;
+					},
+					c);
 				var _v3 = vegFirst.first ? _Utils_Tuple2(cv, v1) : _Utils_Tuple2(v0, cv);
 				var nv0 = _v3.a;
 				var nv1 = _v3.b;
@@ -6941,28 +6943,39 @@ var $author$project$Message$selectObjective = F2(
 			});
 	});
 var $author$project$View$card = F2(
-	function (i, c) {
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('objective-box'),
-					$elm$html$Html$Events$onClick(
-					A2($author$project$Message$selectObjective, i, c))
-				]),
-			_List_fromArray(
-				[
-					A3($author$project$View$getVeggieImg, c.veggie, false, $elm$core$Maybe$Nothing),
-					A2($elm$html$Html$br, _List_Nil, _List_Nil),
-					$author$project$View$objective(c.objective)
-				]));
+	function (i, mc) {
+		if (mc.$ === 'Just') {
+			var c = mc.a;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('objective-box'),
+						$elm$html$Html$Events$onClick(
+						A2($author$project$Message$selectObjective, i, c))
+					]),
+				_List_fromArray(
+					[
+						A3($author$project$View$getVeggieImg, c.veggie, false, $elm$core$Maybe$Nothing),
+						A2($elm$html$Html$br, _List_Nil, _List_Nil),
+						$author$project$View$objective(c.objective)
+					]));
+		} else {
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('objective-box')
+					]),
+				_List_Nil);
+		}
 	});
 var $elm$html$Html$hr = _VirtualDom_node('hr');
 var $author$project$View$aisle = F2(
 	function (i, _v0) {
 		var c = _v0.a;
-		var v0 = _v0.b;
-		var v1 = _v0.c;
+		var mv0 = _v0.b;
+		var mv1 = _v0.c;
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -6974,27 +6987,39 @@ var $author$project$View$aisle = F2(
 					A2($author$project$View$card, i, c),
 					A2($elm$html$Html$hr, _List_Nil, _List_Nil),
 					A3(
-					$author$project$View$getVeggieImg,
-					v0,
-					true,
-					$elm$core$Maybe$Just(
-						$author$project$Message$Selected(
-							{
-								aisle: i,
-								item: $author$project$Either$Right(
-									{first: true, veggie: v0})
-							}))),
+					$author$project$Utils$maybe,
+					A2($elm$html$Html$div, _List_Nil, _List_Nil),
+					function (v0) {
+						return A3(
+							$author$project$View$getVeggieImg,
+							v0,
+							true,
+							$elm$core$Maybe$Just(
+								$author$project$Message$Selected(
+									{
+										aisle: i,
+										item: $author$project$Either$Right(
+											{first: true, veggie: v0})
+									})));
+					},
+					mv0),
 					A3(
-					$author$project$View$getVeggieImg,
-					v1,
-					true,
-					$elm$core$Maybe$Just(
-						$author$project$Message$Selected(
-							{
-								aisle: i,
-								item: $author$project$Either$Right(
-									{first: false, veggie: v1})
-							})))
+					$author$project$Utils$maybe,
+					A2($elm$html$Html$div, _List_Nil, _List_Nil),
+					function (v1) {
+						return A3(
+							$author$project$View$getVeggieImg,
+							v1,
+							true,
+							$elm$core$Maybe$Just(
+								$author$project$Message$Selected(
+									{
+										aisle: i,
+										item: $author$project$Either$Right(
+											{first: false, veggie: v1})
+									})));
+					},
+					mv1)
 				]));
 	});
 var $Chadtech$elm_vector$Vector3$Index0 = {$: 'Index0'};
