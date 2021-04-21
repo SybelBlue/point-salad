@@ -25,17 +25,18 @@ type alias Draw a = SE (List Card, Seed) a
 
 card : Draw (Maybe Card)
 card = SE (\(cards, seed) -> 
-    let
-        valid = safeModBy (List.length cards) << abs
-        (mn, ns) = mapFirst valid <| run rand seed
-    in maybe (Nothing, (cards, ns)) (\n ->
+        let
+            valid = safeModBy (List.length cards) << abs
+            (mn, ns) = mapFirst valid <| run rand seed
+            nextCard n =
                 let 
                     hd = List.take n cards
-                    (c, tl) = maybe (Nothing, []) (Tuple.mapFirst Just) <| uncons <| List.drop n cards
+                    (mc, tl) = maybe (Nothing, []) (Tuple.mapFirst Just) <| uncons <| List.drop n cards
                 in 
-                    (c, (hd ++ tl, ns))
-            )
-            mn 
+                    (mc, hd ++ tl)
+            (mcard, ncards) = maybe (Nothing, cards) nextCard mn
+        in 
+            (mcard, (ncards, ns))
     )
     
     
