@@ -7099,8 +7099,8 @@ var $author$project$Veggie$toInt = function (v) {
 			return 5;
 	}
 };
-var $author$project$View$player = F2(
-	function (playing, p) {
+var $author$project$View$player = F3(
+	function (scores, playing, p) {
 		var vegMap = function (_v0) {
 			var v = _v0.a;
 			var n = _v0.b;
@@ -7129,8 +7129,9 @@ var $author$project$View$player = F2(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Player ' + $elm$core$String$fromInt(
-								1 + $Chadtech$elm_vector$Vector6$indexToInt(p.id)))
+							'Player ' + ($elm$core$String$fromInt(
+								1 + $Chadtech$elm_vector$Vector6$indexToInt(p.id)) + ('  ' + ($elm$core$String$fromInt(
+								A2($Chadtech$elm_vector$Vector6$get, p.id, scores)) + 'pts'))))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -7148,10 +7149,243 @@ var $author$project$View$player = F2(
 							function ($) {
 								return $.objective;
 							}),
-						p.objectiveCards))
+						p.objectiveCards)),
+					A2($elm$html$Html$hr, _List_Nil, _List_Nil)
 				]));
 	});
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $author$project$Card$isGlobalObjective = function (o) {
+	switch (o.$) {
+		case 'Most':
+			return true;
+		case 'Fewest':
+			return true;
+		case 'MostTotal':
+			return true;
+		case 'FewestTotal':
+			return true;
+		default:
+			return false;
+	}
+};
+var $Chadtech$elm_vector$Vector6$map = F2(
+	function (f, _v0) {
+		var vector = _v0.a;
+		return $Chadtech$elm_vector$Vector6$Internal$Vector(
+			{
+				n0: f(vector.n0),
+				n1: f(vector.n1),
+				n2: f(vector.n2),
+				n3: f(vector.n3),
+				n4: f(vector.n4),
+				n5: f(vector.n5)
+			});
+	});
+var $elm$core$Basics$not = _Basics_not;
+var $elm$core$Basics$ge = _Utils_ge;
+var $elm$core$List$maximum = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(
+			A3($elm$core$List$foldl, $elm$core$Basics$max, x, xs));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$Basics$min = F2(
+	function (x, y) {
+		return (_Utils_cmp(x, y) < 0) ? x : y;
+	});
+var $elm$core$List$minimum = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(
+			A3($elm$core$List$foldl, $elm$core$Basics$min, x, xs));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm_community$basics_extra$Basics$Extra$safeIntegerDivide = F2(
+	function (x, y) {
+		return (!y) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just((x / y) | 0);
+	});
+var $elm$core$List$sum = function (numbers) {
+	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
+};
+var $author$project$Game$scoreObjective = F3(
+	function (veggies, pid, obj) {
+		var pVeggies = A2($Chadtech$elm_vector$Vector6$get, pid, veggies);
+		var numOfVeggie = function (v) {
+			return A2(
+				$elm$core$Basics$composeL,
+				$elm$core$List$length,
+				$elm$core$List$filter(
+					function (x) {
+						return _Utils_eq(v, x);
+					}));
+		};
+		var isBest = F3(
+			function (folder, scorer, p) {
+				var best = A2(
+					$elm$core$Basics$composeL,
+					A2(
+						$elm$core$Basics$composeL,
+						A2(
+							$elm$core$Basics$composeL,
+							$elm$core$Maybe$withDefault(0),
+							folder),
+						$Chadtech$elm_vector$Vector6$toList),
+					$Chadtech$elm_vector$Vector6$map(scorer));
+				return _Utils_eq(
+					scorer(pVeggies),
+					best(veggies)) ? p : 0;
+			});
+		switch (obj.$) {
+			case 'Most':
+				var v = obj.a;
+				var p = obj.b;
+				return A3(
+					isBest,
+					$elm$core$List$maximum,
+					numOfVeggie(v),
+					p);
+			case 'Fewest':
+				var v = obj.a;
+				var p = obj.b;
+				return A3(
+					isBest,
+					$elm$core$List$minimum,
+					numOfVeggie(v),
+					p);
+			case 'MostTotal':
+				var p = obj.a;
+				return A3(isBest, $elm$core$List$maximum, $elm$core$List$length, p);
+			case 'FewestTotal':
+				var p = obj.a;
+				return A3(isBest, $elm$core$List$minimum, $elm$core$List$length, p);
+			case 'Combo':
+				var vs = obj.a;
+				var p = obj.b;
+				return A3(
+					$author$project$Utils$maybe,
+					0,
+					$elm$core$Basics$mul(p),
+					$elm$core$List$minimum(
+						A2(
+							$elm$core$List$map,
+							A2($elm_community$basics_extra$Basics$Extra$flip, numOfVeggie, pVeggies),
+							vs)));
+			case 'Stacked':
+				var v = obj.a;
+				var n = obj.b;
+				var p = obj.c;
+				return A3(
+					$author$project$Utils$maybe,
+					0,
+					$elm$core$Basics$mul(p),
+					A3(
+						$elm_community$basics_extra$Basics$Extra$flip,
+						$elm_community$basics_extra$Basics$Extra$safeIntegerDivide,
+						n,
+						A2(numOfVeggie, v, pVeggies)));
+			case 'Items':
+				var vd = obj.a;
+				return $elm$core$List$sum(
+					A2(
+						$elm$core$List$map,
+						function (_v1) {
+							var v = _v1.a;
+							var p = _v1.b;
+							return p * A2(numOfVeggie, v, pVeggies);
+						},
+						$author$project$Veggie$entries(vd)));
+			case 'PerTypeWith':
+				var n = obj.a;
+				var p = obj.b;
+				return p * $elm$core$List$length(
+					A2(
+						$elm$core$List$filter,
+						function (_v2) {
+							var x = _v2.b;
+							return _Utils_cmp(x, n) > -1;
+						},
+						$author$project$Utils$count(pVeggies)));
+			case 'PerMissing':
+				var p = obj.a;
+				return p * (6 - $elm$core$List$length(
+					$author$project$Utils$count(pVeggies)));
+			default:
+				var v = obj.a;
+				var e = obj.b;
+				var o = obj.c;
+				return (!A2(
+					$elm$core$Basics$modBy,
+					2,
+					A2(numOfVeggie, v, pVeggies))) ? e : o;
+		}
+	});
+var $author$project$Game$scores = function (gbody) {
+	var veggies = A2(
+		$Chadtech$elm_vector$Vector6$map,
+		A2(
+			$author$project$Utils$maybe,
+			_List_Nil,
+			function ($) {
+				return $.veggies;
+			}),
+		gbody.players);
+	var globalObjs = A2(
+		$elm$core$List$filter,
+		$author$project$Card$isGlobalObjective,
+		A2(
+			$elm$core$List$map,
+			function ($) {
+				return $.objective;
+			},
+			A2(
+				$elm$core$List$concatMap,
+				A2(
+					$author$project$Utils$maybe,
+					_List_Nil,
+					function ($) {
+						return $.objectiveCards;
+					}),
+				$Chadtech$elm_vector$Vector6$toList(gbody.players))));
+	var scoreP = function (player) {
+		var personalObjs = A2(
+			$elm$core$List$filter,
+			A2($elm$core$Basics$composeL, $elm$core$Basics$not, $author$project$Card$isGlobalObjective),
+			A2(
+				$elm$core$List$map,
+				function ($) {
+					return $.objective;
+				},
+				player.objectiveCards));
+		return $elm$core$List$sum(
+			A2(
+				$elm$core$List$map,
+				A2($author$project$Game$scoreObjective, veggies, player.id),
+				_Utils_ap(globalObjs, personalObjs)));
+	};
+	return A2(
+		$Chadtech$elm_vector$Vector6$map,
+		A2($author$project$Utils$maybe, 0, scoreP),
+		gbody.players);
+};
 var $author$project$View$view = function (model) {
+	var scs = $author$project$Game$scores(model.body);
 	var ps = A2(
 		$elm$core$List$filterMap,
 		$elm$core$Basics$identity,
@@ -7164,7 +7398,7 @@ var $author$project$View$view = function (model) {
 			$author$project$View$board(model.body.board),
 			A2(
 				$elm$core$List$map,
-				$author$project$View$player(model.body.playing),
+				A2($author$project$View$player, scs, model.body.playing),
 				ps)));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(

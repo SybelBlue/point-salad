@@ -115,13 +115,13 @@ scoreObjective veggies pid obj =
                 maybe 0 ((*) p) <| List.minimum <| List.map (flip numOfVeggie pVeggies) vs
 
             Stacked v n p ->
-                maybe 0 ((*) p) <| safeIntegerDivide n <| numOfVeggie v pVeggies
+                maybe 0 ((*) p) <| flip safeIntegerDivide n <| numOfVeggie v pVeggies
 
             Items vd ->
                 List.sum <| List.map (\(v, p) -> p * numOfVeggie v pVeggies) <| Veggie.entries vd
 
             PerTypeWith n p ->
-                p * (List.length <| List.filter (Tuple.second >> (\x -> x >= n)) <| count <| pVeggies)
+                p * (List.length <| List.filter ((\(_, x) -> x >= n)) <| count <| pVeggies)
 
             PerMissing p ->
                 p * (6 - (List.length <| count <| pVeggies))

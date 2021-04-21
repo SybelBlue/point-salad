@@ -15,10 +15,11 @@ import Veggie exposing (Veggie)
 import Card exposing ( Objective(..))
 import Utils exposing (maybeAsList, count)
 import Either exposing (..)
-import Vector6
+import Vector6 exposing (Vector6)
 import Game exposing (Player)
 import Game exposing (PlayerId)
 import Card exposing (Card)
+import Game exposing (scores)
 
 getVeggieImgPath : Veggie -> String
 getVeggieImgPath v = "res/" ++ String.toLower (Veggie.toString v) ++ ".jpeg"
@@ -92,23 +93,25 @@ board : Board -> Html Msg
 board =
   div [ class "row" ] << Vector3.toList << indexedMap aisle
 
-player : PlayerId -> Player -> Html Msg
-player playing p = 
+player : Vector6 Int -> PlayerId -> Player -> Html Msg
+player scores playing p = 
   let 
     vcount = count p.veggies
     sorted = List.sortBy (Veggie.toInt << Tuple.first) vcount
     heading = if playing == p.id then b else div
     vegMap (v, n) = [ Left <| fromInt n ++ "x", Right <| getVeggieImg v False Nothing ]
   in div [] <|
-    [ heading [] [ text <| "Player " ++ fromInt (1 + Vector6.indexToInt p.id) ] 
+    [ heading [] [ text <| "Player " ++ fromInt (1 + Vector6.indexToInt p.id) ++ "  " ++ fromInt (Vector6.get p.id scores) ++ "pts" ] 
     , div [] <| fromSeq <| List.concatMap vegMap sorted
     , div [] <| List.map (objective << .objective) p.objectiveCards
+    , hr [] []
     ]
 
 view : Model -> Html Msg
 view model =
   let
       ps = List.filterMap identity <| Vector6.toList model.body.players
+      scs = scores model.body
   in div [] <| 
-    board model.body.board :: List.map (player model.body.playing) ps
+    board model.body.board :: List.map (player scs model.body.playing) ps
 
