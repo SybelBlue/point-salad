@@ -113,9 +113,9 @@ formatModule (name, exports) =
     let 
         basicText = "module " ++ name ++ maybe "" ((++) " exposing " . formatIdentList) exports
 
-        splitLines ('(' : ' ' : rest) = "\n\t( " ++ splitLines rest
-        splitLines (' ' : ',' : ' ' : rest) = "\n\t, " ++ splitLines rest
-        splitLines " )" = "\n\t)"
+        splitLines ('(' : ' ' : rest) = "\n    ( " ++ splitLines rest
+        splitLines (' ' : ',' : ' ' : rest) = "\n    , " ++ splitLines rest
+        splitLines " )" = "\n    )"
         splitLines (c:rest) = c : splitLines rest
     in 
         if length basicText > 80 
@@ -136,23 +136,29 @@ formatAll m = (moduleText ++) . ungroup . number . cleanLines
         number = map (groupNumber &&& formatImport) 
         ungroup = intercalate "\n\n" . map (intercalate "\n" . map snd) . groupBy (\a b -> fst a == fst b)
 
-cleanFile :: FilePath -> IO ()
+cleanFile :: FilePath -> IO Bool
 cleanFile path =
  do text <- readFile path
     case parse elmFile path text of
         Left err -> 
          do putStrLn $ "Error parsing file: " ++ path
             print err
+            return False
         Right (h, body) ->
          do let formatted = uncurry formatAll h
             let !_body = body  -- force eval before write
             writeFile path (formatted ++ "\n\n" ++ _body)
+            return True
 
 cleanDirectory :: FilePath -> IO ()
 cleanDirectory dirPath =
  do paths <- getDirectoryContents dirPath
     let files = filter (isSuffixOf ".elm") paths
+    let fileCount = length files
+    putStrLn $ " >  Found " ++ show fileCount ++ " elm files in directory '" ++ dirPath ++ "'"
     let file_paths = map ((dirPath ++ "/") ++) files
-    sequence_ (cleanFile <$> file_paths)
+    results <- sequence (cleanFile <$> file_paths)
+    let successful = length $ filter id results
+    putStrLn $ " >  Success in " ++ show successful ++ " of " ++ show fileCount ++ " files."
 
 main = cleanDirectory "src"
